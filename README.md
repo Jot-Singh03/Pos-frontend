@@ -1,6 +1,6 @@
 # POS System
 
-A Point of Sale system with self-ordering capabilities and admin panel.
+A Point of Sale system with self-ordering capabilities and a full-featured admin panel.
 
 ## Features
 
@@ -8,12 +8,27 @@ A Point of Sale system with self-ordering capabilities and admin panel.
 - Admin panel for menu management
 - Order tracking and management
 - Loyalty points system
+- **Admin Dashboard** with order and revenue stats
+- **Dropdowns Management** for categories (CRUD)
 
 ## Tech Stack
 
 - Frontend: React, TypeScript, React Router, Axios
 - Backend: Node.js, Express, TypeScript, MongoDB
 - Authentication: JWT
+
+## Monorepo Structure
+
+This repository contains both the frontend (client) and backend (server) applications:
+
+```
+pos/
+├── client/   # React frontend
+├── server/   # Node.js backend
+├── docker-compose.yml
+├── README.md
+└── ...
+```
 
 ## Setup Options
 
@@ -30,12 +45,10 @@ A Point of Sale system with self-ordering capabilities and admin panel.
    ```bash
    cd server
    ```
-
 2. Install dependencies:
    ```bash
    npm install
    ```
-
 3. Create a `.env` file in the server directory with the following variables:
    ```
    PORT=5001
@@ -43,7 +56,6 @@ A Point of Sale system with self-ordering capabilities and admin panel.
    JWT_SECRET=your-super-secret-jwt-key-change-in-production
    NODE_ENV=development
    ```
-
 4. Start the development server:
    ```bash
    npm run dev
@@ -55,17 +67,14 @@ A Point of Sale system with self-ordering capabilities and admin panel.
    ```bash
    cd client
    ```
-
 2. Install dependencies:
    ```bash
    npm install
    ```
-
 3. Create a `.env` file in the client directory with:
    ```
    REACT_APP_API_URL=http://localhost:5001/api
    ```
-
 4. Start the development server:
    ```bash
    npm start
@@ -84,17 +93,14 @@ A Point of Sale system with self-ordering capabilities and admin panel.
    ```bash
    docker-compose up --build
    ```
-
 2. To run in detached mode:
    ```bash
    docker-compose up -d
    ```
-
 3. To stop all containers:
    ```bash
    docker-compose down
    ```
-
 4. To view logs:
    ```bash
    docker-compose logs -f
@@ -137,6 +143,10 @@ The application will be available at:
 - `DELETE /api/admin/menu/:id`: Delete menu item
 - `GET /api/admin/orders`: Get all orders
 - `GET /api/admin/loyalty`: Get loyalty points data
+- `GET /api/categories`: Get all categories
+- `POST /api/categories`: Create a new category
+- `PUT /api/categories/:id`: Update a category
+- `DELETE /api/categories/:id`: Delete a category
 
 ## Environment Variables
 
