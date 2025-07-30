@@ -92,6 +92,9 @@ const POS: React.FC = () => {
           (cat: { name: string }) => cat.name
         );
         setCategories(categoryNames);
+        if (!selectedCategory && categoryNames.length > 0) {
+          setSelectedCategory(categoryNames[0]);
+        }
       }
     } catch (err) {
       console.error("Failed to fetch categories", err);
