@@ -37,7 +37,7 @@ const POS: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [tableToken, setTableToken] = useState<number | "">("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("Beverages");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
