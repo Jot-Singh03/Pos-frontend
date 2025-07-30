@@ -10,6 +10,7 @@ import adminRoutes from './routes/adminRoutes';
 import loyaltyRoutes from './routes/loyaltyRoutes';
 import healthRoutes from './routes/healthRoutes';
 import categoryRoutes from './routes/categoryRoutes';
+import RegistrationRoutes from './routes/RegistrationRoutes'
 import { migrateOrderNumbers } from './utils/migrateOrderNumbers';
 
 // Load env vars
@@ -38,6 +39,8 @@ app.use('/api/loyalty', loyaltyRoutes);
 app.use('/api', healthRoutes);
 app.use('/api/categories', categoryRoutes);
 
+//Employee
+app.use('/api/new', RegistrationRoutes)
 // Error handling middleware
 app.use(errorHandler);
 

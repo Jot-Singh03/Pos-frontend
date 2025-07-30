@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import theme from "../../styles/theme";
-import api, { ApiResponse } from "../../services/api";
-import { getCategories } from "../../services/api";
+import theme from "../styles/theme";
+import api, { ApiResponse } from "../services/api";
+import { getCategories } from "../services/api";
+import { useNavigate } from 'react-router-dom';
+import { clearAuthData, logout } from '../utils/auth';
 
 interface MenuItem {
   _id: string;
@@ -30,7 +32,7 @@ interface OrderResponse {
   createdAt: string;
 }
 
-const POS: React.FC = () => {
+const EmpPos: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,8 +41,25 @@ const POS: React.FC = () => {
   const [tableToken, setTableToken] = useState<number | "">("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<string[]>([]);
+  const navigate = useNavigate();
+
+  const [employeeName, setEmployeeName] = useState<string | null>(null);
+
+    const handleLogout = () => {
+      logout();
+      navigate("/login");
+    };
+  
+   
+    const handleClearAuth = () => {
+      clearAuthData();
+      navigate('/login');
+    };
+  
 
   useEffect(() => {
+    const name = localStorage.getItem("employeeUsername");
+    setEmployeeName(name); // Set employee name
     fetchMenuItems();
     fetchCategories();
   }, []);
@@ -190,6 +209,21 @@ const POS: React.FC = () => {
           borderRight: `1px solid ${theme.colors.gray[300]}`,
         }}
       >
+        {/* Display Employee's Name */}
+        <h2 style={{ marginBottom: theme.spacing.md }}>
+          {employeeName ? employeeName : "Employee"}
+          <span
+            style={{
+              fontSize: "0.9rem",
+              marginLeft: "0.5rem",
+              verticalAlign: "middle",
+              transform: "scale(0.5)",
+            }}
+          >
+            🟢
+          </span>
+        </h2>
+
         <h1 style={{ marginBottom: theme.spacing.xl }}>Categories</h1>
         <ul
           style={{
@@ -214,6 +248,41 @@ const POS: React.FC = () => {
             </li>
           ))}
         </ul>
+
+        {/*Token & Logout Section*/}
+        <div style={{ marginBottom:theme.spacing.md }}>
+          <button
+            onClick={handleClearAuth}
+            style={{
+              width: "100%",
+              padding: theme.spacing.sm,
+              backgroundColor: theme.colors.warning,
+              color: theme.colors.white,
+              border: "none",
+              borderRadius: theme.borderRadius.md,
+              cursor: "pointer",
+              fontSize: "12px",
+            }}
+          >
+            Clear Token
+          </button>
+
+          <button
+            onClick={handleLogout}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              padding: theme.spacing.sm,
+              backgroundColor: theme.colors.danger,
+              color: theme.colors.white,
+              border: "none",
+              borderRadius: theme.borderRadius.md,
+              cursor: "pointer",
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Menu Section */}
@@ -462,6 +531,35 @@ const POS: React.FC = () => {
                 <div
                   style={{
                     display: "flex",
+                    flexDirection: "row", // Align elements horizontally
+                    gap: theme.spacing.md, // Optional gap between the two elements
+                    alignItems: "center", // Vertically center the elements
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontSize: "1rem", // Same size as phone number input
+                      fontWeight: 600, // Bold for "Order By"
+                      margin: 0, // Remove margin for better alignment
+                    }}
+                  >
+                    Order By:
+                  </h2>
+                  {/* Display Employee's Name */}
+                  <h2
+                    style={{
+                      fontSize: "1rem",
+                      fontWeight: 300, // Lighter weight for the employee name
+                      margin: 0, // Remove margin for better alignment
+                    }}
+                  >
+                    {employeeName ? employeeName : "Employee"}
+                  </h2>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
                     flexDirection: "column",
                     gap: "1rem",
                   }}
@@ -570,4 +668,4 @@ const POS: React.FC = () => {
   );
 };
 
-export default POS;
+export default EmpPos;

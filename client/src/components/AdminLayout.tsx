@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import theme from '../styles/theme';
-import { clearAuthData, debugAuth, logout } from '../utils/auth';
+import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import theme from "../styles/theme";
+import { clearAuthData, debugAuth, logout } from "../utils/auth";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -13,6 +13,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const handleLogout = () => {
     logout();
+    navigate("/admin/login");
   };
 
   const handleDebugAuth = () => {
@@ -21,75 +22,86 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const handleClearAuth = () => {
     clearAuthData();
-    navigate('/admin/login');
+    navigate("/admin/login");
   };
 
   const navItems = [
-    { path: '/admin', label: 'Dashboard' },
-    { path: '/admin/menu', label: 'Menu Management' },
-    { path: '/admin/orders', label: 'Orders' },
-    { path: '/admin/loyalty', label: 'Loyalty Points' }
+    { path: "/admin", label: "Dashboard" },
+    { path: "/admin/menu", label: "Menu Management" },
+    { path: "/admin/orders", label: "Orders" },
+    { path: "/admin/loyalty", label: "Loyalty Points" },
+    { path: "/admin/newreg", label: "Employee Registration" },
   ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div style={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
-      <div style={{
-        width: '250px',
-        backgroundColor: theme.colors.white,
-        padding: theme.spacing.lg,
-        boxShadow: theme.shadows.md,
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
+      <div
+        style={{
+          width: "250px",
+          backgroundColor: theme.colors.white,
+          padding: theme.spacing.lg,
+          boxShadow: theme.shadows.md,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <h2 style={{ marginBottom: theme.spacing.xl }}>Admin Panel</h2>
-        
+
         {/* Debug info - remove this after testing */}
-        <div style={{ 
-          fontSize: '12px', 
-          color: theme.colors.gray[600], 
-          marginBottom: theme.spacing.md,
-          padding: theme.spacing.sm,
-          backgroundColor: theme.colors.gray[100],
-          borderRadius: theme.borderRadius.sm
-        }}>
-          Token: {localStorage.getItem('token') ? '✅ Present' : '❌ Missing'}
+        <div
+          style={{
+            fontSize: "12px",
+            color: theme.colors.gray[600],
+            marginBottom: theme.spacing.md,
+            padding: theme.spacing.sm,
+            backgroundColor: theme.colors.gray[100],
+            borderRadius: theme.borderRadius.sm,
+          }}
+        >
+          Token: {localStorage.getItem("token") ? "✅ Present" : "❌ Missing"}
         </div>
-        
+
         <nav style={{ flex: 1 }}>
           {navItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
               style={{
-                display: 'block',
+                display: "block",
                 padding: theme.spacing.sm,
                 marginBottom: theme.spacing.sm,
-                color: location.pathname === item.path ? theme.colors.primary : theme.colors.gray[600],
-                textDecoration: 'none',
+                color:
+                  location.pathname === item.path
+                    ? theme.colors.primary
+                    : theme.colors.gray[600],
+                textDecoration: "none",
                 borderRadius: theme.borderRadius.md,
-                backgroundColor: location.pathname === item.path ? theme.colors.gray[100] : 'transparent'
+                backgroundColor:
+                  location.pathname === item.path
+                    ? theme.colors.gray[100]
+                    : "transparent",
               }}
             >
               {item.label}
             </Link>
           ))}
         </nav>
-        
+
         {/* Debug buttons - remove these after testing */}
         <div style={{ marginBottom: theme.spacing.md }}>
           <button
             onClick={handleDebugAuth}
             style={{
-              width: '100%',
+              width: "100%",
               padding: theme.spacing.sm,
               backgroundColor: theme.colors.secondary,
               color: theme.colors.white,
-              border: 'none',
+              border: "none",
               borderRadius: theme.borderRadius.md,
-              cursor: 'pointer',
+              cursor: "pointer",
               marginBottom: theme.spacing.xs,
-              fontSize: '12px'
+              fontSize: "12px",
             }}
           >
             Debug Auth
@@ -97,29 +109,29 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           <button
             onClick={handleClearAuth}
             style={{
-              width: '100%',
+              width: "100%",
               padding: theme.spacing.sm,
               backgroundColor: theme.colors.warning,
               color: theme.colors.white,
-              border: 'none',
+              border: "none",
               borderRadius: theme.borderRadius.md,
-              cursor: 'pointer',
-              fontSize: '12px'
+              cursor: "pointer",
+              fontSize: "12px",
             }}
           >
             Clear Token
           </button>
         </div>
-        
+
         <button
           onClick={handleLogout}
           style={{
             padding: theme.spacing.sm,
             backgroundColor: theme.colors.danger,
             color: theme.colors.white,
-            border: 'none',
+            border: "none",
             borderRadius: theme.borderRadius.md,
-            cursor: 'pointer'
+            cursor: "pointer",
           }}
         >
           Logout
@@ -127,15 +139,17 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </div>
 
       {/* Main Content */}
-      <div style={{
-        flex: 1,
-        padding: theme.spacing.xl,
-        backgroundColor: theme.colors.background
-      }}>
+      <div
+        style={{
+          flex: 1,
+          padding: theme.spacing.xl,
+          backgroundColor: theme.colors.background,
+        }}
+      >
         {children}
       </div>
     </div>
   );
 };
 
-export default AdminLayout; 
+export default AdminLayout;

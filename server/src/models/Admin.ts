@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 export interface IAdmin extends Document {
   email: string;
   password: string;
+  role: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -20,6 +21,11 @@ const AdminSchema: Schema = new Schema({
     type: String,
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters long']
+  },
+  role: {
+    type: String,
+    enum: ['admin', 'Employee'],
+    default: 'admin'
   }
 }, {
   timestamps: true
