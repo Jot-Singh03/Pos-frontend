@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import theme from '../../styles/theme';
-import api, { ApiResponse } from '../../services/api';
+import React, { useState, useEffect } from "react";
+import theme from "../../styles/theme";
+import api, { ApiResponse } from "../../services/api";
 
 interface OrderItem {
   itemId: string;
@@ -35,17 +35,17 @@ const Orders: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await api.get<ApiResponse<Order[]>>('/orders');
-      
+
+      const response = await api.get<ApiResponse<Order[]>>("/orders");
+
       if (response.data.success && Array.isArray(response.data.data)) {
         setOrders(response.data.data);
       } else {
         setOrders([]);
-        setError('Invalid data format received from server');
+        setError("Invalid data format received from server");
       }
     } catch (error: any) {
-      setError('Failed to load orders. Please try again.');
+      setError("Failed to load orders. Please try again.");
       setOrders([]);
     } finally {
       setLoading(false);
@@ -54,7 +54,7 @@ const Orders: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: theme.spacing.xl, textAlign: 'center' }}>
+      <div style={{ padding: theme.spacing.xl, textAlign: "center" }}>
         Loading orders...
       </div>
     );
@@ -236,4 +236,4 @@ const Orders: React.FC = () => {
   );
 };
 
-export default Orders; 
+export default Orders;
