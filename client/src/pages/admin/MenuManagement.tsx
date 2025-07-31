@@ -24,6 +24,7 @@ const MenuManagement: React.FC = () => {
     name: '',
     price: '',
     category: '',
+    description: '',
     imageUrl: ''
   });
   const [loading, setLoading] = useState(true);
@@ -109,17 +110,19 @@ const MenuManagement: React.FC = () => {
       name: item.name,
       price: item.price.toString(),
       category: item.category,
-      imageUrl: item.imageUrl
+      description: "",
+      imageUrl: item.imageUrl,
     });
   };
 
   const resetForm = () => {
     setEditingItem(null);
     setFormData({
-      name: '',
-      price: '',
-      category: '',
-      imageUrl: ''
+      name: "",
+      price: "",
+      category: "",
+      description: "",
+      imageUrl: "",
     });
   };
 
@@ -133,48 +136,59 @@ const MenuManagement: React.FC = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: theme.spacing.lg }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: theme.spacing.lg,
+        }}
+      >
         <button
-          onClick={() => navigate('/admin/dropdowns')}
+          onClick={() => navigate("/admin/dropdowns")}
           style={{
             padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
             backgroundColor: theme.colors.secondary,
             color: theme.colors.white,
-            border: 'none',
+            border: "none",
             borderRadius: theme.borderRadius.md,
-            cursor: 'pointer'
+            cursor: "pointer",
           }}
         >
           Manage Dropdowns
         </button>
       </div>
       <h1 style={{ marginBottom: theme.spacing.xl }}>Menu Management</h1>
-      
+
       {error && (
-        <div style={{
-          backgroundColor: theme.colors.danger,
-          color: theme.colors.white,
-          padding: theme.spacing.md,
-          borderRadius: theme.borderRadius.md,
-          marginBottom: theme.spacing.lg
-        }}>
+        <div
+          style={{
+            backgroundColor: theme.colors.danger,
+            color: theme.colors.white,
+            padding: theme.spacing.md,
+            borderRadius: theme.borderRadius.md,
+            marginBottom: theme.spacing.lg,
+          }}
+        >
           {error}
         </div>
       )}
-      
+
       {/* Form */}
-      <form onSubmit={handleSubmit} style={{
-        backgroundColor: theme.colors.white,
-        padding: theme.spacing.lg,
-        borderRadius: theme.borderRadius.lg,
-        marginBottom: theme.spacing.xl
-      }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          backgroundColor: theme.colors.white,
+          padding: theme.spacing.lg,
+          borderRadius: theme.borderRadius.lg,
+          marginBottom: theme.spacing.xl,
+        }}
+      >
         <h2 style={{ marginBottom: theme.spacing.lg }}>
-          {editingItem ? 'Edit Menu Item' : 'Add New Menu Item'}
+          {editingItem ? "Edit Menu Item" : "Add New Menu Item"}
         </h2>
-        
+
         <div style={{ marginBottom: theme.spacing.md }}>
-          <label style={{ display: 'block', marginBottom: theme.spacing.xs }}>
+          <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
             Name
           </label>
           <input
@@ -182,89 +196,114 @@ const MenuManagement: React.FC = () => {
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             style={{
-              width: '100%',
+              width: "100%",
               padding: theme.spacing.sm,
               borderRadius: theme.borderRadius.md,
-              border: `1px solid ${theme.colors.gray[300]}`
+              border: `1px solid ${theme.colors.gray[300]}`,
             }}
             required
           />
         </div>
 
         <div style={{ marginBottom: theme.spacing.md }}>
-          <label style={{ display: 'block', marginBottom: theme.spacing.xs }}>
+          <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
             Price
           </label>
           <input
             type="number"
             step="0.01"
             value={formData.price}
-            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, price: e.target.value })
+            }
             style={{
-              width: '100%',
+              width: "100%",
               padding: theme.spacing.sm,
               borderRadius: theme.borderRadius.md,
-              border: `1px solid ${theme.colors.gray[300]}`
+              border: `1px solid ${theme.colors.gray[300]}`,
             }}
             required
           />
         </div>
 
         <div style={{ marginBottom: theme.spacing.md }}>
-          <label style={{ display: 'block', marginBottom: theme.spacing.xs }}>
+          <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
             Category
           </label>
           <select
             value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, category: e.target.value })
+            }
             style={{
-              width: '100%',
+              width: "100%",
               padding: theme.spacing.sm,
               borderRadius: theme.borderRadius.md,
-              border: `1px solid ${theme.colors.gray[300]}`
+              border: `1px solid ${theme.colors.gray[300]}`,
             }}
             required
           >
             <option value="">Select a category</option>
-            {categories.map(cat => (
-              <option key={cat._id} value={cat.name}>{cat.name}</option>
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat.name}>
+                {cat.name}
+              </option>
             ))}
           </select>
         </div>
 
+        <div style={{ marginBottom: theme.spacing.md }}>
+          <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
+            Description
+          </label>
+          <input
+            type="text"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            style={{
+              width: "100%",
+              padding: theme.spacing.sm,
+              borderRadius: theme.borderRadius.md,
+              border: `1px solid ${theme.colors.gray[300]}`,
+            }}
+          />
+        </div>
+
         <div style={{ marginBottom: theme.spacing.lg }}>
-          <label style={{ display: 'block', marginBottom: theme.spacing.xs }}>
+          <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
             Image URL
           </label>
           <input
             type="url"
             value={formData.imageUrl}
-            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, imageUrl: e.target.value })
+            }
             style={{
-              width: '100%',
+              width: "100%",
               padding: theme.spacing.sm,
               borderRadius: theme.borderRadius.md,
-              border: `1px solid ${theme.colors.gray[300]}`
+              border: `1px solid ${theme.colors.gray[300]}`,
             }}
             required
           />
         </div>
 
-        <div style={{ display: 'flex', gap: theme.spacing.md }}>
+        <div style={{ display: "flex", gap: theme.spacing.md }}>
           <button
             type="submit"
             style={{
               padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
               backgroundColor: theme.colors.primary,
               color: theme.colors.white,
-              border: 'none',
+              border: "none",
               borderRadius: theme.borderRadius.md,
-              cursor: 'pointer'
+              cursor: "pointer",
             }}
           >
-            {editingItem ? 'Update' : 'Add'} Item
+            {editingItem ? "Update" : "Add"} Item
           </button>
-          
+
           {editingItem && (
             <button
               type="button"
@@ -273,9 +312,9 @@ const MenuManagement: React.FC = () => {
                 padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
                 backgroundColor: theme.colors.gray[300],
                 color: theme.colors.gray[700],
-                border: 'none',
+                border: "none",
                 borderRadius: theme.borderRadius.md,
-                cursor: 'pointer'
+                cursor: "pointer",
               }}
             >
               Cancel
@@ -285,16 +324,18 @@ const MenuManagement: React.FC = () => {
       </form>
 
       {/* Menu Items List */}
-      <div style={{
-        backgroundColor: theme.colors.white,
-        padding: theme.spacing.lg,
-        borderRadius: theme.borderRadius.lg
-      }}>
+      <div
+        style={{
+          backgroundColor: theme.colors.white,
+          padding: theme.spacing.lg,
+          borderRadius: theme.borderRadius.lg,
+        }}
+      >
         <h2 style={{ marginBottom: theme.spacing.lg }}>Menu Items</h2>
         {menuItems.length === 0 ? (
           <p style={{ color: theme.colors.gray[600] }}>No menu items found.</p>
         ) : (
-          <div style={{ display: 'grid', gap: theme.spacing.md }}>
+          <div style={{ display: "grid", gap: theme.spacing.md }}>
             {menuItems.map((item) => (
               <div
                 key={item._id}
@@ -302,27 +343,29 @@ const MenuManagement: React.FC = () => {
                   padding: theme.spacing.md,
                   border: `1px solid ${theme.colors.gray[200]}`,
                   borderRadius: theme.borderRadius.md,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
                 <div>
-                  <h3 style={{ marginBottom: theme.spacing.xs }}>{item.name}</h3>
+                  <h3 style={{ marginBottom: theme.spacing.xs }}>
+                    {item.name}
+                  </h3>
                   <p style={{ color: theme.colors.gray[600] }}>
                     ${item.price.toFixed(2)} - {item.category}
                   </p>
                 </div>
-                <div style={{ display: 'flex', gap: theme.spacing.sm }}>
+                <div style={{ display: "flex", gap: theme.spacing.sm }}>
                   <button
                     onClick={() => handleEdit(item)}
                     style={{
                       padding: theme.spacing.sm,
                       backgroundColor: theme.colors.primary,
                       color: theme.colors.white,
-                      border: 'none',
+                      border: "none",
                       borderRadius: theme.borderRadius.md,
-                      cursor: 'pointer'
+                      cursor: "pointer",
                     }}
                   >
                     Edit
@@ -333,9 +376,9 @@ const MenuManagement: React.FC = () => {
                       padding: theme.spacing.sm,
                       backgroundColor: theme.colors.danger,
                       color: theme.colors.white,
-                      border: 'none',
+                      border: "none",
                       borderRadius: theme.borderRadius.md,
-                      cursor: 'pointer'
+                      cursor: "pointer",
                     }}
                   >
                     Delete
