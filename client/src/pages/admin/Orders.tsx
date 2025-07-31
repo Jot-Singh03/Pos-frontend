@@ -18,6 +18,8 @@ interface Order {
   createdAt: string;
   phoneNumber?: string;
   tableToken?: number;
+  orderBy: string;
+  employeeName?: string;
 }
 
 const Orders: React.FC = () => {
@@ -60,12 +62,14 @@ const Orders: React.FC = () => {
 
   return (
     <div>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: theme.spacing.xl
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: theme.spacing.xl,
+        }}
+      >
         <h1>Orders</h1>
         <button
           onClick={() => {
@@ -75,32 +79,36 @@ const Orders: React.FC = () => {
             padding: theme.spacing.sm,
             backgroundColor: theme.colors.primary,
             color: theme.colors.white,
-            border: 'none',
+            border: "none",
             borderRadius: theme.borderRadius.md,
-            cursor: 'pointer'
+            cursor: "pointer",
           }}
         >
           Refresh Orders
         </button>
       </div>
-      
+
       {error && (
-        <div style={{
-          backgroundColor: theme.colors.danger,
-          color: theme.colors.white,
-          padding: theme.spacing.md,
-          borderRadius: theme.borderRadius.md,
-          marginBottom: theme.spacing.lg
-        }}>
+        <div
+          style={{
+            backgroundColor: theme.colors.danger,
+            color: theme.colors.white,
+            padding: theme.spacing.md,
+            borderRadius: theme.borderRadius.md,
+            marginBottom: theme.spacing.lg,
+          }}
+        >
           {error}
         </div>
       )}
-      
-      <div style={{
-        backgroundColor: theme.colors.white,
-        padding: theme.spacing.lg,
-        borderRadius: theme.borderRadius.lg
-      }}>
+
+      <div
+        style={{
+          backgroundColor: theme.colors.white,
+          padding: theme.spacing.lg,
+          borderRadius: theme.borderRadius.lg,
+        }}
+      >
         {orders.length === 0 ? (
           <p style={{ color: theme.colors.gray[600] }}>No orders found.</p>
         ) : (
@@ -111,42 +119,82 @@ const Orders: React.FC = () => {
                 padding: theme.spacing.lg,
                 border: `1px solid ${theme.colors.gray[200]}`,
                 borderRadius: theme.borderRadius.md,
-                marginBottom: theme.spacing.md
+                marginBottom: theme.spacing.md,
               }}
             >
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: theme.spacing.md
-              }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: theme.spacing.md,
+                }}
+              >
                 <div>
-                  <h3 style={{ marginBottom: theme.spacing.xs, color: theme.colors.primary }}>
+                  <h3
+                    style={{
+                      marginBottom: theme.spacing.xs,
+                      color: theme.colors.primary,
+                    }}
+                  >
                     Order #{order.orderNumber}
                   </h3>
-                  <p style={{ color: theme.colors.gray[600], marginBottom: theme.spacing.xs }}>
+                  <p
+                    style={{
+                      color: theme.colors.gray[600],
+                      marginBottom: theme.spacing.xs,
+                    }}
+                  >
                     Date: {new Date(order.createdAt).toLocaleString()}
                   </p>
+                  <p
+                    style={{
+                      color: theme.colors.gray[600],
+                      marginBottom: theme.spacing.xs,
+                    }}
+                  >
+                    Order By:{" "}
+                    {order.orderBy === "employee"
+                      ? order.employeeName || "Unknown Employee"
+                      : "Customer"}
+                  </p>
                   {order.phoneNumber && (
-                    <p style={{ color: theme.colors.gray[600], marginBottom: theme.spacing.xs }}>
+                    <p
+                      style={{
+                        color: theme.colors.gray[600],
+                        marginBottom: theme.spacing.xs,
+                      }}
+                    >
                       Phone: {order.phoneNumber}
                     </p>
                   )}
                   {order.tableToken && (
-                    <p style={{ color: theme.colors.gray[600], marginBottom: theme.spacing.xs }}>
+                    <p
+                      style={{
+                        color: theme.colors.gray[600],
+                        marginBottom: theme.spacing.xs,
+                      }}
+                    >
                       Table: {order.tableToken}
                     </p>
                   )}
                   {!order.phoneNumber && !order.tableToken && (
-                    <p style={{ color: theme.colors.warning, marginBottom: theme.spacing.xs }}>
+                    <p
+                      style={{
+                        color: theme.colors.warning,
+                        marginBottom: theme.spacing.xs,
+                      }}
+                    >
                       ⚠️ No contact information
                     </p>
                   )}
                 </div>
-                <div style={{
-                  fontSize: theme.fontSizes.lg,
-                  fontWeight: 'bold',
-                  color: theme.colors.primary
-                }}>
+                <div
+                  style={{
+                    fontSize: theme.fontSizes.lg,
+                    fontWeight: "bold",
+                    color: theme.colors.primary,
+                  }}
+                >
                   ${order.totalAmount.toFixed(2)}
                 </div>
               </div>
@@ -157,23 +205,26 @@ const Orders: React.FC = () => {
                   <div
                     key={index}
                     style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
+                      display: "flex",
+                      justifyContent: "space-between",
                       padding: theme.spacing.sm,
                       backgroundColor: theme.colors.gray[100],
                       borderRadius: theme.borderRadius.sm,
-                      marginBottom: theme.spacing.xs
+                      marginBottom: theme.spacing.xs,
                     }}
                   >
                     <div>
-                      <span style={{ fontWeight: 'bold' }}>{item.name}</span>
-                      <span style={{ color: theme.colors.gray[600], marginLeft: theme.spacing.sm }}>
+                      <span style={{ fontWeight: "bold" }}>{item.name}</span>
+                      <span
+                        style={{
+                          color: theme.colors.gray[600],
+                          marginLeft: theme.spacing.sm,
+                        }}
+                      >
                         x{item.quantity}
                       </span>
                     </div>
-                    <div>
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </div>
+                    <div>${(item.price * item.quantity).toFixed(2)}</div>
                   </div>
                 ))}
               </div>

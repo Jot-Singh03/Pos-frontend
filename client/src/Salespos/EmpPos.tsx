@@ -155,6 +155,10 @@ const EmpPos: React.FC = () => {
       toast.error("Table token must be between 1 and 20.");
       return;
     }
+    
+const orderBy = employeeName ? "employee" : "customer";
+
+
     setLoading(true);
     try {
       const orderData = {
@@ -170,6 +174,8 @@ const EmpPos: React.FC = () => {
         ),
         ...(phoneNumber ? { phoneNumber } : {}),
         ...(tableToken ? { tableToken } : {}),
+        orderBy,
+        employeeName: employeeName,
       };
       const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
       if (data.success) {

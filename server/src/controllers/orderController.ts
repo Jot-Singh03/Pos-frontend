@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Order from '../models/Order';
 import { generateOrderNumber } from '../utils/orderNumberGenerator';
 
+
 // Get all orders
 export const getOrders = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -18,20 +19,20 @@ export const getOrders = async (req: Request, res: Response, next: NextFunction)
 // Create new order
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { items, totalAmount, phoneNumber, tableToken } = req.body;
+    const { items, totalAmount, phoneNumber, tableToken, orderBy,employeeName  } = req.body;
 
     // Validate required fields
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
         success: false,
-        error: 'Order must contain at least one item'
+        error: "Order must contain at least one item",
       });
     }
 
     if (!totalAmount || totalAmount <= 0) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid total amount'
+        error: "Invalid total amount",
       });
     }
 
@@ -40,7 +41,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       if (!item.itemId || !item.name || !item.quantity || !item.price) {
         return res.status(400).json({
           success: false,
-          error: 'Each item must have itemId, name, quantity, and price'
+          error: "Each item must have itemId, name, quantity, and price",
         });
       }
     }
@@ -49,7 +50,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     if (!phoneNumber && !tableToken) {
       return res.status(400).json({
         success: false,
-        error: 'Either phone number or table token must be provided.'
+        error: "Either phone number or table token must be provided.",
       });
     }
 
@@ -57,30 +58,39 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     if (tableToken && (tableToken < 1 || tableToken > 20)) {
       return res.status(400).json({
         success: false,
-        error: 'Table token must be between 1 and 20.'
+        error: "Table token must be between 1 and 20.",
       });
     }
 
     // Generate order number
     const orderNumber = await generateOrderNumber();
 
-    const order = await Order.create({
+    // Create the order
+    const orderData: any = {
       ...req.body,
-      orderNumber
-    });
-    
+      orderNumber,
+    };
+
+    // If the order is placed by an employee, include their name
+    if (orderBy === "employee" && employeeName) {
+      orderData.employeeName = employeeName;
+    }
+
+    const order = await Order.create(orderData);
+
     res.status(201).json({
       success: true,
-      data: order
+      data: order,
     });
   } catch (error) {
-    console.error('Error creating order:', error);
+    console.error("Error creating order:", error);
     res.status(500).json({
       success: false,
-      error: 'Failed to create order'
+      error: "Failed to create order",
     });
   }
 };
+
 
 // Get single order
 export const getOrder = async (req: Request, res: Response, next: NextFunction) => {
