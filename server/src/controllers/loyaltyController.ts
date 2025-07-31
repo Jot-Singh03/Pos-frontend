@@ -19,6 +19,18 @@ export const getLoyaltyPoints = async (req: Request, res: Response, next: NextFu
     next(error);
   }
 };
+// Get all customers
+export const showcust = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const customers = await Loyalty.find(); // Get all loyalty records
+    res.status(200).json({
+      success: true,
+      data: customers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Add loyalty points
 export const addLoyaltyPoints = async (req: Request, res: Response, next: NextFunction) => {

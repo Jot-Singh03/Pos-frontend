@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 interface OrderItem {
   itemId: mongoose.Types.ObjectId;
@@ -15,59 +15,74 @@ export interface IOrder extends Document {
   customerId?: string;
   phoneNumber?: string;
   tableToken?: number;
+  orderBy: "employee" | "customer";
 }
 
-const OrderSchema: Schema = new Schema({
-  orderNumber: {
-    type: Number,
-    required: true
-  },
-  items: [{
-    itemId: {
-      type: Schema.Types.ObjectId,
-      ref: 'MenuItem',
-      required: true
+const OrderSchema: Schema = new Schema(
+  {
+    orderNumber: {
+      type: Number,
+      required: true,
     },
-    name: {
+    items: [
+      {
+        itemId: {
+          type: Schema.Types.ObjectId,
+          ref: "MenuItem",
+          required: true,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          min: [1, "Quantity must be at least 1"],
+        },
+        price: {
+          type: Number,
+          required: true,
+          min: [0, "Price cannot be negative"],
+        },
+      },
+    ],
+    totalAmount: {
+      type: Number,
+      required: true,
+      min: [0, "Total amount cannot be negative"],
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now,
+    },
+    customerId: {
       type: String,
-      required: true
+      required: false,
     },
-    quantity: {
-      type: Number,
-      required: true,
-      min: [1, 'Quantity must be at least 1']
+    phoneNumber: {
+      type: String,
+      required: false,
     },
-    price: {
+    tableToken: {
       type: Number,
-      required: true,
-      min: [0, 'Price cannot be negative']
-    }
-  }],
-  totalAmount: {
-    type: Number,
-    required: true,
-    min: [0, 'Total amount cannot be negative']
+      required: false,
+      min: 1,
+      max: 20,
+    },
+    orderBy: {
+      type: String,
+      enum: ["employee", "customer"],
+      default: "customer", // default is 'customer'
+    },
+    employeeName: {
+      type: String,
+      required: false,
+    },
   },
-  timestamp: {
-    type: Date,
-    default: Date.now
-  },
-  customerId: {
-    type: String,
-    required: false
-  },
-  phoneNumber: {
-    type: String,
-    required: false
-  },
-  tableToken: {
-    type: Number,
-    required: false,
-    min: 1,
-    max: 20
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
-export default mongoose.model<IOrder>('Order', OrderSchema); 
+export default mongoose.model<IOrder>("Order", OrderSchema);

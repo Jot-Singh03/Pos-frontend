@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import theme from '../../styles/theme';
-import api, { ApiResponse } from '../../services/api';
+import React, { useState, useEffect } from "react";
+import theme from "../../styles/theme";
+import api, { ApiResponse } from "../../services/api";
 
 interface LoyaltyCustomer {
   _id: string;
@@ -10,8 +10,9 @@ interface LoyaltyCustomer {
 
 const LoyaltyPoints: React.FC = () => {
   const [customers, setCustomers] = useState<LoyaltyCustomer[]>([]);
-  const [editingCustomer, setEditingCustomer] = useState<LoyaltyCustomer | null>(null);
-  const [points, setPoints] = useState('');
+  const [editingCustomer, setEditingCustomer] =
+    useState<LoyaltyCustomer | null>(null);
+  const [points, setPoints] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,12 +23,14 @@ const LoyaltyPoints: React.FC = () => {
   const fetchCustomers = async () => {
     try {
       setLoading(true);
-      const response = await api.get<ApiResponse<LoyaltyCustomer[]>>('/loyalty');
+      const response = await api.get<ApiResponse<LoyaltyCustomer[]>>(
+        "/loyalty"
+      );
       if (response.data.success) {
         setCustomers(response.data.data);
       }
     } catch (error) {
-      setError('Failed to load loyalty customers. Please try again.');
+      setError("Failed to load loyalty customers. Please try again.");
       setCustomers([]);
     } finally {
       setLoading(false);
@@ -40,15 +43,18 @@ const LoyaltyPoints: React.FC = () => {
 
     try {
       setError(null);
-      await api.put<ApiResponse<LoyaltyCustomer>>(`/loyalty/${editingCustomer._id}`, {
-        points: parseInt(points)
-      });
-      
+      await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/add`,
+        {
+        customerId: editingCustomer.customerId,
+        points: parseInt(points),
+        }
+      );
+
       fetchCustomers();
       setEditingCustomer(null);
-      setPoints('');
+      setPoints("");
     } catch (error) {
-      setError('Failed to update points. Please try again.');
+      setError("Failed to update points. Please try again.");
     }
   };
 
@@ -58,63 +64,67 @@ const LoyaltyPoints: React.FC = () => {
 
       {/* Update Points Form */}
       {editingCustomer && (
-        <div style={{
-          backgroundColor: theme.colors.white,
-          padding: theme.spacing.lg,
-          borderRadius: theme.borderRadius.lg,
-          marginBottom: theme.spacing.xl
-        }}>
+        <div
+          style={{
+            backgroundColor: theme.colors.white,
+            padding: theme.spacing.lg,
+            borderRadius: theme.borderRadius.lg,
+            marginBottom: theme.spacing.xl,
+          }}
+        >
           <h2 style={{ marginBottom: theme.spacing.lg }}>
-            Update Points for Customer {editingCustomer.customerId}
+            Update Points for {editingCustomer.customerId}
           </h2>
-          
+
           <form onSubmit={handleUpdatePoints}>
             <div style={{ marginBottom: theme.spacing.md }}>
-              <label style={{ display: 'block', marginBottom: theme.spacing.xs }}>
-                Points
+              <label
+                style={{ display: "block", marginBottom: theme.spacing.xs }}
+              >
+                Points to be added
               </label>
               <input
                 type="number"
                 value={points}
                 onChange={(e) => setPoints(e.target.value)}
                 style={{
-                  width: '100%',
+                  width: "100%",
                   padding: theme.spacing.sm,
                   borderRadius: theme.borderRadius.md,
-                  border: `1px solid ${theme.colors.gray[300]}`
+                  border: `1px solid ${theme.colors.gray[300]}`,
                 }}
                 required
               />
             </div>
 
-            <div style={{ display: 'flex', gap: theme.spacing.md }}>
+            <div style={{ display: "flex", gap: theme.spacing.md }}>
               <button
                 type="submit"
                 style={{
                   padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
                   backgroundColor: theme.colors.primary,
                   color: theme.colors.white,
-                  border: 'none',
+                  border: "none",
                   borderRadius: theme.borderRadius.md,
-                  cursor: 'pointer'
+                  cursor: "pointer",
                 }}
               >
-                Update Points
+                Add Points
               </button>
-              
+
               <button
                 type="button"
                 onClick={() => {
                   setEditingCustomer(null);
-                  setPoints('');
+                  setPoints("");
                 }}
                 style={{
                   padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
                   backgroundColor: theme.colors.gray[300],
                   color: theme.colors.gray[700],
-                  border: 'none',
+                  border: "none",
                   borderRadius: theme.borderRadius.md,
-                  cursor: 'pointer'
+                  cursor: "pointer",
                 }}
               >
                 Cancel
@@ -125,13 +135,15 @@ const LoyaltyPoints: React.FC = () => {
       )}
 
       {/* Customers List */}
-      <div style={{
-        backgroundColor: theme.colors.white,
-        padding: theme.spacing.lg,
-        borderRadius: theme.borderRadius.lg
-      }}>
+      <div
+        style={{
+          backgroundColor: theme.colors.white,
+          padding: theme.spacing.lg,
+          borderRadius: theme.borderRadius.lg,
+        }}
+      >
         <h2 style={{ marginBottom: theme.spacing.lg }}>Loyalty Customers</h2>
-        <div style={{ display: 'grid', gap: theme.spacing.md }}>
+        <div style={{ display: "grid", gap: theme.spacing.md }}>
           {customers.map((customer) => (
             <div
               key={customer._id}
@@ -139,14 +151,14 @@ const LoyaltyPoints: React.FC = () => {
                 padding: theme.spacing.lg,
                 border: `1px solid ${theme.colors.gray[200]}`,
                 borderRadius: theme.borderRadius.md,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
               <div>
                 <h3 style={{ marginBottom: theme.spacing.xs }}>
-                  Customer {customer.customerId}
+                  {customer.customerId}
                 </h3>
                 <p style={{ color: theme.colors.gray[600] }}>
                   Points: {customer.points}
@@ -155,15 +167,15 @@ const LoyaltyPoints: React.FC = () => {
               <button
                 onClick={() => {
                   setEditingCustomer(customer);
-                  setPoints(customer.points.toString());
+                  setPoints(" ");
                 }}
                 style={{
                   padding: theme.spacing.sm,
                   backgroundColor: theme.colors.primary,
                   color: theme.colors.white,
-                  border: 'none',
+                  border: "none",
                   borderRadius: theme.borderRadius.md,
-                  cursor: 'pointer'
+                  cursor: "pointer",
                 }}
               >
                 Update Points
@@ -176,4 +188,4 @@ const LoyaltyPoints: React.FC = () => {
   );
 };
 
-export default LoyaltyPoints; 
+export default LoyaltyPoints;
