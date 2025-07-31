@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import theme from "../../styles/theme";
 import api, { ApiResponse } from "../../services/api";
@@ -39,6 +40,9 @@ const POS: React.FC = () => {
   const [tableToken, setTableToken] = useState<number | "">("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<string[]>([]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
   useEffect(() => {
     fetchMenuItems();
@@ -172,6 +176,18 @@ const POS: React.FC = () => {
     ? menuItems.filter((item) => item.category === selectedCategory)
     : menuItems;
 
+  // Show modal when an item is clicked
+  const handleItemClick = (item: MenuItem) => {
+    setSelectedItem(item);
+    setShowModal(true);
+  };
+
+  // Handle closing the modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedItem(null); // Reset selected item
+  };
+
   if (loading) {
     return (
       <div style={{ padding: theme.spacing.xl, textAlign: "center" }}>
@@ -284,6 +300,7 @@ const POS: React.FC = () => {
                   alignItems: "center",
                   gap: theme.spacing.md,
                 }}
+                onClick={() => handleItemClick(item)} // Show modal on click
               >
                 <img
                   src={item.imageUrl}
@@ -313,7 +330,10 @@ const POS: React.FC = () => {
                     marginBottom: 4,
                   }}
                 >
-                  {item.description}
+                  {item.description
+                    ? item.description.split(" ").slice(0, 10).join(" ") +
+                      (item.description.split(" ").length > 10 ? "..." : "")
+                    : ""}
                 </div>
                 <div
                   style={{
@@ -326,7 +346,11 @@ const POS: React.FC = () => {
                   ${item.price.toFixed(2)}
                 </div>
                 <button
-                  onClick={() => addToCart(item)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCart(item);
+                  }}
+
                   style={{
                     background: theme.colors.primary,
                     color: "#fff",
@@ -346,6 +370,54 @@ const POS: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Modal for Item Details */}
+      {selectedItem && (
+        <Modal
+          show={showModal}
+          onHide={handleCloseModal}
+          dialogClassName="modal-dialog-centered"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>{selectedItem.name}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <img
+              src={selectedItem.imageUrl}
+              alt={selectedItem.name}
+              style={{
+                width: "100%", // Make the image responsive horizontally
+                height: "auto", // Maintain aspect ratio
+                maxHeight: "200px", // Limit the height to avoid large images overflow
+                objectFit: "contain", // Ensure the image scales proportionally
+                borderRadius: 10,
+                marginBottom: theme.spacing.md,
+              }}
+            />
+            <p>{selectedItem.description}</p>
+            <div
+              style={{
+                color: theme.colors.primary,
+                fontWeight: 700,
+                fontSize: "1rem",
+              }}
+            >
+              ${selectedItem.price.toFixed(2)}
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={() => {
+                addToCart(selectedItem);
+                handleCloseModal();
+              }}
+            >
+              Add to Cart
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
 
       {/* Cart Section */}
       <div
