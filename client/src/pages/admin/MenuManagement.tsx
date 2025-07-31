@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import theme from '../../styles/theme';
-import api, { ApiResponse } from '../../services/api';
-import { getCategories } from '../../services/api';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import theme from "../../styles/theme";
+import api, { ApiResponse } from "../../services/api";
+import { getCategories } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 interface MenuItem {
   _id: string;
@@ -21,11 +21,10 @@ const MenuManagement: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
-    price: '',
-    category: '',
-    description: '',
-    imageUrl: ''
+    name: "",
+    price: "",
+    category: "",
+    imageUrl: "",
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,16 +41,16 @@ const MenuManagement: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.get<ApiResponse<MenuItem[]>>('/menu');
-      
+      const response = await api.get<ApiResponse<MenuItem[]>>("/menu");
+
       if (response.data.success && Array.isArray(response.data.data)) {
         setMenuItems(response.data.data);
       } else {
         setMenuItems([]);
-        setError('Invalid data format received from server');
+        setError("Invalid data format received from server");
       }
     } catch (error) {
-      setError('Failed to load menu items. Please try again.');
+      setError("Failed to load menu items. Please try again.");
       setMenuItems([]);
     } finally {
       setLoading(false);
@@ -74,32 +73,35 @@ const MenuManagement: React.FC = () => {
     e.preventDefault();
     const itemData = {
       ...formData,
-      price: parseFloat(formData.price)
+      price: parseFloat(formData.price),
     };
 
     try {
       setError(null);
       if (editingItem) {
-        await api.put<ApiResponse<MenuItem>>(`/menu/${editingItem._id}`, itemData);
+        await api.put<ApiResponse<MenuItem>>(
+          `/menu/${editingItem._id}`,
+          itemData
+        );
       } else {
-        await api.post<ApiResponse<MenuItem>>('/menu', itemData);
+        await api.post<ApiResponse<MenuItem>>("/menu", itemData);
       }
 
       await fetchMenuItems();
       resetForm();
     } catch (error) {
-      setError('Failed to save menu item. Please try again.');
+      setError("Failed to save menu item. Please try again.");
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
+    if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         setError(null);
         await api.delete<ApiResponse<{}>>(`/menu/${id}`);
         await fetchMenuItems();
       } catch (error) {
-        setError('Failed to delete menu item. Please try again.');
+        setError("Failed to delete menu item. Please try again.");
       }
     }
   };
@@ -110,7 +112,6 @@ const MenuManagement: React.FC = () => {
       name: item.name,
       price: item.price.toString(),
       category: item.category,
-      description: "",
       imageUrl: item.imageUrl,
     });
   };
@@ -121,14 +122,13 @@ const MenuManagement: React.FC = () => {
       name: "",
       price: "",
       category: "",
-      description: "",
       imageUrl: "",
     });
   };
 
   if (loading || catLoading) {
     return (
-      <div style={{ padding: theme.spacing.xl, textAlign: 'center' }}>
+      <div style={{ padding: theme.spacing.xl, textAlign: "center" }}>
         Loading menu items...
       </div>
     );
@@ -139,10 +139,11 @@ const MenuManagement: React.FC = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: theme.spacing.lg,
+          justifyContent: "space-between",
+          marginBottom: theme.spacing.xl,
         }}
       >
+        <h1>Menu Management</h1>
         <button
           onClick={() => navigate("/admin/dropdowns")}
           style={{
@@ -157,7 +158,6 @@ const MenuManagement: React.FC = () => {
           Manage Dropdowns
         </button>
       </div>
-      <h1 style={{ marginBottom: theme.spacing.xl }}>Menu Management</h1>
 
       {error && (
         <div
@@ -250,23 +250,6 @@ const MenuManagement: React.FC = () => {
               </option>
             ))}
           </select>
-        </div>
-
-        <div style={{ marginBottom: theme.spacing.md }}>
-          <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
-            Description
-          </label>
-          <input
-            type="text"
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            style={{
-              width: "100%",
-              padding: theme.spacing.sm,
-              borderRadius: theme.borderRadius.md,
-              border: `1px solid ${theme.colors.gray[300]}`,
-            }}
-          />
         </div>
 
         <div style={{ marginBottom: theme.spacing.lg }}>
@@ -393,4 +376,4 @@ const MenuManagement: React.FC = () => {
   );
 };
 
-export default MenuManagement; 
+export default MenuManagement;

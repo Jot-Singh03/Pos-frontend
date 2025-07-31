@@ -39,11 +39,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       <div
         style={{
           width: "250px",
+          height: "100vh",
+          position: "fixed",
+          left: 0,
+          top: 0,
           backgroundColor: theme.colors.white,
           padding: theme.spacing.lg,
           boxShadow: theme.shadows.md,
           display: "flex",
           flexDirection: "column",
+          zIndex: 1000,
         }}
       >
         <h2 style={{ marginBottom: theme.spacing.xl }}>Admin Panel</h2>
@@ -142,6 +147,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       <div
         style={{
           flex: 1,
+          marginLeft: "250px", // Adjust for sidebar width
+          overflowY: "auto",
+          height: "100vh", // Ensure content fills the viewport height
           padding: theme.spacing.xl,
           backgroundColor: theme.colors.background,
         }}
