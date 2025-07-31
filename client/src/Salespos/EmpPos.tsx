@@ -3,8 +3,8 @@ import { toast } from "react-toastify";
 import theme from "../styles/theme";
 import api, { ApiResponse } from "../services/api";
 import { getCategories } from "../services/api";
-import { useNavigate } from 'react-router-dom';
-import { clearAuthData, logout } from '../utils/auth';
+import { useNavigate } from "react-router-dom";
+import { clearAuthData, logout } from "../utils/auth";
 
 interface MenuItem {
   _id: string;
@@ -45,17 +45,15 @@ const EmpPos: React.FC = () => {
 
   const [employeeName, setEmployeeName] = useState<string | null>(null);
 
-    const handleLogout = () => {
-      logout();
-      navigate("/login");
-    };
-  
-   
-    const handleClearAuth = () => {
-      clearAuthData();
-      navigate('/login');
-    };
-  
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  const handleClearAuth = () => {
+    clearAuthData();
+    navigate("/login");
+  };
 
   useEffect(() => {
     const name = localStorage.getItem("employeeUsername");
@@ -213,50 +211,55 @@ const orderBy = employeeName ? "employee" : "customer";
           backgroundColor: theme.colors.gray[200],
           padding: theme.spacing.lg,
           borderRight: `1px solid ${theme.colors.gray[300]}`,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
       >
-        {/* Display Employee's Name */}
-        <h2 style={{ marginBottom: theme.spacing.md }}>
-          {employeeName ? employeeName : "Employee"}
-          <span
-            style={{
-              fontSize: "0.9rem",
-              marginLeft: "0.5rem",
-              verticalAlign: "middle",
-              transform: "scale(0.5)",
-            }}
-          >
-            🟢
-          </span>
-        </h2>
-
-        <h1 style={{ marginBottom: theme.spacing.xl }}>Categories</h1>
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-          }}
-        >
-          {categories.map((category) => (
-            <li
-              key={category}
-              onClick={() => setSelectedCategory(category)}
+        {/* Top: Employee & Categories */}
+        <div>
+          <h2 style={{ marginBottom: theme.spacing.md }}>
+            {employeeName ? employeeName : "Employee"}
+            <span
               style={{
-                cursor: "pointer",
-                color:
-                  selectedCategory === category
-                    ? theme.colors.primary
-                    : theme.colors.gray[700],
-                marginBottom: theme.spacing.md,
+                fontSize: "0.9rem",
+                marginLeft: "0.5rem",
+                verticalAlign: "middle",
+                transform: "scale(0.5)",
               }}
             >
-              {category}
-            </li>
-          ))}
-        </ul>
+              🟢
+            </span>
+          </h2>
 
-        {/*Token & Logout Section*/}
-        <div style={{ marginBottom:theme.spacing.md }}>
+          <h1 style={{ marginBottom: theme.spacing.xl }}>Categories</h1>
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+            }}
+          >
+            {categories.map((category) => (
+              <li
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                style={{
+                  cursor: "pointer",
+                  color:
+                    selectedCategory === category
+                      ? theme.colors.primary
+                      : theme.colors.gray[700],
+                  marginBottom: theme.spacing.md,
+                }}
+              >
+                {category}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Bottom: Buttons */}
+        <div>
           <button
             onClick={handleClearAuth}
             style={{
