@@ -24,6 +24,7 @@ const MenuManagement: React.FC = () => {
     name: "",
     price: "",
     category: "",
+    description: "",
     imageUrl: "",
   });
   const [loading, setLoading] = useState(true);
@@ -112,6 +113,7 @@ const MenuManagement: React.FC = () => {
       name: item.name,
       price: item.price.toString(),
       category: item.category,
+      description: "",
       imageUrl: item.imageUrl,
     });
   };
@@ -122,6 +124,7 @@ const MenuManagement: React.FC = () => {
       name: "",
       price: "",
       category: "",
+      description: "",
       imageUrl: "",
     });
   };
@@ -139,11 +142,10 @@ const MenuManagement: React.FC = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          marginBottom: theme.spacing.xl,
+          justifyContent: "flex-end",
+          marginBottom: theme.spacing.lg,
         }}
       >
-        <h1>Menu Management</h1>
         <button
           onClick={() => navigate("/admin/dropdowns")}
           style={{
@@ -158,6 +160,7 @@ const MenuManagement: React.FC = () => {
           Manage Dropdowns
         </button>
       </div>
+      <h1 style={{ marginBottom: theme.spacing.xl }}>Menu Management</h1>
 
       {error && (
         <div
@@ -250,6 +253,25 @@ const MenuManagement: React.FC = () => {
               </option>
             ))}
           </select>
+        </div>
+
+        <div style={{ marginBottom: theme.spacing.md }}>
+          <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
+            Description
+          </label>
+          <input
+            type="text"
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            style={{
+              width: "100%",
+              padding: theme.spacing.sm,
+              borderRadius: theme.borderRadius.md,
+              border: `1px solid ${theme.colors.gray[300]}`,
+            }}
+          />
         </div>
 
         <div style={{ marginBottom: theme.spacing.lg }}>
