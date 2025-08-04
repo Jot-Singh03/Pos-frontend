@@ -2,7 +2,7 @@
 FROM node:18-alpine as base
 
 WORKDIR /app
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 # Development stage
 FROM base as dev

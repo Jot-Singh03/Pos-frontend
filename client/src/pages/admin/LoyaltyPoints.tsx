@@ -5,6 +5,7 @@ import api, { ApiResponse } from "../../services/api";
 interface LoyaltyCustomer {
   _id: string;
   customerId: string;
+  phoneNumber: number;
   points: number;
 }
 
@@ -13,6 +14,8 @@ const LoyaltyPoints: React.FC = () => {
   const [editingCustomer, setEditingCustomer] =
     useState<LoyaltyCustomer | null>(null);
   const [points, setPoints] = useState("");
+  const [newCustomerId, setNewCustomerId] = useState("");
+  const [newCustomerPoints, setNewCustomerPoints] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -43,12 +46,10 @@ const LoyaltyPoints: React.FC = () => {
 
     try {
       setError(null);
-      await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/add`,
-        {
-        customerId: editingCustomer.customerId,
+      await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/add`, {
+        phoneNumber: editingCustomer.phoneNumber,
         points: parseInt(points),
-        }
-      );
+      });
 
       fetchCustomers();
       setEditingCustomer(null);
@@ -58,9 +59,38 @@ const LoyaltyPoints: React.FC = () => {
     }
   };
 
+  const handleAddCustomer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCustomerId || !newCustomerPoints) return;
+
+    try {
+      setError(null);
+      await api.post<ApiResponse<LoyaltyCustomer>>("/loyalty/add", {
+        customerId: newCustomerId,
+        points: parseInt(newCustomerPoints),
+      });
+
+      fetchCustomers();
+      setNewCustomerId("");
+      setNewCustomerPoints("");
+    } catch (error) {
+      setError("Failed to add customer. Please try again.");
+    }
+  };
+
+  const handleDeleteCustomer = async (phoneNumber: number) => {
+    try {
+      setError(null);
+      await api.delete(`/loyalty/${phoneNumber}`);
+      fetchCustomers(); // Refresh the list after deletion
+    } catch (error) {
+      setError("Failed to delete customer. Please try again.");
+    }
+  };
+
   return (
     <div>
-      <h1 style={{ marginBottom: theme.spacing.xl }}>Loyalty Points</h1>
+      <h1>Loyalty Points</h1>
 
       {/* Update Points Form */}
       {editingCustomer && (
@@ -72,16 +102,16 @@ const LoyaltyPoints: React.FC = () => {
             marginBottom: theme.spacing.xl,
           }}
         >
-          <h2 style={{ marginBottom: theme.spacing.lg }}>
+          <h4 style={{ marginBottom: theme.spacing.lg }}>
             Update Points for {editingCustomer.customerId}
-          </h2>
+          </h4>
 
           <form onSubmit={handleUpdatePoints}>
             <div style={{ marginBottom: theme.spacing.md }}>
               <label
                 style={{ display: "block", marginBottom: theme.spacing.xs }}
               >
-                Points to be added
+                Points to be updated
               </label>
               <input
                 type="number"
@@ -138,48 +168,66 @@ const LoyaltyPoints: React.FC = () => {
       <div
         style={{
           backgroundColor: theme.colors.white,
-          padding: theme.spacing.lg,
+          padding: "-1rem",
           borderRadius: theme.borderRadius.lg,
         }}
       >
-        <h2 style={{ marginBottom: theme.spacing.lg }}>Loyalty Customers</h2>
+        <h4>Loyalty Customers</h4>
         <div style={{ display: "grid", gap: theme.spacing.md }}>
           {customers.map((customer) => (
             <div
               key={customer._id}
               style={{
-                padding: theme.spacing.lg,
                 border: `1px solid ${theme.colors.gray[200]}`,
                 borderRadius: theme.borderRadius.md,
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                padding: theme.spacing.lg, // Added padding here
               }}
             >
               <div>
-                <h3 style={{ marginBottom: theme.spacing.xs }}>
-                  {customer.customerId}
-                </h3>
+                <h5 style={{ marginBottom: theme.spacing.xs }}>
+                  {customer.phoneNumber}
+                </h5>
                 <p style={{ color: theme.colors.gray[600] }}>
                   Points: {customer.points}
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  setEditingCustomer(customer);
-                  setPoints(" ");
-                }}
-                style={{
-                  padding: theme.spacing.sm,
-                  backgroundColor: theme.colors.primary,
-                  color: theme.colors.white,
-                  border: "none",
-                  borderRadius: theme.borderRadius.md,
-                  cursor: "pointer",
-                }}
-              >
-                Update Points
-              </button>
+
+              {/* Button Wrapper with Flex */}
+              <div style={{ display: "flex", gap: theme.spacing.sm }}>
+                <button
+                  onClick={() => {
+                    setEditingCustomer(customer);
+                    setPoints(" ");
+                  }}
+                  style={{
+                    padding: theme.spacing.sm,
+                    backgroundColor: theme.colors.primary,
+                    color: theme.colors.white,
+                    border: "none",
+                    borderRadius: theme.borderRadius.md,
+                    cursor: "pointer",
+                  }}
+                >
+                  Update Points
+                </button>
+
+                <button
+                  onClick={() => handleDeleteCustomer(customer.phoneNumber)}
+                  style={{
+                    padding: theme.spacing.sm,
+                    backgroundColor: theme.colors.danger, // Red background
+                    color: theme.colors.white,
+                    border: "none",
+                    borderRadius: theme.borderRadius.md,
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>

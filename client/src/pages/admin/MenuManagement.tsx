@@ -9,6 +9,7 @@ interface MenuItem {
   name: string;
   price: number;
   category: string;
+  description: string;
   imageUrl: string;
 }
 
@@ -113,7 +114,7 @@ const MenuManagement: React.FC = () => {
       name: item.name,
       price: item.price.toString(),
       category: item.category,
-      description: "",
+      description: item.description || "",
       imageUrl: item.imageUrl,
     });
   };
@@ -354,9 +355,9 @@ const MenuManagement: React.FC = () => {
                 }}
               >
                 <div>
-                  <h3 style={{ marginBottom: theme.spacing.xs }}>
+                  <h5 style={{ marginBottom: theme.spacing.xs }}>
                     {item.name}
-                  </h3>
+                  </h5>
                   <p style={{ color: theme.colors.gray[600] }}>
                     ${item.price.toFixed(2)} - {item.category}
                   </p>
