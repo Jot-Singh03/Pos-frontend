@@ -379,6 +379,7 @@ const EmpPos: React.FC = () => {
                   gap: theme.spacing.md,
                   justifyContent: "space-between", // Ensures the content stretches vertically
                   height: "100%",
+                  border: `1px solid ${theme.colors.gray[300]}`,
                 }}
                 onClick={() => handleItemClick(item)} // Show modal on click
               >
@@ -417,33 +418,41 @@ const EmpPos: React.FC = () => {
                 </div>
                 <div
                   style={{
-                    color: theme.colors.primary,
-                    fontWeight: 700,
-                    fontSize: "1rem",
-                    marginBottom: theme.spacing.sm,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    marginTop: "auto", // pushes them to bottom if the card grows
                   }}
                 >
-                  ${item.price.toFixed(2)}
+                  <div
+                    style={{
+                      color: theme.colors.primary,
+                      fontWeight: 700,
+                      fontSize: "1rem",
+                    }}
+                  >
+                    ${item.price.toFixed(2)}
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(item);
+                    }}
+                    style={{
+                      background: theme.colors.primary,
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: 8,
+                      padding: "0.4rem 1rem",
+                      fontWeight: 600,
+                      fontSize: "0.9rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Add to Cart
+                  </button>
                 </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart(item);
-                  }}
-                  style={{
-                    background: theme.colors.primary,
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 8,
-                    padding: "0.5rem 1.2rem",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                    cursor: "pointer",
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-                  }}
-                >
-                  Add to Cart
-                </button>
               </div>
             ))}
           </div>
@@ -465,36 +474,44 @@ const EmpPos: React.FC = () => {
               src={selectedItem.imageUrl}
               alt={selectedItem.name}
               style={{
-                width: "100%", // Make the image responsive horizontally
-                height: "auto", // Maintain aspect ratio
-                maxHeight: "200px", // Limit the height to avoid large images overflow
-                objectFit: "contain", // Ensure the image scales proportionally
+                width: "100%",
+                height: "auto",
+                maxHeight: "200px",
+                objectFit: "contain",
                 borderRadius: 10,
                 marginBottom: theme.spacing.md,
               }}
             />
             <p>{selectedItem.description}</p>
+            {/* Price + Add to Cart same line */}
             <div
               style={{
-                color: theme.colors.primary,
-                fontWeight: 700,
-                fontSize: "1rem",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: theme.spacing.lg,
               }}
             >
-              ${selectedItem.price.toFixed(2)}
+              <div
+                style={{
+                  color: theme.colors.primary,
+                  fontWeight: 700,
+                  fontSize: "1.1rem",
+                }}
+              >
+                ${selectedItem.price.toFixed(2)}
+              </div>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  addToCart(selectedItem);
+                  handleCloseModal();
+                }}
+              >
+                Add to Cart
+              </Button>
             </div>
           </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              onClick={() => {
-                addToCart(selectedItem);
-                handleCloseModal();
-              }}
-            >
-              Add to Cart
-            </Button>
-          </Modal.Footer>
         </Modal>
       )}
 
