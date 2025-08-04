@@ -29,6 +29,7 @@ const LoyaltyPoints: React.FC = () => {
       const response = await api.get<ApiResponse<LoyaltyCustomer[]>>(
         "/loyalty"
       );
+
       if (response.data.success) {
         setCustomers(response.data.data);
       }
@@ -90,7 +91,31 @@ const LoyaltyPoints: React.FC = () => {
 
   return (
     <div>
-      <h1>Loyalty Points</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: theme.spacing.xl,
+        }}
+      >
+        <h1>Loyalty Points</h1>
+        <button
+          onClick={() => {
+            fetchCustomers();
+          }}
+          style={{
+            padding: theme.spacing.sm,
+            backgroundColor: theme.colors.primary,
+            color: theme.colors.white,
+            border: "none",
+            borderRadius: theme.borderRadius.md,
+            cursor: "pointer",
+          }}
+        >
+          Refresh points
+        </button>
+      </div>
 
       {/* Update Points Form */}
       {editingCustomer && (
