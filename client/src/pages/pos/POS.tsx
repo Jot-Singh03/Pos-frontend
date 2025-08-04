@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import { toast } from "react-toastify";
 import theme from "../../styles/theme";
 import api, { ApiResponse } from "../../services/api";
@@ -206,7 +207,7 @@ const POS: React.FC = () => {
           borderRight: `1px solid ${theme.colors.gray[300]}`,
         }}
       >
-        <h1 style={{ marginBottom: theme.spacing.xl }}>Categories</h1>
+        <h2 style={{ marginBottom: theme.spacing.xl }}>Categories</h2>
         <ul
           style={{
             listStyle: "none",
@@ -299,6 +300,8 @@ const POS: React.FC = () => {
                   flexDirection: "column",
                   alignItems: "center",
                   gap: theme.spacing.md,
+                  justifyContent: "space-between", // Ensures the content stretches vertically
+                  height: "100%", 
                 }}
                 onClick={() => handleItemClick(item)} // Show modal on click
               >
@@ -350,7 +353,6 @@ const POS: React.FC = () => {
                     e.stopPropagation();
                     addToCart(item);
                   }}
-
                   style={{
                     background: theme.colors.primary,
                     color: "#fff",

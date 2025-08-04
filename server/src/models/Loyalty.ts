@@ -1,16 +1,16 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ILoyalty extends Document {
-  customerId: string;
+  phoneNumber: number;
   points: number;
 }
 
 const LoyaltySchema: Schema = new Schema({
-  customerId: {
+ 
+  phoneNumber: {
     type: String,
-    required: [true, 'Customer ID is required'],
-    unique: true,
-    trim: true
+    required: true,
+    unique: true
   },
   points: {
     type: Number,

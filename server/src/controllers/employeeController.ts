@@ -93,3 +93,49 @@ export const loginEmployee = async (
     next(error);
   }
 };
+
+
+// Fetch all employees
+export const getAllEmployees = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Fetch all employees
+    const employees = await Employee.find();
+    res.status(200).json({
+      success: true,
+      data: employees,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+// Delete employee by email
+export const deleteEmployee = async (
+  req: Request, 
+  res: Response, 
+  next: NextFunction
+) => {
+  try {
+    const { email } = req.params; // Get the email from route parameters
+
+    // Find and delete the employee by email
+    const employee = await Employee.findOneAndDelete({ email });
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: "Employee not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Employee with email ${email} deleted successfully`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
