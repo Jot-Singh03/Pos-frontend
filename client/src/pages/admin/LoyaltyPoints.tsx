@@ -5,7 +5,7 @@ import api, { ApiResponse } from "../../services/api";
 interface LoyaltyCustomer {
   _id: string;
   customerId: string;
-  phoneNumber: number;
+  phoneNumber: string; // Updated to string for phone number
   points: number;
 }
 
@@ -14,8 +14,6 @@ const LoyaltyPoints: React.FC = () => {
   const [editingCustomer, setEditingCustomer] =
     useState<LoyaltyCustomer | null>(null);
   const [points, setPoints] = useState("");
-  const [newCustomerId, setNewCustomerId] = useState("");
-  const [newCustomerPoints, setNewCustomerPoints] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -44,41 +42,28 @@ const LoyaltyPoints: React.FC = () => {
     e.preventDefault();
     if (!editingCustomer) return;
 
+    const pointsValue = parseFloat(points);
+    if (isNaN(pointsValue) || pointsValue <= 0) {
+      setError("Please enter a valid positive decimal number of points.");
+      return;
+    }
+
     try {
       setError(null);
       await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/add`, {
         phoneNumber: editingCustomer.phoneNumber,
-        points: parseInt(points),
+        points: pointsValue,
       });
 
       fetchCustomers();
       setEditingCustomer(null);
-      setPoints("");
+      setPoints(""); // Clear points input after successful update
     } catch (error) {
       setError("Failed to update points. Please try again.");
     }
   };
 
-  const handleAddCustomer = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newCustomerId || !newCustomerPoints) return;
-
-    try {
-      setError(null);
-      await api.post<ApiResponse<LoyaltyCustomer>>("/loyalty/add", {
-        customerId: newCustomerId,
-        points: parseInt(newCustomerPoints),
-      });
-
-      fetchCustomers();
-      setNewCustomerId("");
-      setNewCustomerPoints("");
-    } catch (error) {
-      setError("Failed to add customer. Please try again.");
-    }
-  };
-
-  const handleDeleteCustomer = async (phoneNumber: number) => {
+  const handleDeleteCustomer = async (phoneNumber: string) => {
     try {
       setError(null);
       await api.delete(`/loyalty/${phoneNumber}`);
@@ -124,6 +109,7 @@ const LoyaltyPoints: React.FC = () => {
                   border: `1px solid ${theme.colors.gray[300]}`,
                 }}
                 required
+                step="0.01" // Allow decimals
               />
             </div>
 
@@ -183,7 +169,7 @@ const LoyaltyPoints: React.FC = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                padding: theme.spacing.lg, // Added padding here
+                padding: theme.spacing.lg,
               }}
             >
               <div>
@@ -195,7 +181,6 @@ const LoyaltyPoints: React.FC = () => {
                 </p>
               </div>
 
-              {/* Button Wrapper with Flex */}
               <div style={{ display: "flex", gap: theme.spacing.sm }}>
                 <button
                   onClick={() => {
@@ -218,7 +203,7 @@ const LoyaltyPoints: React.FC = () => {
                   onClick={() => handleDeleteCustomer(customer.phoneNumber)}
                   style={{
                     padding: theme.spacing.sm,
-                    backgroundColor: theme.colors.danger, // Red background
+                    backgroundColor: theme.colors.danger,
                     color: theme.colors.white,
                     border: "none",
                     borderRadius: theme.borderRadius.md,

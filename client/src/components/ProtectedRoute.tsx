@@ -19,7 +19,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 const EmpProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const token = localStorage.getItem("token"); // Assuming employeeToken is used here
   const location = useLocation();
-  console.log("Employee Token:", token); // Debugging token
 
   if (!token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
