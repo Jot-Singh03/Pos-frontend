@@ -37,6 +37,10 @@ const Confirmation: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleClick = () => {
+    navigate(-1); // Goes back to the previous page
+  };
+
   const fetchOrder = useCallback(async () => {
     if (!orderId) return;
 
@@ -232,7 +236,7 @@ const Confirmation: React.FC = () => {
         </div>
 
         <button
-          onClick={() => navigate("/pos")}
+          onClick={handleClick}
           style={{
             width: "100%",
             padding: theme.spacing.md,

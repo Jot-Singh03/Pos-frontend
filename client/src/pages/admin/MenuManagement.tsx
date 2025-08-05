@@ -11,6 +11,7 @@ interface MenuItem {
   category: string;
   description: string;
   imageUrl: string;
+  tags?: string[];
 }
 
 interface Category {
@@ -27,6 +28,7 @@ const MenuManagement: React.FC = () => {
     category: "",
     description: "",
     imageUrl: "",
+    tags:"",
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,10 +75,16 @@ const MenuManagement: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const itemData = {
-      ...formData,
-      price: parseFloat(formData.price),
-    };
+     const tagsArray = formData.tags
+       .split(",")
+       .map((tag) => tag.trim())
+       .filter((tag) => tag !== "");
+
+     const itemData = {
+       ...formData,
+       price: parseFloat(formData.price),
+       tags: tagsArray.length > 0 ? tagsArray : undefined,
+     };
 
     try {
       setError(null);
@@ -116,6 +124,7 @@ const MenuManagement: React.FC = () => {
       category: item.category,
       description: item.description || "",
       imageUrl: item.imageUrl,
+      tags: item.tags ? item.tags.join(", ") : "",
     });
   };
 
@@ -127,6 +136,7 @@ const MenuManagement: React.FC = () => {
       category: "",
       description: "",
       imageUrl: "",
+      tags:""
     });
   };
 
@@ -267,6 +277,23 @@ const MenuManagement: React.FC = () => {
             onChange={(e) =>
               setFormData({ ...formData, description: e.target.value })
             }
+            style={{
+              width: "100%",
+              padding: theme.spacing.sm,
+              borderRadius: theme.borderRadius.md,
+              border: `1px solid ${theme.colors.gray[300]}`,
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: theme.spacing.md }}>
+          <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
+            Tags (separate by commas)
+          </label>
+          <input
+            type="text"
+            value={formData.tags}
+            onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
             style={{
               width: "100%",
               padding: theme.spacing.sm,

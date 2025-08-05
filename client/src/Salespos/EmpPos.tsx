@@ -7,14 +7,23 @@ import api, { ApiResponse } from "../services/api";
 import { getCategories } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { clearAuthData, logout } from "../utils/auth";
+import LoyaltyProgressBar from "../components/Loyaltybar";
 
 interface MenuItem {
   _id: string;
   name: string;
-  description: string;
+  description?: string;
   price: number;
   category: string;
   imageUrl?: string;
+  tags?: string[];
+}
+
+interface LoyaltyCustomer {
+  _id: string;
+  customerId: string;
+  phoneNumber: number;
+  points: number;
 }
 
 interface CartItem {
@@ -44,7 +53,7 @@ const EmpPos: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<string[]>([]);
   const navigate = useNavigate();
-
+const points = 100;
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
@@ -145,55 +154,99 @@ const EmpPos: React.FC = () => {
     );
   };
 
-  const handleCheckout = async () => {
-    if (cart.length === 0) {
-      toast.error("Cart is empty");
-      return;
-    }
-    if (!phoneNumber && !tableToken) {
-      toast.error("Please enter a phone number or select a table token.");
-      return;
-    }
-    if (tableToken && (tableToken < 1 || tableToken > 20)) {
-      toast.error("Table token must be between 1 and 20.");
-      return;
-    }
 
-    const orderBy = employeeName ? "employee" : "customer";
+ const postpoints = async () => {
+   // Calculate points as 10% of total amount
+   const totalAmount = getTotal();
+   if (!totalAmount) {
+     console.error("Total amount is invalid or missing.");
+     return;
+   }
 
-    setLoading(true);
-    try {
-      const orderData = {
-        items: cart.map(({ item, quantity }) => ({
-          itemId: item._id,
-          name: item.name,
-          price: item.price,
-          quantity,
-        })),
-        totalAmount: cart.reduce(
-          (sum, cartItem) => sum + cartItem.item.price * cartItem.quantity,
-          0
-        ),
-        ...(phoneNumber ? { phoneNumber } : {}),
-        ...(tableToken ? { tableToken } : {}),
-        orderBy,
-        employeeName: employeeName,
-      };
-      const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
-      if (data.success) {
-        toast.success("Order placed successfully!");
-        // Clear cart and redirect to confirmation
-        setCart([]);
-        window.location.href = `/pos/confirmation/${data.data._id}`;
-      } else {
-        toast.error(data.error || "Failed to place order");
-      }
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to place order");
-    } finally {
-      setLoading(false);
-    }
-  };
+   let points = totalAmount * 0.1;
+   points = parseFloat(points.toFixed(2)); // Ensure points have 2 decimal places
+
+   console.log("Posting points:", { phoneNumber, points });
+
+   try {
+     // Make the POST request
+     const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
+       "/loyalty/add",
+       {
+         phoneNumber: phoneNumber,
+         points: points,
+       }
+     );
+     // Handle success
+     console.log("Loyalty points added successfully:", data);
+   } catch (error: any) {
+     // Log the full error response for detailed info
+     if (error.response) {
+       console.error("Error response:", error.response);
+       console.error("Error message:", error.response.data);
+     } else {
+       console.error("Error:", error.message);
+     }
+     setError(error?.message || "An unexpected error occurred");
+   }
+ };
+
+ const handleCheckout = async () => {
+   if (cart.length === 0) {
+     toast.error("Cart is empty");
+     return;
+   }
+
+   if (!phoneNumber && !tableToken) {
+     toast.error("Please enter a phone number or select a table token.");
+     return;
+   }
+
+   if (tableToken && (tableToken < 1 || tableToken > 20)) {
+     toast.error("Table token must be between 1 and 20.");
+     return;
+   }
+
+   const orderBy = employeeName ? "employee" : "customer";
+
+   setLoading(true);
+   try {
+     
+     await postpoints();
+     
+     const orderData = {
+       items: cart.map(({ item, quantity }) => ({
+         itemId: item._id,
+         name: item.name,
+         price: item.price,
+         quantity,
+       })),
+       totalAmount: cart.reduce(
+         (sum, cartItem) => sum + cartItem.item.price * cartItem.quantity,
+         0
+       ),
+       ...(phoneNumber ? { phoneNumber } : {}),
+       ...(tableToken ? { tableToken } : {}),
+       orderBy,
+       employeeName: employeeName,
+     };
+
+
+     const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
+     if (data.success) {
+       toast.success("Order placed successfully!");
+       // Clear cart and redirect to confirmation
+       setCart([]);
+      window.location.href = `/pos/confirmation/${data.data._id}`;
+     } else {
+       toast.error(data.error || "Failed to place order");
+     }
+   } catch (error: any) {
+     toast.error(error?.response?.data?.error || "Failed to place order");
+   } finally {
+     setLoading(false);
+   }
+ };
 
   const filteredMenu = selectedCategory
     ? menuItems.filter((item) => item.category === selectedCategory)
@@ -458,7 +511,6 @@ const EmpPos: React.FC = () => {
           </div>
         )}
       </div>
-
       {/* Modal for Item Details */}
       {selectedItem && (
         <Modal
@@ -483,7 +535,39 @@ const EmpPos: React.FC = () => {
               }}
             />
             <p>{selectedItem.description}</p>
-            {/* Price + Add to Cart same line */}
+
+            {/* Tags Mapping */}
+            {selectedItem.tags && selectedItem.tags.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap", // Allow tags to wrap in case there are many
+                  gap: "10px", // Add spacing between tags
+                  marginBottom: theme.spacing.md, // Bottom margin for spacing
+                }}
+              >
+                {selectedItem.tags.map((tag, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      height: 25,
+                      padding: "0 10px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 50,
+                      border: `2px solid ${theme.colors.primary}`,
+                      color: theme.colors.primary,
+                      fontWeight: 700,
+                      fontSize: "0.85rem", // Adjust font size for tags
+                    }}
+                  >
+                    {tag}
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div
               style={{
                 display: "flex",
@@ -604,7 +688,6 @@ const EmpPos: React.FC = () => {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  marginBottom: theme.spacing.md,
                   fontSize: theme.fontSizes.lg,
                   fontWeight: "bold",
                 }}
@@ -615,6 +698,7 @@ const EmpPos: React.FC = () => {
               <div
                 style={{
                   margin: "2rem 0",
+                  marginTop: "-0.4rem",
                   padding: "1.5rem",
                   background: "#fff",
                   borderRadius: "12px",
@@ -667,7 +751,6 @@ const EmpPos: React.FC = () => {
                     style={{
                       fontWeight: 600,
                       fontSize: "1rem",
-                      marginBottom: 4,
                     }}
                     htmlFor="phoneNumber"
                   >
@@ -690,15 +773,9 @@ const EmpPos: React.FC = () => {
                     }}
                   />
                 </div>
-                <div
-                  style={{
-                    textAlign: "center",
-                    color: "#888",
-                    fontWeight: 500,
-                  }}
-                >
-                  or
-                </div>
+                {/* Add Loyalty Progress Bar Below */}
+                <LoyaltyProgressBar points={points} />
+
                 <div
                   style={{
                     display: "flex",
@@ -710,7 +787,6 @@ const EmpPos: React.FC = () => {
                     style={{
                       fontWeight: 600,
                       fontSize: "1rem",
-                      marginBottom: 4,
                     }}
                     htmlFor="tableToken"
                   >

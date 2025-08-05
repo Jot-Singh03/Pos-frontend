@@ -6,6 +6,7 @@ export interface IMenuItem extends Document {
   category: string;
   imageUrl: string;
   description?: string;
+  tags?: string[];
 }
 
 const MenuItemSchema: Schema = new Schema(
@@ -32,6 +33,11 @@ const MenuItemSchema: Schema = new Schema(
     },
     description: {
       type: String,
+      required: false, // Optional field
+      trim: true, // Optional trimming of spaces
+    },
+    tags: {
+      type: [String],
       required: false, // Optional field
       trim: true, // Optional trimming of spaces
     },
