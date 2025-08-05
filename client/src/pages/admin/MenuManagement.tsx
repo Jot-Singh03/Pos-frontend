@@ -153,15 +153,17 @@ const MenuManagement: React.FC = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: theme.spacing.lg,
+          justifyContent: "space-between",
+          marginBottom: theme.spacing.xl,
+          alignItems: "center",
         }}
       >
+        <h1> Menu Management</h1>
         <button
           onClick={() => navigate("/admin/dropdowns")}
           style={{
-            padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
-            backgroundColor: theme.colors.secondary,
+            padding: theme.spacing.sm,
+            backgroundColor: theme.colors.primary,
             color: theme.colors.white,
             border: "none",
             borderRadius: theme.borderRadius.md,
@@ -171,7 +173,6 @@ const MenuManagement: React.FC = () => {
           Manage Dropdowns
         </button>
       </div>
-      <h1 style={{ marginBottom: theme.spacing.xl }}>Menu Management</h1>
 
       {error && (
         <div
