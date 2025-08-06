@@ -81,7 +81,7 @@ const POS: React.FC = () => {
       }
       return [...prevCart, { item, quantity: 1 }];
     });
-    toast.success(`${item.name} added to cart`);
+    // toast.success(`${item.name} added to cart`);
   };
   const removeFromCart = (itemId: string) => {
     setCart((prevCart) =>
@@ -109,7 +109,7 @@ const POS: React.FC = () => {
     if (quantity < 1) {
       const item = cart.find((cartItem) => cartItem.item._id === itemId);
       if (item) {
-        toast.error(`${item.item.name} removed from cart`);
+        // toast.error(`${item.item.name} removed from cart`);
       }
       removeFromCart(itemId);
       return;
@@ -224,7 +224,30 @@ const POS: React.FC = () => {
                   selectedCategory === category
                     ? theme.colors.primary
                     : theme.colors.gray[700],
-                marginBottom: theme.spacing.md,
+                marginBottom: theme.spacing.xs, // ✅ Reduce space between items
+                padding: "6px 10px",
+                borderRadius: "8px",
+                fontWeight: 500,
+                transition: "all 0.3s ease",
+                backgroundColor:
+                  selectedCategory === category
+                    ? theme.colors.gray[300]
+                    : "transparent",
+                boxShadow:
+                  selectedCategory === category
+                    ? "0 2px 10px rgba(0,0,0,0.08)"
+                    : "none",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = theme.colors.gray[200];
+                e.currentTarget.style.transform = "scale(1.05)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background =
+                  selectedCategory === category
+                    ? theme.colors.gray[300]
+                    : "transparent";
+                e.currentTarget.style.transform = "scale(1)";
               }}
             >
               {category}
@@ -294,17 +317,29 @@ const POS: React.FC = () => {
                 style={{
                   background: "#fff",
                   borderRadius: 12,
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                   padding: theme.spacing.md,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   gap: theme.spacing.md,
-                  justifyContent: "space-between", // Ensures the content stretches vertically
+                  justifyContent: "space-between",
                   height: "100%",
                   border: `1px solid ${theme.colors.gray[300]}`,
+                  transition: "all 0.3s ease",
                 }}
-                onClick={() => handleItemClick(item)} // Show modal on click
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform =
+                    "translateY(-5px) scale(1.03)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 20px rgba(0,0,0,0.12)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow =
+                    "0 2px 8px rgba(0,0,0,0.05)";
+                }}
+                onClick={() => handleItemClick(item)}
               >
                 <img
                   src={item.imageUrl}
@@ -367,10 +402,25 @@ const POS: React.FC = () => {
                       color: "#fff",
                       border: "none",
                       borderRadius: 8,
-                      padding: "0.4rem 1rem",
+                      padding: "0.5rem 1.2rem",
                       fontWeight: 600,
                       fontSize: "0.9rem",
                       cursor: "pointer",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                      transition: "all 0.25s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background =
+                        theme.colors.primaryDark || "#0055aa";
+                      e.currentTarget.style.boxShadow =
+                        "0 0 12px rgba(0,123,255,0.3)";
+                      e.currentTarget.style.transform = "scale(1.05)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = theme.colors.primary;
+                      e.currentTarget.style.boxShadow =
+                        "0 2px 6px rgba(0,0,0,0.1)";
+                      e.currentTarget.style.transform = "scale(1)";
                     }}
                   >
                     Add to Cart
