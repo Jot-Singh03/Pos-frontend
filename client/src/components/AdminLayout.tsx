@@ -70,29 +70,42 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         </div>
 
         <nav style={{ flex: 1 }}>
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              style={{
-                display: "block",
-                padding: theme.spacing.sm,
-                marginBottom: theme.spacing.sm,
-                color:
-                  location.pathname === item.path
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    theme.colors.gray[100];
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }
+                }}
+                style={{
+                  display: "block",
+                  padding: theme.spacing.sm,
+                  marginBottom: theme.spacing.sm,
+                  color: isActive
                     ? theme.colors.primary
                     : theme.colors.gray[600],
-                textDecoration: "none",
-                borderRadius: theme.borderRadius.md,
-                backgroundColor:
-                  location.pathname === item.path
+                  textDecoration: "none",
+                  borderRadius: theme.borderRadius.md,
+                  backgroundColor: isActive
                     ? theme.colors.gray[100]
                     : "transparent",
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+                  transition: "all 0.2s ease-in-out", // smooth effect
+                  cursor: "pointer",
+                }}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Debug buttons - remove these after testing */}
@@ -109,6 +122,17 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               cursor: "pointer",
               marginBottom: theme.spacing.xs,
               fontSize: "12px",
+              transition: "all 0.3s ease",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "	#334155";
+              e.currentTarget.style.transform = "scale(1.03)";
+              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = theme.colors.secondary;
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "none";
             }}
           >
             Debug Auth
@@ -124,6 +148,17 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
               fontSize: "12px",
+              transition: "all 0.3s ease",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#d97706"; // Darker warning color
+              e.currentTarget.style.transform = "scale(1.03)";
+              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = theme.colors.warning;
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "none";
             }}
           >
             Clear Token
@@ -139,6 +174,17 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             border: "none",
             borderRadius: theme.borderRadius.md,
             cursor: "pointer",
+            transition: "all 0.3s ease",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red
+            e.currentTarget.style.transform = "scale(1.03)";
+            e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = theme.colors.danger;
+            e.currentTarget.style.transform = "scale(1)";
+            e.currentTarget.style.boxShadow = "none";
           }}
         >
           Logout
