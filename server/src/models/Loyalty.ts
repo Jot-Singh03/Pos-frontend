@@ -22,4 +22,5 @@ const LoyaltySchema: Schema = new Schema({
   timestamps: true
 });
 
+
 export default mongoose.model<ILoyalty>('Loyalty', LoyaltySchema); 

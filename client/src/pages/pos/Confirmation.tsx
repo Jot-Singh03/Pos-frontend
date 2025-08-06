@@ -134,6 +134,14 @@ const Confirmation: React.FC = () => {
             style={{
               marginBottom: theme.spacing.md,
               color: theme.colors.primary,
+              textAlign:"center"
+            }}
+          >
+            Thanks For Ordering!
+          </h3>  <h3
+            style={{
+              marginBottom: theme.spacing.md,
+              color: theme.colors.primary,
             }}
           >
             Customer Information

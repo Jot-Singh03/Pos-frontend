@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import theme from "../../styles/theme";
 import api, { ApiResponse } from "../../services/api";
 import { getCategories } from "../../services/api";
+import LoyaltyBar from "../../components/Loyaltybar";
 
 interface MenuItem {
   _id: string;
@@ -13,6 +14,7 @@ interface MenuItem {
   price: number;
   category: string;
   imageUrl?: string;
+  tags?: string[];
 }
 
 interface CartItem {
@@ -20,16 +22,11 @@ interface CartItem {
   quantity: number;
 }
 
-interface OrderResponse {
+interface LoyaltyCustomer {
   _id: string;
-  items: Array<{
-    itemId: string;
-    quantity: number;
-    price: number;
-  }>;
-  totalAmount: number;
   customerId: string;
-  createdAt: string;
+  phoneNumber: number;
+  points: number;
 }
 
 const POS: React.FC = () => {
@@ -41,9 +38,16 @@ const POS: React.FC = () => {
   const [tableToken, setTableToken] = useState<number | "">("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<string[]>([]);
+  const [points, setPoints] = useState<number>(0);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+
+  const [discount, setDiscount] = useState<number | null>(null);
+
+  const handleDiscountChange = (newDiscount: number) => {
+    setDiscount(newDiscount);
+  };
 
   useEffect(() => {
     fetchMenuItems();
@@ -128,6 +132,71 @@ const POS: React.FC = () => {
     );
   };
 
+  const fetchPoints = async (phoneNumber: string) => {
+    if (!phoneNumber) return; // Don't make a request if phone number is empty
+
+    try {
+      const { data } = await api.get<ApiResponse<LoyaltyCustomer>>(
+        `/loyalty/${phoneNumber}`
+      );
+      if (data.success && data.data) {
+        setPoints(data.data.points);
+      } else {
+        setPoints(0); // In case no points are found
+      }
+    } catch (error) {
+      setPoints(0); // In case of error, reset points to 0
+    }
+  };
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const phone = e.target.value;
+    setPhoneNumber(phone);
+    if (phone.length >= 10) {
+      // Fetch points when the phone number is at least 10 digits
+      fetchPoints(phone);
+    } else {
+      // Reset points when phone number length is less than 10
+      setPoints(0);
+      setDiscount(0);
+    }
+  };
+
+  const postpoints = async () => {
+    // Calculate points as 10% of total amount
+    const totalAmount = getTotal();
+    if (!totalAmount) {
+      console.error("Total amount is invalid or missing.");
+      return;
+    }
+
+    let points = totalAmount * 0.1;
+    points = parseFloat(points.toFixed(2)); // Ensure points have 2 decimal places
+
+    console.log("Posting points:", { phoneNumber, points });
+
+    try {
+      // Make the POST request
+      const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
+        "/loyalty/add",
+        {
+          phoneNumber: phoneNumber,
+          points: points,
+        }
+      );
+      // Handle success
+      console.log("Loyalty points added successfully:", data);
+    } catch (error: any) {
+      // Log the full error response for detailed info
+      if (error.response) {
+        console.error("Error response:", error.response);
+        console.error("Error message:", error.response.data);
+      } else {
+        console.error("Error:", error.message);
+      }
+      setError(error?.message || "An unexpected error occurred");
+    }
+  };
+
   const handleCheckout = async () => {
     if (cart.length === 0) {
       toast.error("Cart is empty");
@@ -137,12 +206,19 @@ const POS: React.FC = () => {
       toast.error("Please enter a phone number or select a table token.");
       return;
     }
+    if (phoneNumber && phoneNumber.length < 10) {
+      toast.error("Phone number must be at least 10 digits.");
+      return;
+    }
+
     if (tableToken && (tableToken < 1 || tableToken > 20)) {
       toast.error("Table token must be between 1 and 20.");
       return;
     }
     setLoading(true);
     try {
+      await postpoints();
+
       const orderData = {
         items: cart.map(({ item, quantity }) => ({
           itemId: item._id,
@@ -150,13 +226,11 @@ const POS: React.FC = () => {
           price: item.price,
           quantity,
         })),
-        totalAmount: cart.reduce(
-          (sum, cartItem) => sum + cartItem.item.price * cartItem.quantity,
-          0
-        ),
+        totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
         ...(phoneNumber ? { phoneNumber } : {}),
         ...(tableToken ? { tableToken } : {}),
       };
+
       const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
       if (data.success) {
         toast.success("Order placed successfully!");
@@ -456,6 +530,37 @@ const POS: React.FC = () => {
             />
             <p>{selectedItem.description}</p>
             {/* Price + Add to Cart same line */}
+            {/* Tags Mapping */}
+            {selectedItem.tags && selectedItem.tags.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap", // Allow tags to wrap in case there are many
+                  gap: "10px", // Add spacing between tags
+                  marginBottom: theme.spacing.md, // Bottom margin for spacing
+                }}
+              >
+                {selectedItem.tags.map((tag, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      height: 25,
+                      padding: "0 10px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 50,
+                      border: `2px solid ${theme.colors.primary}`,
+                      color: theme.colors.primary,
+                      fontWeight: 700,
+                      fontSize: "0.85rem", // Adjust font size for tags
+                    }}
+                  >
+                    {tag}
+                  </div>
+                ))}
+              </div>
+            )}
             <div
               style={{
                 display: "flex",
@@ -576,17 +681,43 @@ const POS: React.FC = () => {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  marginBottom: theme.spacing.md,
+                  fontSize: theme.fontSizes.lg,
+                  fontWeight: "bold",
+                }}
+              >
+                <span>Cart:</span>
+                <span>${getTotal().toFixed(2)}</span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: theme.fontSizes.lg,
+                  fontWeight: "bold",
+                }}
+              >
+                <span>Discount Amount:</span>
+                <span>
+                  ${((getTotal() * (discount ?? 0)) / 100).toFixed(2)}
+                </span>
+              </div>{" "}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
                   fontSize: theme.fontSizes.lg,
                   fontWeight: "bold",
                 }}
               >
                 <span>Total:</span>
-                <span>${getTotal().toFixed(2)}</span>
+                <span>
+                  ${(getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2)}
+                </span>
               </div>
               <div
                 style={{
                   margin: "2rem 0",
+                  marginTop: "-0.4rem",
                   padding: "1.5rem",
                   background: "#fff",
                   borderRadius: "12px",
@@ -610,7 +741,6 @@ const POS: React.FC = () => {
                     style={{
                       fontWeight: 600,
                       fontSize: "1rem",
-                      marginBottom: 4,
                     }}
                     htmlFor="phoneNumber"
                   >
@@ -620,7 +750,7 @@ const POS: React.FC = () => {
                     id="phoneNumber"
                     type="tel"
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={handlePhoneNumberChange}
                     placeholder="Enter phone number"
                     style={{
                       padding: "0.75rem 1rem",
@@ -633,15 +763,11 @@ const POS: React.FC = () => {
                     }}
                   />
                 </div>
-                <div
-                  style={{
-                    textAlign: "center",
-                    color: "#888",
-                    fontWeight: 500,
-                  }}
-                >
-                  or
-                </div>
+                {/* Add Loyalty Progress Bar Below */}
+                <LoyaltyBar
+                  points={points}
+                  onDiscountChange={handleDiscountChange}
+                />
                 <div
                   style={{
                     display: "flex",
@@ -653,7 +779,6 @@ const POS: React.FC = () => {
                     style={{
                       fontWeight: 600,
                       fontSize: "1rem",
-                      marginBottom: 4,
                     }}
                     htmlFor="tableToken"
                   >
