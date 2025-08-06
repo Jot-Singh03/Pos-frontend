@@ -30,17 +30,9 @@ interface CartItem {
   item: MenuItem;
   quantity: number;
 }
-
-interface OrderResponse {
-  _id: string;
-  items: Array<{
-    itemId: string;
-    quantity: number;
-    price: number;
-  }>;
-  totalAmount: number;
-  customerId: string;
-  createdAt: string;
+interface Category {
+  name: string;
+  imageUrl: string;
 }
 
 const EmpPos: React.FC = () => {
@@ -51,7 +43,7 @@ const EmpPos: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [tableToken, setTableToken] = useState<number | "">("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
@@ -122,14 +114,17 @@ const EmpPos: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await getCategories();
+      const res = await getCategories(); // Assuming this fetches data from the API
       if (res.data.success) {
-        const categoryNames = res.data.data.map(
-          (cat: { name: string }) => cat.name
+        const categoriesWithImages = res.data.data.map(
+          (cat: { name: string; imageUrl: string }) => ({
+            name: cat.name,
+            imageUrl: cat.imageUrl, // Make sure this is included
+          })
         );
-        setCategories(categoryNames);
-        if (!selectedCategory && categoryNames.length > 0) {
-          setSelectedCategory(categoryNames[0]);
+        setCategories(categoriesWithImages);
+        if (!selectedCategory && categoriesWithImages.length > 0) {
+          setSelectedCategory(categoriesWithImages[0].name);
         }
       }
     } catch (err) {
@@ -319,7 +314,7 @@ const EmpPos: React.FC = () => {
       >
         {/* Top: Employee & Categories */}
         <div>
-          <h2 style={{ marginBottom: theme.spacing.md }}>
+          <h3 style={{ marginBottom: theme.spacing.md }}>
             {employeeName ? employeeName : "Employee"}
             <span
               style={{
@@ -331,38 +326,21 @@ const EmpPos: React.FC = () => {
             >
               🟢
             </span>
-          </h2>
+          </h3>
 
           <h2 style={{ marginBottom: theme.spacing.xl }}>Categories</h2>
-          <ul
-            style={{
-              listStyle: "none",
-              padding: 0,
-            }}
-          >
+          <ul style={{ listStyle: "none", padding: 0 }}>
             {categories.map((category) => (
               <li
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                key={category.name}
+                onClick={() => setSelectedCategory(category.name)}
                 style={{
                   cursor: "pointer",
                   color:
-                    selectedCategory === category
+                    selectedCategory === category.name
                       ? theme.colors.primary
                       : theme.colors.gray[700],
-                  marginBottom: theme.spacing.xs, // ✅ Reduce space between items
-                  padding: "6px 10px",
-                  borderRadius: "8px",
-                  fontWeight: 500,
-                  transition: "all 0.3s ease",
-                  backgroundColor:
-                    selectedCategory === category
-                      ? theme.colors.gray[300]
-                      : "transparent",
-                  boxShadow:
-                    selectedCategory === category
-                      ? "0 2px 10px rgba(0,0,0,0.08)"
-                      : "none",
+                  marginBottom: theme.spacing.md,
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = theme.colors.gray[200];
@@ -370,13 +348,27 @@ const EmpPos: React.FC = () => {
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.background =
-                    selectedCategory === category
+                    selectedCategory === category.name
                       ? theme.colors.gray[300]
                       : "transparent";
                   e.currentTarget.style.transform = "scale(1)";
                 }}
               >
-                {category}
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {category.imageUrl && (
+                    <img
+                      src={category.imageUrl}
+                      alt={category.name}
+                      style={{
+                        width: "35px",
+                        height: "35px",
+                        borderRadius: "50%",
+                        marginRight: "10px",
+                      }}
+                    />
+                  )}
+                  {category.name}
+                </div>
               </li>
             ))}
           </ul>

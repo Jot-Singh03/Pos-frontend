@@ -16,6 +16,10 @@ interface MenuItem {
   imageUrl?: string;
   tags?: string[];
 }
+interface Category {
+  name: string;
+  imageUrl: string;
+}
 
 interface CartItem {
   item: MenuItem;
@@ -37,7 +41,7 @@ const POS: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [tableToken, setTableToken] = useState<number | "">("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [points, setPoints] = useState<number>(0);
 
   const [showModal, setShowModal] = useState(false);
@@ -95,20 +99,24 @@ const POS: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await getCategories();
+      const res = await getCategories(); // Assuming this fetches data from the API
       if (res.data.success) {
-        const categoryNames = res.data.data.map(
-          (cat: { name: string }) => cat.name
+        const categoriesWithImages = res.data.data.map(
+          (cat: { name: string; imageUrl: string }) => ({
+            name: cat.name,
+            imageUrl: cat.imageUrl, // Make sure this is included
+          })
         );
-        setCategories(categoryNames);
-        if (!selectedCategory && categoryNames.length > 0) {
-          setSelectedCategory(categoryNames[0]);
+        setCategories(categoriesWithImages);
+        if (!selectedCategory && categoriesWithImages.length > 0) {
+          setSelectedCategory(categoriesWithImages[0].name);
         }
       }
     } catch (err) {
       console.error("Failed to fetch categories", err);
     }
   };
+
   const updateQuantity = (itemId: string, quantity: number) => {
     if (quantity < 1) {
       const item = cart.find((cartItem) => cartItem.item._id === itemId);
@@ -282,33 +290,28 @@ const POS: React.FC = () => {
         }}
       >
         <h2 style={{ marginBottom: theme.spacing.xl }}>Categories</h2>
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-          }}
-        >
+        <ul style={{ listStyle: "none", padding: 0 }}>
           {categories.map((category) => (
             <li
-              key={category}
-              onClick={() => setSelectedCategory(category)}
+              key={category.name}
+              onClick={() => setSelectedCategory(category.name)}
               style={{
                 cursor: "pointer",
                 color:
-                  selectedCategory === category
+                  selectedCategory === category.name
                     ? theme.colors.primary
                     : theme.colors.gray[700],
-                marginBottom: theme.spacing.xs, // ✅ Reduce space between items
+                marginBottom: theme.spacing.xs,
                 padding: "6px 10px",
                 borderRadius: "8px",
                 fontWeight: 500,
                 transition: "all 0.3s ease",
                 backgroundColor:
-                  selectedCategory === category
+                  selectedCategory === category.name
                     ? theme.colors.gray[300]
                     : "transparent",
                 boxShadow:
-                  selectedCategory === category
+                  selectedCategory === category.name
                     ? "0 2px 10px rgba(0,0,0,0.08)"
                     : "none",
               }}
@@ -318,13 +321,27 @@ const POS: React.FC = () => {
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.background =
-                  selectedCategory === category
+                  selectedCategory === category.name
                     ? theme.colors.gray[300]
                     : "transparent";
                 e.currentTarget.style.transform = "scale(1)";
               }}
             >
-              {category}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {category.imageUrl && (
+                  <img
+                    src={category.imageUrl}
+                    alt={category.name}
+                    style={{
+                      width: "35px",
+                      height: "35px",
+                      borderRadius: "50%",
+                      marginRight: "10px",
+                    }}
+                  />
+                )}
+                {category.name}
+              </div>
             </li>
           ))}
         </ul>
