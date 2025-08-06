@@ -1,26 +1,36 @@
-import { Request, Response, NextFunction } from 'express';
-import Loyalty from '../models/Loyalty';
+import { Request, Response, NextFunction } from "express";
+import Loyalty from "../models/Loyalty";
 
 // Get loyalty points for a customer
-export const getLoyaltyPoints = async (req: Request, res: Response, next: NextFunction) => {
+export const getLoyaltyPoints = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const loyalty = await Loyalty.findOne({ phoneNumber: req.params.phoneNumber });
+    const loyalty = await Loyalty.findOne({
+      phoneNumber: req.params.phoneNumber,
+    });
     if (!loyalty) {
       return res.status(404).json({
         success: false,
-        error: 'Loyalty record not found'
+        error: "Loyalty record not found",
       });
     }
     res.status(200).json({
       success: true,
-      data: loyalty
+      data: loyalty,
     });
   } catch (error) {
     next(error);
   }
 };
 // Get all customers
-export const showcust = async (req: Request, res: Response, next: NextFunction) => {
+export const showcust = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const customers = await Loyalty.find(); // Get all loyalty records
     res.status(200).json({
@@ -64,7 +74,7 @@ export const addLoyaltyPoints = async (
       loyalty = await Loyalty.create({ phoneNumber, points });
     } else {
       // Set loyalty points to the exact value provided (no addition)
-      loyalty.points = points;
+      loyalty.points += points;
       await loyalty.save();
     }
 
@@ -81,22 +91,26 @@ export const addLoyaltyPoints = async (
 };
 
 // Redeem loyalty points
-export const redeemLoyaltyPoints = async (req: Request, res: Response, next: NextFunction) => {
+export const redeemLoyaltyPoints = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { phoneNumber, points } = req.body;
-    
+
     const loyalty = await Loyalty.findOne({ phoneNumber });
     if (!loyalty) {
       return res.status(404).json({
         success: false,
-        error: 'Loyalty record not found'
+        error: "Loyalty record not found",
       });
     }
 
     if (loyalty.points < points) {
       return res.status(400).json({
         success: false,
-        error: 'Insufficient loyalty points'
+        error: "Insufficient loyalty points",
       });
     }
 
@@ -105,31 +119,35 @@ export const redeemLoyaltyPoints = async (req: Request, res: Response, next: Nex
 
     res.status(200).json({
       success: true,
-      data: loyalty
+      data: loyalty,
     });
   } catch (error) {
     next(error);
   }
-}; 
+};
 
 // Delete loyalty points by phoneNumber
-export const deleteLoyaltyPoints = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteLoyaltyPoints = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { phoneNumber } = req.params;
-    
+
     // Find and delete the loyalty record by phoneNumber
     const loyalty = await Loyalty.findOneAndDelete({ phoneNumber });
-    
+
     if (!loyalty) {
       return res.status(404).json({
         success: false,
-        error: 'Loyalty record not found'
+        error: "Loyalty record not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: 'Loyalty record deleted successfully',
+      message: "Loyalty record deleted successfully",
     });
   } catch (error) {
     next(error);
