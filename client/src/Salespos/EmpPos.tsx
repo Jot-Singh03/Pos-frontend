@@ -223,7 +223,6 @@ const EmpPos: React.FC = () => {
       toast.error("Cart is empty");
       return;
     }
-
     if (!phoneNumber && !tableToken) {
       toast.error("Please enter a phone number or select a table token.");
       return;
@@ -353,17 +352,6 @@ const EmpPos: React.FC = () => {
                     selectedCategory === category.name
                       ? "0 2px 10px rgba(0,0,0,0.08)"
                       : "none",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.background = theme.colors.gray[200];
-                  e.currentTarget.style.transform = "scale(1.05)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background =
-                    selectedCategory === category.name
-                      ? theme.colors.gray[300]
-                      : "transparent";
-                  e.currentTarget.style.transform = "scale(1)";
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = theme.colors.gray[200];
