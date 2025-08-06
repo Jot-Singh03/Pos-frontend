@@ -196,7 +196,19 @@ const DropdownsManagement: React.FC = () => {
                 cursor: "pointer",
                 fontWeight: 600,
                 fontSize: theme.fontSizes.base,
-                transition: "background 0.2s",
+                transition: "all 0.3s ease",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background =
+                  theme.colors.primaryDark || "#0055aa";
+                e.currentTarget.style.boxShadow =
+                  "0 0 12px rgba(0,123,255,0.3)";
+                e.currentTarget.style.transform = "scale(1.05)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = theme.colors.primary;
+                e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+                e.currentTarget.style.transform = "scale(1)";
               }}
             >
               {editingCategory ? "Update" : "Add"}
@@ -214,7 +226,24 @@ const DropdownsManagement: React.FC = () => {
                   cursor: "pointer",
                   fontWeight: 600,
                   fontSize: theme.fontSizes.base,
-                  transition: "background 0.2s",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = "#334155";
+
+                  e.currentTarget.style.boxShadow =
+                    "0 0 12px rgba(51, 65, 85, 0.4)";
+
+                  e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.color = "#ffffff";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    theme.colors.gray[300];
+                  e.currentTarget.style.boxShadow =
+                    "0 2px 6px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.color = theme.colors.gray[700];
                 }}
               >
                 Cancel
