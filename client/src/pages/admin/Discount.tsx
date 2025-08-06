@@ -46,28 +46,28 @@ const DiscountList: React.FC = () => {
     fetchDiscounts();
   }, []);
 
-    //Editing Data
-      const handleEditClick = (discount: Discount) => {
-        setEditingDiscount(discount);
-        setFormValues({
-          name: discount.name,
-          minPoints: discount.minPoints.toString(),
-          maxPoints: discount.maxPoints.toString(),
-          discount: discount.discount.toString(),
-          color: discount.color,
-        });
-      };
-      const handleCancelEdit = () => {
-        setEditingDiscount(null);
-        setFormValues({
-          name: "",
-          minPoints: "",
-          maxPoints: "",
-          discount: "",
-          color: "",
-        });
-      };
-   
+  //Editing Data
+  const handleEditClick = (discount: Discount) => {
+    setEditingDiscount(discount);
+    setFormValues({
+      name: discount.name,
+      minPoints: discount.minPoints.toString(),
+      maxPoints: discount.maxPoints.toString(),
+      discount: discount.discount.toString(),
+      color: discount.color,
+    });
+  };
+  const handleCancelEdit = () => {
+    setEditingDiscount(null);
+    setFormValues({
+      name: "",
+      minPoints: "",
+      maxPoints: "",
+      discount: "",
+      color: "",
+    });
+  };
+
   // Handle deleting a discount
   const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm(
@@ -225,8 +225,20 @@ const DiscountList: React.FC = () => {
               border: "none",
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
+              transition: "all 0.3s ease",
             }}
             aria-label="Add New Level"
+            onMouseOver={(e) => {
+              e.currentTarget.style.background =
+                theme.colors.primaryDark || "#0055aa";
+              e.currentTarget.style.boxShadow = "0 0 12px rgba(0,123,255,0.3)";
+              e.currentTarget.style.transform = "scale(1.05)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = theme.colors.primary;
+              e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+              e.currentTarget.style.transform = "scale(1)";
+            }}
           >
             Add New Level
           </button>
@@ -240,8 +252,20 @@ const DiscountList: React.FC = () => {
               border: "none",
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
+              transition: "all 0.3s ease",
             }}
             aria-label="Refresh"
+            onMouseOver={(e) => {
+              e.currentTarget.style.background =
+                theme.colors.primaryDark || "#0055aa";
+              e.currentTarget.style.boxShadow = "0 0 12px rgba(0,123,255,0.3)";
+              e.currentTarget.style.transform = "scale(1.05)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = theme.colors.primary;
+              e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+              e.currentTarget.style.transform = "scale(1)";
+            }}
           >
             Refresh
           </button>
@@ -384,6 +408,19 @@ const DiscountList: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background =
+                    theme.colors.primaryDark || "#0055aa";
+                  e.currentTarget.style.boxShadow =
+                    "0 0 12px rgba(0,123,255,0.3)";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = theme.colors.primary;
+                  e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.transform = "scale(1)";
                 }}
               >
                 Save
@@ -398,6 +435,24 @@ const DiscountList: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = "#334155";
+
+                  e.currentTarget.style.boxShadow =
+                    "0 0 12px rgba(51, 65, 85, 0.4)";
+
+                  e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.color = "#ffffff";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    theme.colors.gray[300];
+                  e.currentTarget.style.boxShadow =
+                    "0 2px 6px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.color = theme.colors.gray[700];
                 }}
               >
                 Cancel
@@ -530,6 +585,19 @@ const DiscountList: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background =
+                    theme.colors.primaryDark || "#0055aa";
+                  e.currentTarget.style.boxShadow =
+                    "0 0 12px rgba(0,123,255,0.3)";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = theme.colors.primary;
+                  e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.transform = "scale(1)";
                 }}
               >
                 Add Level
@@ -545,6 +613,24 @@ const DiscountList: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = "#334155";
+
+                  e.currentTarget.style.boxShadow =
+                    "0 0 12px rgba(51, 65, 85, 0.4)";
+
+                  e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.color = "#ffffff";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    theme.colors.gray[300];
+                  e.currentTarget.style.boxShadow =
+                    "0 2px 6px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.color = theme.colors.gray[700];
                 }}
               >
                 Cancel
@@ -604,6 +690,20 @@ const DiscountList: React.FC = () => {
                       border: "none",
                       borderRadius: theme.borderRadius.md,
                       cursor: "pointer",
+                      transition: "all 0.3s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background =
+                        theme.colors.primaryDark || "#0055aa";
+                      e.currentTarget.style.boxShadow =
+                        "0 0 12px rgba(0,123,255,0.3)";
+                      e.currentTarget.style.transform = "scale(1.05)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = theme.colors.primary;
+                      e.currentTarget.style.boxShadow =
+                        "0 2px 6px rgba(0,0,0,0.1)";
+                      e.currentTarget.style.transform = "scale(1)";
                     }}
                   >
                     Edit
@@ -617,6 +717,19 @@ const DiscountList: React.FC = () => {
                       border: "none",
                       borderRadius: theme.borderRadius.md,
                       cursor: "pointer",
+                      transition: "all 0.3s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red
+                      e.currentTarget.style.transform = "scale(1.03)";
+                      e.currentTarget.style.boxShadow =
+                        "0 4px 10px rgba(0,0,0,0.1)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        theme.colors.danger;
+                      e.currentTarget.style.transform = "scale(1)";
+                      e.currentTarget.style.boxShadow = "none";
                     }}
                   >
                     Delete

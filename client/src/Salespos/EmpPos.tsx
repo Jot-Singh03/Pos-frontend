@@ -53,8 +53,8 @@ const EmpPos: React.FC = () => {
   const [discount, setDiscount] = useState<number | null>(null);
 
   const handleDiscountChange = (newDiscount: number) => {
-      setDiscount(newDiscount);
-    };
+    setDiscount(newDiscount);
+  };
 
   const handleLogout = () => {
     logout();
@@ -104,7 +104,7 @@ const EmpPos: React.FC = () => {
       }
       return [...prevCart, { item, quantity: 1 }];
     });
-    toast.success(`${item.name} added to cart`);
+    // toast.success(`${item.name} added to cart`);
   };
   const removeFromCart = (itemId: string) => {
     setCart((prevCart) =>
@@ -135,7 +135,7 @@ const EmpPos: React.FC = () => {
     if (quantity < 1) {
       const item = cart.find((cartItem) => cartItem.item._id === itemId);
       if (item) {
-        toast.error(`${item.item.name} removed from cart`);
+        // toast.error(`${item.item.name} removed from cart`);
       }
       removeFromCart(itemId);
       return;
@@ -178,103 +178,102 @@ const EmpPos: React.FC = () => {
     } else {
       // Reset points when phone number length is less than 10
       setPoints(0);
-       setDiscount(0);
+      setDiscount(0);
     }
   };
 
+  const postpoints = async () => {
+    // Calculate points as 10% of total amount
+    const totalAmount = getTotal();
+    if (!totalAmount) {
+      console.error("Total amount is invalid or missing.");
+      return;
+    }
 
- const postpoints = async () => {
-   // Calculate points as 10% of total amount
-   const totalAmount = getTotal();
-   if (!totalAmount) {
-     console.error("Total amount is invalid or missing.");
-     return;
-   }
+    let points = totalAmount * 0.1;
+    points = parseFloat(points.toFixed(2)); // Ensure points have 2 decimal places
 
-   let points = totalAmount * 0.1;
-   points = parseFloat(points.toFixed(2)); // Ensure points have 2 decimal places
+    console.log("Posting points:", { phoneNumber, points });
 
-   console.log("Posting points:", { phoneNumber, points });
+    try {
+      // Make the POST request
+      const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
+        "/loyalty/add",
+        {
+          phoneNumber: phoneNumber,
+          points: points,
+        }
+      );
+      // Handle success
+      console.log("Loyalty points added successfully:", data);
+    } catch (error: any) {
+      // Log the full error response for detailed info
+      if (error.response) {
+        console.error("Error response:", error.response);
+        console.error("Error message:", error.response.data);
+      } else {
+        console.error("Error:", error.message);
+      }
+      setError(error?.message || "An unexpected error occurred");
+    }
+  };
 
-   try {
-     // Make the POST request
-     const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
-       "/loyalty/add",
-       {
-         phoneNumber: phoneNumber,
-         points: points,
-       }
-     );
-     // Handle success
-     console.log("Loyalty points added successfully:", data);
-   } catch (error: any) {
-     // Log the full error response for detailed info
-     if (error.response) {
-       console.error("Error response:", error.response);
-       console.error("Error message:", error.response.data);
-     } else {
-       console.error("Error:", error.message);
-     }
-     setError(error?.message || "An unexpected error occurred");
-   }
- };
+  const handleCheckout = async () => {
+    if (cart.length === 0) {
+      toast.error("Cart is empty");
+      return;
+    }
 
- const handleCheckout = async () => {
-   if (cart.length === 0) {
-     toast.error("Cart is empty");
-     return;
-   }
+    if (!phoneNumber && !tableToken) {
+      toast.error("Please enter a phone number or select a table token.");
+      return;
+    }
 
-   if (!phoneNumber && !tableToken) {
-     toast.error("Please enter a phone number or select a table token.");
-     return;
-   }
+    if (phoneNumber && phoneNumber.length < 10) {
+      toast.error("Phone number must be at least 10 digits.");
+      return;
+    }
 
-   if (phoneNumber && phoneNumber.length < 10) {
-     toast.error("Phone number must be at least 10 digits.");
-     return;
-   }
+    if (tableToken && (tableToken < 1 || tableToken > 20)) {
+      toast.error("Table token must be between 1 and 20.");
+      return;
+    }
 
-   if (tableToken && (tableToken < 1 || tableToken > 20)) {
-     toast.error("Table token must be between 1 and 20.");
-     return;
-   }
+    const orderBy = employeeName ? "employee" : "customer";
 
-   const orderBy = employeeName ? "employee" : "customer";
+    setLoading(true);
+    try {
+      await postpoints();
 
-   setLoading(true);
-   try {
-     await postpoints();
+      const orderData = {
+        items: cart.map(({ item, quantity }) => ({
+          itemId: item._id,
+          name: item.name,
+          price: item.price,
+          quantity,
+        })),
+        totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
+        ...(phoneNumber ? { phoneNumber } : {}),
+        ...(tableToken ? { tableToken } : {}),
+        orderBy,
+        employeeName: employeeName,
+      };
 
-     const orderData = {
-       items: cart.map(({ item, quantity }) => ({
-         itemId: item._id,
-         name: item.name,
-         price: item.price,
-         quantity,
-       })),
-       totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
-       ...(phoneNumber ? { phoneNumber } : {}),
-       ...(tableToken ? { tableToken } : {}),
-       orderBy,
-       employeeName: employeeName,
-     };
-
-     const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
-     if (data.success) {
-       toast.success("Order placed successfully!");
-       // Clear cart and redirect to confirmation
-       setCart([]);
-       window.location.href = `/pos/confirmation/${data.data._id}`;
-     } else {
-       toast.error(data.error || "Failed to place order");
-     }
-   } catch (error: any) {
-     toast.error(error?.response?.data?.error || "Failed to place order");
-   } finally {
-     setLoading(false);
-   }
- };
+      const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
+      if (data.success) {
+        toast.success("Order placed successfully!");
+        // Clear cart and redirect to confirmation
+        setCart([]);
+        window.location.href = `/pos/confirmation/${data.data._id}`;
+      } else {
+        toast.error(data.error || "Failed to place order");
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error || "Failed to place order");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredMenu = selectedCategory
     ? menuItems.filter((item) => item.category === selectedCategory)
@@ -366,6 +365,17 @@ const EmpPos: React.FC = () => {
                       : "transparent";
                   e.currentTarget.style.transform = "scale(1)";
                 }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = theme.colors.gray[200];
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background =
+                    selectedCategory === category.name
+                      ? theme.colors.gray[300]
+                      : "transparent";
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
               >
                 <div style={{ display: "flex", alignItems: "center" }}>
                   {category.imageUrl && (
@@ -400,6 +410,17 @@ const EmpPos: React.FC = () => {
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
               fontSize: "12px",
+              transition: "all 0.3s ease",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#d97706"; // Darker warning color
+              e.currentTarget.style.transform = "scale(1.03)";
+              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = theme.colors.warning;
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "none";
             }}
           >
             Clear Token
@@ -416,6 +437,17 @@ const EmpPos: React.FC = () => {
               border: "none",
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
+              transition: "all 0.3s ease",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red
+              e.currentTarget.style.transform = "scale(1.03)";
+              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = theme.colors.danger;
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "none";
             }}
           >
             Logout
@@ -484,17 +516,29 @@ const EmpPos: React.FC = () => {
                 style={{
                   background: "#fff",
                   borderRadius: 12,
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                   padding: theme.spacing.md,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   gap: theme.spacing.md,
-                  justifyContent: "space-between", // Ensures the content stretches vertically
+                  justifyContent: "space-between",
                   height: "100%",
                   border: `1px solid ${theme.colors.gray[300]}`,
+                  transition: "all 0.3s ease",
                 }}
-                onClick={() => handleItemClick(item)} // Show modal on click
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform =
+                    "translateY(-5px) scale(1.03)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 20px rgba(0,0,0,0.12)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow =
+                    "0 2px 8px rgba(0,0,0,0.05)";
+                }}
+                onClick={() => handleItemClick(item)}
               >
                 <img
                   src={item.imageUrl}
@@ -557,10 +601,25 @@ const EmpPos: React.FC = () => {
                       color: "#fff",
                       border: "none",
                       borderRadius: 8,
-                      padding: "0.4rem 1rem",
+                      padding: "0.5rem 1.2rem",
                       fontWeight: 600,
                       fontSize: "0.9rem",
                       cursor: "pointer",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                      transition: "all 0.25s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background =
+                        theme.colors.primaryDark || "#0055aa";
+                      e.currentTarget.style.boxShadow =
+                        "0 0 12px rgba(0,123,255,0.3)";
+                      e.currentTarget.style.transform = "scale(1.05)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = theme.colors.primary;
+                      e.currentTarget.style.boxShadow =
+                        "0 2px 6px rgba(0,0,0,0.1)";
+                      e.currentTarget.style.transform = "scale(1)";
                     }}
                   >
                     Add to Cart
