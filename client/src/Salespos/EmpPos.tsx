@@ -7,7 +7,7 @@ import api, { ApiResponse } from "../services/api";
 import { getCategories } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { clearAuthData, logout } from "../utils/auth";
-import LoyaltyProgressBar from "../components/Loyaltybar";
+import LoyaltyBar from "../components/Loyaltybar";
 
 interface MenuItem {
   _id: string;
@@ -53,11 +53,16 @@ const EmpPos: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<string[]>([]);
   const navigate = useNavigate();
-const points = 100;
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
-
+  const [points, setPoints] = useState<number>(0);
   const [employeeName, setEmployeeName] = useState<string | null>(null);
+
+  const [discount, setDiscount] = useState<number | null>(null);
+
+  const handleDiscountChange = (newDiscount: number) => {
+      setDiscount(newDiscount);
+    };
 
   const handleLogout = () => {
     logout();
@@ -153,6 +158,34 @@ const points = 100;
       0
     );
   };
+  const fetchPoints = async (phoneNumber: string) => {
+    if (!phoneNumber) return; // Don't make a request if phone number is empty
+
+    try {
+      const { data } = await api.get<ApiResponse<LoyaltyCustomer>>(
+        `/loyalty/${phoneNumber}`
+      );
+      if (data.success && data.data) {
+        setPoints(data.data.points);
+      } else {
+        setPoints(0); // In case no points are found
+      }
+    } catch (error) {
+      setPoints(0); // In case of error, reset points to 0
+    }
+  };
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const phone = e.target.value;
+    setPhoneNumber(phone);
+    if (phone.length >= 10) {
+      // Fetch points when the phone number is at least 10 digits
+      fetchPoints(phone);
+    } else {
+      // Reset points when phone number length is less than 10
+      setPoints(0);
+       setDiscount(0);
+    }
+  };
 
 
  const postpoints = async () => {
@@ -202,6 +235,11 @@ const points = 100;
      return;
    }
 
+   if (phoneNumber && phoneNumber.length < 10) {
+     toast.error("Phone number must be at least 10 digits.");
+     return;
+   }
+
    if (tableToken && (tableToken < 1 || tableToken > 20)) {
      toast.error("Table token must be between 1 and 20.");
      return;
@@ -211,9 +249,8 @@ const points = 100;
 
    setLoading(true);
    try {
-     
      await postpoints();
-     
+
      const orderData = {
        items: cart.map(({ item, quantity }) => ({
          itemId: item._id,
@@ -221,23 +258,19 @@ const points = 100;
          price: item.price,
          quantity,
        })),
-       totalAmount: cart.reduce(
-         (sum, cartItem) => sum + cartItem.item.price * cartItem.quantity,
-         0
-       ),
+       totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
        ...(phoneNumber ? { phoneNumber } : {}),
        ...(tableToken ? { tableToken } : {}),
        orderBy,
        employeeName: employeeName,
      };
 
-
      const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
      if (data.success) {
        toast.success("Order placed successfully!");
        // Clear cart and redirect to confirmation
        setCart([]);
-      window.location.href = `/pos/confirmation/${data.data._id}`;
+       window.location.href = `/pos/confirmation/${data.data._id}`;
      } else {
        toast.error(data.error || "Failed to place order");
      }
@@ -692,8 +725,34 @@ const points = 100;
                   fontWeight: "bold",
                 }}
               >
-                <span>Total:</span>
+                <span>Cart:</span>
                 <span>${getTotal().toFixed(2)}</span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: theme.fontSizes.lg,
+                  fontWeight: "bold",
+                }}
+              >
+                <span>Discount Amount:</span>
+                <span>
+                  ${((getTotal() * (discount ?? 0)) / 100).toFixed(2)}
+                </span>
+              </div>{" "}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: theme.fontSizes.lg,
+                  fontWeight: "bold",
+                }}
+              >
+                <span>Total:</span>
+                <span>
+                  ${(getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2)}
+                </span>
               </div>
               <div
                 style={{
@@ -760,7 +819,7 @@ const points = 100;
                     id="phoneNumber"
                     type="tel"
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={handlePhoneNumberChange}
                     placeholder="Enter phone number"
                     style={{
                       padding: "0.75rem 1rem",
@@ -774,8 +833,10 @@ const points = 100;
                   />
                 </div>
                 {/* Add Loyalty Progress Bar Below */}
-                <LoyaltyProgressBar points={points} />
-
+                <LoyaltyBar
+                  points={points}
+                  onDiscountChange={handleDiscountChange}
+                />
                 <div
                   style={{
                     display: "flex",
