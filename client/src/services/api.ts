@@ -23,7 +23,9 @@ api.interceptors.request.use(
       url.includes("/menu") ||
       url.includes("/orders") ||
       url.includes("/loyalty") ||
+      url.includes("/discounts")||
       url.includes("/newreg");
+        
 
     if (isAdminRoute) {
       const token = localStorage.getItem("token");

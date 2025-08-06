@@ -32,6 +32,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     { path: "/admin/loyalty", label: "Loyalty Points" },
     { path: "/admin/manage", label: "Manage Employees" },
     { path: "/admin/register", label: "Employee Registration" },
+    { path: "/admin/discount", label: "Discount Management" },
   ];
 
   return (

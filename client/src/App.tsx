@@ -21,6 +21,7 @@ import Emplogin from "./Salespos/Emplogin";
 import EmpRegister from "./pages/admin/EmpRegister";
 import EmpPos from "./Salespos/EmpPos";
 import EmpManage from "./pages/admin/EmpManage";
+import Discount from "./pages/admin/Discount";
 
 const App: React.FC = () => {
   return (
@@ -56,6 +57,7 @@ const App: React.FC = () => {
           <Route path="dropdowns" element={<DropdownsManagement />} />
           <Route path="register" element={<EmpRegister />} />
           <Route path="manage" element={<EmpManage />} />
+          <Route path="discount" element={<Discount/>} />
         </Route>
 
         {/* POS Routes */}

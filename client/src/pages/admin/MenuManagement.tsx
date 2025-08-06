@@ -370,56 +370,58 @@ const MenuManagement: React.FC = () => {
           <p style={{ color: theme.colors.gray[600] }}>No menu items found.</p>
         ) : (
           <div style={{ display: "grid", gap: theme.spacing.md }}>
-            {menuItems.map((item) => (
-              <div
-                key={item._id}
-                style={{
-                  padding: theme.spacing.md,
-                  border: `1px solid ${theme.colors.gray[200]}`,
-                  borderRadius: theme.borderRadius.md,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <div>
-                  <h5 style={{ marginBottom: theme.spacing.xs }}>
-                    {item.name}
-                  </h5>
-                  <p style={{ color: theme.colors.gray[600] }}>
-                    ${item.price.toFixed(2)} - {item.category}
-                  </p>
+            {menuItems
+              .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by item name
+              .map((item) => (
+                <div
+                  key={item._id}
+                  style={{
+                    padding: theme.spacing.md,
+                    border: `1px solid ${theme.colors.gray[200]}`,
+                    borderRadius: theme.borderRadius.md,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
+                    <h5 style={{ marginBottom: theme.spacing.xs }}>
+                      {item.name}
+                    </h5>
+                    <p style={{ color: theme.colors.gray[600] }}>
+                      ${item.price.toFixed(2)} - {item.category}
+                    </p>
+                  </div>
+                  <div style={{ display: "flex", gap: theme.spacing.sm }}>
+                    <button
+                      onClick={() => handleEdit(item)}
+                      style={{
+                        padding: theme.spacing.sm,
+                        backgroundColor: theme.colors.primary,
+                        color: theme.colors.white,
+                        border: "none",
+                        borderRadius: theme.borderRadius.md,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      style={{
+                        padding: theme.spacing.sm,
+                        backgroundColor: theme.colors.danger,
+                        color: theme.colors.white,
+                        border: "none",
+                        borderRadius: theme.borderRadius.md,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                <div style={{ display: "flex", gap: theme.spacing.sm }}>
-                  <button
-                    onClick={() => handleEdit(item)}
-                    style={{
-                      padding: theme.spacing.sm,
-                      backgroundColor: theme.colors.primary,
-                      color: theme.colors.white,
-                      border: "none",
-                      borderRadius: theme.borderRadius.md,
-                      cursor: "pointer",
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    style={{
-                      padding: theme.spacing.sm,
-                      backgroundColor: theme.colors.danger,
-                      color: theme.colors.white,
-                      border: "none",
-                      borderRadius: theme.borderRadius.md,
-                      cursor: "pointer",
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         )}
       </div>
