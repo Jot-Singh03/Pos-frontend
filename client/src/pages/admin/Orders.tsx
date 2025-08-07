@@ -26,11 +26,17 @@ const Orders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchPhoneNumber, setSearchPhoneNumber] = useState<string>("");
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (searchPhoneNumber) {
+      fetchOrdersByPhoneNumber(searchPhoneNumber);
+    } else {
+      fetchOrders();
+    }
+  }, []); 
 
+  // Fetch all orders
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -49,6 +55,44 @@ const Orders: React.FC = () => {
       setOrders([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch orders by phone number
+  const fetchOrdersByPhoneNumber = async (phoneNumber: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await api.get<ApiResponse<Order[]>>(
+        `/orders/${phoneNumber}`
+      );
+
+      if (response.data.success && Array.isArray(response.data.data)) {
+        setOrders(response.data.data);
+      } else {
+        setOrders([]);
+        setError("No orders found for that phone number");
+      }
+    } catch (error: any) {
+      setError("Failed to fetch orders. Please try again.");
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchPhoneNumber(event.target.value);
+  };
+
+  const handleSearchSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (searchPhoneNumber.trim() !== "") {
+      fetchOrdersByPhoneNumber(searchPhoneNumber);
+      setSearchPhoneNumber(""); 
+    } else {
+      setError("Please enter a phone number.");
     }
   };
 
@@ -72,9 +116,7 @@ const Orders: React.FC = () => {
       >
         <h1>Orders</h1>
         <button
-          onClick={() => {
-            fetchOrders();
-          }}
+          onClick={fetchOrders}
           style={{
             padding: theme.spacing.sm,
             backgroundColor: theme.colors.primary,
@@ -98,6 +140,39 @@ const Orders: React.FC = () => {
         >
           Refresh Orders
         </button>
+      </div>
+
+      <div style={{ marginBottom: theme.spacing.md }}>
+        <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
+          Search by Phone Number
+        </label>
+        <form onSubmit={handleSearchSubmit}>
+          <input
+            type="text"
+            value={searchPhoneNumber}
+            onChange={handleSearchChange}
+            style={{
+              width: "100%",
+              padding: theme.spacing.sm,
+              borderRadius: theme.borderRadius.md,
+              border: `1px solid ${theme.colors.gray[300]}`,
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              marginTop: theme.spacing.sm,
+              padding: theme.spacing.sm,
+              backgroundColor: theme.colors.primary,
+              color: theme.colors.white,
+              border: "none",
+              borderRadius: theme.borderRadius.md,
+              cursor: "pointer",
+            }}
+          >
+            Search
+          </button>
+        </form>
       </div>
 
       {error && (

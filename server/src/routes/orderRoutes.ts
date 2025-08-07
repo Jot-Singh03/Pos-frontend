@@ -14,7 +14,7 @@ router.post('/', createOrder);
 
 // Protected routes
 router.get('/', protect, getOrders);
-router.get('/:id', getOrder);
+router.get('/:phoneNumber', getOrder);
 router.get('/customer/:customerId', protect, getCustomerOrders);
 
 export default router; 

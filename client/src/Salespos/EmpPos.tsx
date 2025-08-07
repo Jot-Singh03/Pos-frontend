@@ -147,12 +147,7 @@ const EmpPos: React.FC = () => {
     );
   };
 
-  const getTotal = () => {
-    return cart.reduce(
-      (total, cartItem) => total + cartItem.item.price * cartItem.quantity,
-      0
-    );
-  };
+ 
   const fetchPoints = async (phoneNumber: string) => {
     if (!phoneNumber) return; // Don't make a request if phone number is empty
 
@@ -182,6 +177,14 @@ const EmpPos: React.FC = () => {
     }
   };
 
+
+   const getTotal = () => {
+     return cart.reduce(
+       (total, cartItem) => total + cartItem.item.price * cartItem.quantity,
+       0
+     );
+   };
+  
   const postpoints = async () => {
     // Calculate points as 10% of total amount
     const totalAmount = getTotal();

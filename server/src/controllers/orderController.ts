@@ -94,17 +94,29 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
 // Get single order
 export const getOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const { phoneNumber } = req.params;
+
+  if (!phoneNumber) {
+    return res.status(400).json({
+      success: false,
+      error: "Phone number is required",
+    });
+  }
+
   try {
-    const order = await Order.findById(req.params.id);
-    if (!order) {
+    // Query orders by phone number
+    const orders = await Order.find({ phoneNumber });
+
+    if (orders.length === 0) {
       return res.status(404).json({
         success: false,
-        error: 'Order not found'
+        error: "No orders found with that phone number",
       });
     }
-    res.status(200).json({
+
+    return res.status(200).json({
       success: true,
-      data: order
+      data: orders,
     });
   } catch (error) {
     next(error);
