@@ -4,7 +4,6 @@ import api, { ApiResponse } from "../../services/api";
 
 interface LoyaltyCustomer {
   _id: string;
-  customerId: string;
   phoneNumber: string; // Updated to string for phone number
   points: number;
 }
@@ -39,7 +38,7 @@ const LoyaltyPoints: React.FC = () => {
     }
   };
 
-  const handleUpdatePoints = async (e: React.FormEvent) => {
+  const handleAddPoints = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingCustomer) return;
 
@@ -52,6 +51,31 @@ const LoyaltyPoints: React.FC = () => {
     try {
       setError(null);
       await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/add`, {
+        phoneNumber: editingCustomer.phoneNumber,
+        points: pointsValue,
+      });
+
+      fetchCustomers();
+      setEditingCustomer(null);
+      setPoints(""); // Clear points input after successful update
+    } catch (error) {
+      setError("Failed to update points. Please try again.");
+    }
+  };
+
+  const handleRemovePoints = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCustomer) return;
+
+    const pointsValue = parseFloat(points);
+    if (isNaN(pointsValue) || pointsValue <= 0) {
+      setError("Please enter a valid positive decimal number of points.");
+      return;
+    }
+
+    try {
+      setError(null);
+      await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/remove`, {
         phoneNumber: editingCustomer.phoneNumber,
         points: pointsValue,
       });
@@ -125,10 +149,10 @@ const LoyaltyPoints: React.FC = () => {
           }}
         >
           <h4 style={{ marginBottom: theme.spacing.lg }}>
-            Update Points for {editingCustomer.customerId}
+            Update Points for {editingCustomer.phoneNumber}
           </h4>
 
-          <form onSubmit={handleUpdatePoints}>
+          <form>
             <div style={{ marginBottom: theme.spacing.md }}>
               <label
                 style={{ display: "block", marginBottom: theme.spacing.xs }}
@@ -152,7 +176,8 @@ const LoyaltyPoints: React.FC = () => {
 
             <div style={{ display: "flex", gap: theme.spacing.md }}>
               <button
-                type="submit"
+                type="button"
+                onClick={handleAddPoints}
                 style={{
                   padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
                   backgroundColor: theme.colors.primary,
@@ -176,6 +201,20 @@ const LoyaltyPoints: React.FC = () => {
                 }}
               >
                 Add Points
+              </button>
+              <button
+                type="button"
+                onClick={handleRemovePoints}
+                style={{
+                  padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
+                  backgroundColor: theme.colors.danger,
+                  color: theme.colors.white,
+                  border: "none",
+                  borderRadius: theme.borderRadius.md,
+                  cursor: "pointer",
+                }}
+              >
+                Remove Points
               </button>
 
               <button
