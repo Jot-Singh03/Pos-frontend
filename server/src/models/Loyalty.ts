@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ILoyalty extends Document {
-  phoneNumber: number;
+  phoneNumber: String;
   points: number;
 }
 
