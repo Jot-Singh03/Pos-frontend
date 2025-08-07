@@ -122,7 +122,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               cursor: "pointer",
               marginBottom: theme.spacing.xs,
               fontSize: "12px",
-              transition: "all 0.3s ease",
+              transition: "all 0.1s ease",
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "	#334155";
@@ -148,7 +148,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
               fontSize: "12px",
-              transition: "all 0.3s ease",
+              transition: "all 0.1s ease",
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#d97706"; // Darker warning color
@@ -174,7 +174,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             border: "none",
             borderRadius: theme.borderRadius.md,
             cursor: "pointer",
-            transition: "all 0.3s ease",
+            transition: "all 0.1s ease",
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red

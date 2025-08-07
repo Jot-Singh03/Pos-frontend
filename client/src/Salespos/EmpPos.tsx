@@ -356,7 +356,7 @@ const EmpPos: React.FC = () => {
                   padding: "6px 10px",
                   borderRadius: "8px",
                   fontWeight: 500,
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                   backgroundColor:
                     selectedCategory === category.name
                       ? theme.colors.gray[300]
@@ -411,7 +411,7 @@ const EmpPos: React.FC = () => {
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
               fontSize: "12px",
-              transition: "all 0.3s ease",
+              transition: "all 0.1s ease",
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#d97706"; // Darker warning color
@@ -438,7 +438,7 @@ const EmpPos: React.FC = () => {
               border: "none",
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
-              transition: "all 0.3s ease",
+              transition: "all 0.1s ease",
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red
@@ -526,7 +526,7 @@ const EmpPos: React.FC = () => {
                   justifyContent: "space-between",
                   height: "100%",
                   border: `1px solid ${theme.colors.gray[300]}`,
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.transform =
@@ -607,7 +607,7 @@ const EmpPos: React.FC = () => {
                       fontSize: "0.9rem",
                       cursor: "pointer",
                       boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                      transition: "all 0.25s ease",
+                      transition: "all 0.1s ease",
                     }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.background =
@@ -978,8 +978,21 @@ const EmpPos: React.FC = () => {
                   borderRadius: theme.borderRadius.md,
                   fontSize: theme.fontSizes.lg,
                   cursor: "pointer",
+                  transition: "all 0.1s ease",
                 }}
                 disabled={loading}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background =
+                    theme.colors.primaryDark || "#0055aa";
+                  e.currentTarget.style.boxShadow =
+                    "0 0 12px rgba(0,123,255,0.3)";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = theme.colors.primary;
+                  e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
               >
                 {loading ? "Processing..." : "Checkout"}
               </button>

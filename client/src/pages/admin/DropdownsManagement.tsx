@@ -196,7 +196,7 @@ const DropdownsManagement: React.FC = () => {
                 cursor: "pointer",
                 fontWeight: 600,
                 fontSize: theme.fontSizes.base,
-                transition: "all 0.3s ease",
+                transition: "all 0.1s ease",
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.background =
@@ -226,7 +226,7 @@ const DropdownsManagement: React.FC = () => {
                   cursor: "pointer",
                   fontWeight: 600,
                   fontSize: theme.fontSizes.base,
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = "#334155";

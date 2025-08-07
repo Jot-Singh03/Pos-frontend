@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import theme from '../../styles/theme';
-import api, { ApiResponse } from '../../services/api';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import theme from "../../styles/theme";
+import api, { ApiResponse } from "../../services/api";
 
 interface LoginResponse {
   success: boolean;
@@ -15,43 +15,43 @@ interface LoginResponse {
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data } = await api.post<LoginResponse>('/admin/login', {
+      const { data } = await api.post<LoginResponse>("/admin/login", {
         email,
-        password
+        password,
       });
 
       if (data.success) {
-        localStorage.setItem('token', data.token);
-        toast.success('Login successful!');
-        navigate('/admin');
+        localStorage.setItem("token", data.token);
+        toast.success("Login successful!");
+        navigate("/admin");
       } else {
-        toast.error('Login failed');
+        toast.error("Login failed");
       }
     } catch (error: any) {
       // Handle different types of errors
       if (error.response) {
         // Server responded with error status
         if (error.response.status === 401) {
-          toast.error('Invalid email or password');
+          toast.error("Invalid email or password");
         } else if (error.response.status === 400) {
-          toast.error(error.response.data?.error || 'Invalid request');
+          toast.error(error.response.data?.error || "Invalid request");
         } else {
-          toast.error('Login failed. Please try again.');
+          toast.error("Login failed. Please try again.");
         }
       } else if (error.request) {
         // Network error
-        toast.error('Network error. Please check your connection.');
+        toast.error("Network error. Please check your connection.");
       } else {
         // Other error
-        toast.error('Login failed. Please try again.');
+        toast.error("Login failed. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -59,26 +59,32 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: theme.colors.gray[100]
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '400px',
-        padding: theme.spacing.xl,
-        backgroundColor: theme.colors.white,
-        borderRadius: theme.borderRadius.lg,
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
-        <h1 style={{
-          textAlign: 'center',
-          marginBottom: theme.spacing.xl,
-          color: theme.colors.primary
-        }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: theme.colors.gray[100],
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "400px",
+          padding: theme.spacing.xl,
+          backgroundColor: theme.colors.white,
+          borderRadius: theme.borderRadius.lg,
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h1
+          style={{
+            textAlign: "center",
+            marginBottom: theme.spacing.xl,
+            color: theme.colors.primary,
+          }}
+        >
           Admin Login
         </h1>
 
@@ -87,9 +93,9 @@ const Login: React.FC = () => {
             <label
               htmlFor="email"
               style={{
-                display: 'block',
+                display: "block",
                 marginBottom: theme.spacing.xs,
-                color: theme.colors.gray[700]
+                color: theme.colors.gray[700],
               }}
             >
               Email
@@ -101,11 +107,11 @@ const Login: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               style={{
-                width: '100%',
+                width: "100%",
                 padding: theme.spacing.md,
                 border: `1px solid ${theme.colors.gray[300]}`,
                 borderRadius: theme.borderRadius.md,
-                fontSize: theme.fontSizes.base
+                fontSize: theme.fontSizes.base,
               }}
             />
           </div>
@@ -114,9 +120,9 @@ const Login: React.FC = () => {
             <label
               htmlFor="password"
               style={{
-                display: 'block',
+                display: "block",
                 marginBottom: theme.spacing.xs,
-                color: theme.colors.gray[700]
+                color: theme.colors.gray[700],
               }}
             >
               Password
@@ -128,11 +134,11 @@ const Login: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               style={{
-                width: '100%',
+                width: "100%",
                 padding: theme.spacing.md,
                 border: `1px solid ${theme.colors.gray[300]}`,
                 borderRadius: theme.borderRadius.md,
-                fontSize: theme.fontSizes.base
+                fontSize: theme.fontSizes.base,
               }}
             />
           </div>
@@ -141,18 +147,30 @@ const Login: React.FC = () => {
             type="submit"
             disabled={loading}
             style={{
-              width: '100%',
+              width: "100%",
               padding: theme.spacing.md,
               backgroundColor: theme.colors.primary,
               color: theme.colors.white,
-              border: 'none',
+              border: "none",
               borderRadius: theme.borderRadius.md,
               fontSize: theme.fontSizes.lg,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1,
+              transition: "all 0.1s ease",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background =
+                theme.colors.primaryDark || "#0055aa";
+              e.currentTarget.style.boxShadow = "0 0 12px rgba(0,123,255,0.3)";
+              e.currentTarget.style.transform = "scale(1.05)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = theme.colors.primary;
+              e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+              e.currentTarget.style.transform = "scale(1)";
             }}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>
@@ -160,4 +178,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login; 
+export default Login;

@@ -225,7 +225,7 @@ const DiscountList: React.FC = () => {
               border: "none",
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
-              transition: "all 0.3s ease",
+              transition: "all 0.1s ease",
             }}
             aria-label="Add New Level"
             onMouseOver={(e) => {
@@ -252,7 +252,7 @@ const DiscountList: React.FC = () => {
               border: "none",
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
-              transition: "all 0.3s ease",
+              transition: "all 0.1s ease",
             }}
             aria-label="Refresh"
             onMouseOver={(e) => {
@@ -408,7 +408,7 @@ const DiscountList: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background =
@@ -435,7 +435,7 @@ const DiscountList: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = "#334155";
@@ -585,7 +585,7 @@ const DiscountList: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background =
@@ -613,7 +613,7 @@ const DiscountList: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = "#334155";
@@ -690,7 +690,7 @@ const DiscountList: React.FC = () => {
                       border: "none",
                       borderRadius: theme.borderRadius.md,
                       cursor: "pointer",
-                      transition: "all 0.3s ease",
+                      transition: "all 0.1s ease",
                     }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.background =
@@ -717,7 +717,7 @@ const DiscountList: React.FC = () => {
                       border: "none",
                       borderRadius: theme.borderRadius.md,
                       cursor: "pointer",
-                      transition: "all 0.3s ease",
+                      transition: "all 0.1s ease",
                     }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red

@@ -124,7 +124,7 @@ const Orders: React.FC = () => {
             border: "none",
             borderRadius: theme.borderRadius.md,
             cursor: "pointer",
-            transition: "all 0.3s ease",
+            transition: "all 0.1s ease",
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.background =
@@ -168,6 +168,18 @@ const Orders: React.FC = () => {
               border: "none",
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
+              transition: "all 0.1s ease",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background =
+                theme.colors.primaryDark || "#0055aa";
+              e.currentTarget.style.boxShadow = "0 0 12px rgba(0,123,255,0.3)";
+              e.currentTarget.style.transform = "scale(1.05)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = theme.colors.primary;
+              e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+              e.currentTarget.style.transform = "scale(1)";
             }}
           >
             Search
