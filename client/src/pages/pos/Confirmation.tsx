@@ -80,7 +80,7 @@ const Confirmation: React.FC = () => {
           {error || "Order not found"}
         </p>
         <button
-          onClick={() => navigate("/pos")}
+          onClick={() => navigate(-1)}
           style={{
             padding: theme.spacing.sm,
             backgroundColor: theme.colors.primary,
@@ -91,7 +91,7 @@ const Confirmation: React.FC = () => {
             marginTop: theme.spacing.md,
           }}
         >
-          Return to POS
+          Return
         </button>
       </div>
     );
@@ -134,11 +134,12 @@ const Confirmation: React.FC = () => {
             style={{
               marginBottom: theme.spacing.md,
               color: theme.colors.primary,
-              textAlign:"center"
+              textAlign: "center",
             }}
           >
             Thanks For Ordering!
-          </h3>  <h3
+          </h3>{" "}
+          <h3
             style={{
               marginBottom: theme.spacing.md,
               color: theme.colors.primary,

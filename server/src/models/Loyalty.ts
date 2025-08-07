@@ -5,22 +5,25 @@ export interface ILoyalty extends Document {
   points: number;
 }
 
-const LoyaltySchema: Schema = new Schema({
- 
-  phoneNumber: {
-    type: String,
-    required: true,
-    unique: true
+const LoyaltySchema: Schema = new Schema(
+  {
+    phoneNumber: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    points: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: [0, "Points cannot be negative"],
+      set: (value: number) => parseFloat(value.toFixed(2)),
+    },
   },
-  points: {
-    type: Number,
-    required: true,
-    default: 0,
-    min: [0, 'Points cannot be negative']
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
 
 export default mongoose.model<ILoyalty>('Loyalty', LoyaltySchema); 

@@ -92,8 +92,8 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 };
 
 
-// Get single order
-export const getOrder = async (req: Request, res: Response, next: NextFunction) => {
+// Get single order with phonenumber 
+export const fetchOrder = async (req: Request, res: Response, next: NextFunction) => {
   const { phoneNumber } = req.params;
 
   if (!phoneNumber) {
@@ -136,3 +136,23 @@ export const getCustomerOrders = async (req: Request, res: Response, next: NextF
     next(error);
   }
 }; 
+
+
+// Get single order with id
+export const getOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        error: 'Order not found'
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: order
+    });
+  } catch (error) {
+    next(error);
+  }
+};

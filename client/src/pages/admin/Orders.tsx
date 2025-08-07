@@ -34,7 +34,7 @@ const Orders: React.FC = () => {
     } else {
       fetchOrders();
     }
-  }, []); 
+  }, []);
 
   // Fetch all orders
   const fetchOrders = async () => {
@@ -65,7 +65,7 @@ const Orders: React.FC = () => {
       setError(null);
 
       const response = await api.get<ApiResponse<Order[]>>(
-        `/orders/${phoneNumber}`
+        `/orders/fetch/${phoneNumber}`
       );
 
       if (response.data.success && Array.isArray(response.data.data)) {
@@ -90,7 +90,7 @@ const Orders: React.FC = () => {
     event.preventDefault();
     if (searchPhoneNumber.trim() !== "") {
       fetchOrdersByPhoneNumber(searchPhoneNumber);
-      setSearchPhoneNumber(""); 
+      setSearchPhoneNumber("");
     } else {
       setError("Please enter a phone number.");
     }

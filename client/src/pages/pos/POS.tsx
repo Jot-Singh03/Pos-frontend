@@ -168,42 +168,53 @@ const POS: React.FC = () => {
       setDiscount(0);
     }
   };
+const postpoints = async () => {
+  // Calculate points as 10% of total amount
+  const totalAmount = getTotal();
 
-  const postpoints = async () => {
-    // Calculate points as 10% of total amount
-    const totalAmount = getTotal();
-    if (!totalAmount) {
-      console.error("Total amount is invalid or missing.");
-      return;
-    }
+  // Validate total amount
+  if (isNaN(totalAmount) || totalAmount <= 0) {
+    console.error("Total amount is invalid or too small.");
+    setError("Invalid total amount.");
+    return;
+  }
 
-    let points = totalAmount * 0.1;
-    points = parseFloat(points.toFixed(2)); // Ensure points have 2 decimal places
+  // Calculate points (10% of total amount) and ensure 2 decimal places
+  let points = totalAmount * 0.1;
+  points = parseFloat(points.toFixed(2));
 
-    console.log("Posting points:", { phoneNumber, points });
+  // Validate phone number - Check if it's blank
+  if (!phoneNumber || phoneNumber.trim() === "") {
+    setError("Please provide a valid phone number.");
+    return; // Prevent POST request if phone number is blank
+  }
 
-    try {
-      // Make the POST request
-      const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
-        "/loyalty/add",
-        {
-          phoneNumber: phoneNumber,
-          points: points,
-        }
-      );
-      // Handle success
-      console.log("Loyalty points added successfully:", data);
-    } catch (error: any) {
-      // Log the full error response for detailed info
-      if (error.response) {
-        console.error("Error response:", error.response);
-        console.error("Error message:", error.response.data);
-      } else {
-        console.error("Error:", error.message);
+  console.log("Posting points:", { phoneNumber, points });
+
+  try {
+    // Make the POST request
+    const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
+      "/loyalty/add",
+      {
+        phoneNumber,
+        points,
       }
-      setError(error?.message || "An unexpected error occurred");
+    );
+
+    // Handle success
+    console.log("Loyalty points added successfully:", data);
+    setError(""); // Clear any previous error message
+  } catch (error: any) {
+    // Handle API error
+    if (error.response) {
+      console.error("Error response:", error.response);
+      console.error("Error message:", error.response.data);
+    } else {
+      console.error("Error:", error.message);
     }
-  };
+    setError(error?.message || "An unexpected error occurred");
+  }
+};
 
   const handleCheckout = async () => {
     if (cart.length === 0) {
