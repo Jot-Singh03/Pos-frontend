@@ -287,9 +287,76 @@ const POS: React.FC = () => {
           backgroundColor: theme.colors.gray[200],
           padding: theme.spacing.lg,
           borderRight: `1px solid ${theme.colors.gray[300]}`,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center", // This will center the button horizontally
         }}
       >
         <h2 style={{ marginBottom: theme.spacing.xl }}>Categories</h2>
+        <button
+          style={{
+            marginBottom: theme.spacing.md,
+            background: theme.colors.primary,
+            color: "#fff",
+            border: "none",
+            borderRadius: 8,
+            padding: "0.5rem 1.2rem",
+            fontWeight: 600,
+            fontSize: "0.9rem",
+            cursor: "pointer",
+            display: "flex",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            transition: "all 0.25s ease",
+            gap: "8px",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.background =
+              theme.colors.primaryDark || "#0055aa";
+            e.currentTarget.style.boxShadow = "0 0 12px rgba(0,123,255,0.3)";
+            e.currentTarget.style.transform = "scale(1.05)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.background = theme.colors.primary;
+            e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+            e.currentTarget.style.transform = "scale(1)";
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            strokeWidth="2"
+            stroke="#fff"
+            width="20"
+            height="20"
+            viewBox="0 0 64 64"
+          >
+            <g data-name="33 discount ticket" id="_33_discount_ticket">
+              <path d="M57.46,27.91H59.5a1,1,0,0,0,1-1V18.76a2.027,2.027,0,0,0-2.02-2.02H5.52A2.027,2.027,0,0,0,3.5,18.76v8.15a1,1,0,0,0,1,1H6.54a4.09,4.09,0,1,1,0,8.18H4.5a1,1,0,0,0-1,1v8.15a2.027,2.027,0,0,0,2.02,2.02H58.48a2.027,2.027,0,0,0,2.02-2.02V37.09a1,1,0,0,0-1-1H57.46a4.09,4.09,0,1,1,0-8.18Zm0,10.18H58.5l-.02,7.17L5.5,45.24V38.09H6.54a6.09,6.09,0,0,0,0-12.18H5.5l.02-7.17,52.98.02v7.15H57.46a6.09,6.09,0,0,0,0,12.18Z" />
+
+              <path d="M32,20.814a1,1,0,0,0-1,1v2.038a1,1,0,1,0,2,0V21.814A1,1,0,0,0,32,20.814Z" />
+
+              <path d="M32,39.148a1,1,0,0,0-1,1v2.038a1,1,0,1,0,2,0V40.148A1,1,0,0,0,32,39.148Z" />
+
+              <path d="M32,33.037a1,1,0,0,0-1,1v2.037a1,1,0,0,0,2,0V34.037A1,1,0,0,0,32,33.037Z" />
+
+              <path d="M32,26.926a1,1,0,0,0-1,1v2.037a1,1,0,0,0,2,0V27.926A1,1,0,0,0,32,26.926Z" />
+
+              <path d="M16.722,26.889H20.8a1,1,0,0,0,0-2H16.722a1,1,0,0,0,0,2Z" />
+
+              <path d="M16.722,33h6.111a1,1,0,0,0,0-2H16.722a1,1,0,0,0,0,2Z" />
+
+              <path d="M24.871,37.111H16.722a1,1,0,0,0,0,2h8.149a1,1,0,1,0,0-2Z" />
+
+              <path d="M39.13,24.89a3.035,3.035,0,1,0,3.04,3.04A3.045,3.045,0,0,0,39.13,24.89Zm0,4.07a1.035,1.035,0,1,1,1.04-1.03A1.037,1.037,0,0,1,39.13,28.96Z" />
+
+              <path d="M47.28,33.04a3.035,3.035,0,1,0,3.03,3.03A3.037,3.037,0,0,0,47.28,33.04Zm0,4.07a1.035,1.035,0,1,1,0-2.07,1.035,1.035,0,0,1,0,2.07Z" />
+
+              <path d="M49,26.2a1,1,0,0,0-1.414,0L37.4,36.386A1,1,0,1,0,38.818,37.8L49,27.614A1,1,0,0,0,49,26.2Z" />
+            </g>
+          </svg>
+          Vouchers
+        </button>
+
         <ul style={{ listStyle: "none", padding: 0 }}>
           {categories.map((category) => (
             <li
