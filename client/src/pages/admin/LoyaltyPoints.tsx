@@ -38,61 +38,61 @@ const LoyaltyPoints: React.FC = () => {
     }
   };
 
- const handleAddPoints = async (e: React.FormEvent) => {
-   e.preventDefault();
-   if (!editingCustomer) return;
+  const handleAddPoints = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCustomer) return;
 
-   let pointsValue = parseFloat(points);
-   if (isNaN(pointsValue) || pointsValue <= 0) {
-     setError("Please enter a valid positive decimal number of points.");
-     return;
-   }
+    let pointsValue = parseFloat(points);
+    if (isNaN(pointsValue) || pointsValue <= 0) {
+      setError("Please enter a valid positive decimal number of points.");
+      return;
+    }
 
-   // Round to two decimals
-   pointsValue = parseFloat(pointsValue.toFixed(2));
+    // Round to two decimals
+    pointsValue = parseFloat(pointsValue.toFixed(2));
 
-   try {
-     setError(null);
-     await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/add`, {
-       phoneNumber: editingCustomer.phoneNumber,
-       points: pointsValue,
-     });
+    try {
+      setError(null);
+      await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/add`, {
+        phoneNumber: editingCustomer.phoneNumber,
+        points: pointsValue,
+      });
 
-     fetchCustomers();
-     setEditingCustomer(null);
-     setPoints(""); // Clear points input after successful update
-   } catch (error) {
-     setError("Failed to update points. Please try again.");
-   }
- };
+      fetchCustomers();
+      setEditingCustomer(null);
+      setPoints(""); // Clear points input after successful update
+    } catch (error) {
+      setError("Failed to update points. Please try again.");
+    }
+  };
 
- const handleRemovePoints = async (e: React.FormEvent) => {
-   e.preventDefault();
-   if (!editingCustomer) return;
+  const handleRemovePoints = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCustomer) return;
 
-   let pointsValue = parseFloat(points);
-   if (isNaN(pointsValue) || pointsValue <= 0) {
-     setError("Please enter a valid positive decimal number of points.");
-     return;
-   }
+    let pointsValue = parseFloat(points);
+    if (isNaN(pointsValue) || pointsValue <= 0) {
+      setError("Please enter a valid positive decimal number of points.");
+      return;
+    }
 
-   // Round to two decimals
-   pointsValue = parseFloat(pointsValue.toFixed(2));
+    // Round to two decimals
+    pointsValue = parseFloat(pointsValue.toFixed(2));
 
-   try {
-     setError(null);
-     await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/remove`, {
-       phoneNumber: editingCustomer.phoneNumber,
-       points: pointsValue,
-     });
+    try {
+      setError(null);
+      await api.post<ApiResponse<LoyaltyCustomer>>(`/loyalty/remove`, {
+        phoneNumber: editingCustomer.phoneNumber,
+        points: pointsValue,
+      });
 
-     fetchCustomers();
-     setEditingCustomer(null);
-     setPoints(""); // Clear points input after successful update
-   } catch (error) {
-     setError("Failed to update points. Please try again.");
-   }
- };
+      fetchCustomers();
+      setEditingCustomer(null);
+      setPoints(""); // Clear points input after successful update
+    } catch (error) {
+      setError("Failed to update points. Please try again.");
+    }
+  };
 
   const handleDeleteCustomer = async (phoneNumber: string) => {
     try {
@@ -126,7 +126,7 @@ const LoyaltyPoints: React.FC = () => {
             border: "none",
             borderRadius: theme.borderRadius.md,
             cursor: "pointer",
-            transition: "all 0.3s ease",
+            transition: "all 0.1s ease",
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.background =
@@ -191,7 +191,7 @@ const LoyaltyPoints: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background =
@@ -236,7 +236,7 @@ const LoyaltyPoints: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = "#334155";
@@ -307,7 +307,7 @@ const LoyaltyPoints: React.FC = () => {
                     border: "none",
                     borderRadius: theme.borderRadius.md,
                     cursor: "pointer",
-                    transition: "all 0.3s ease",
+                    transition: "all 0.1s ease",
                   }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.background =
@@ -335,7 +335,7 @@ const LoyaltyPoints: React.FC = () => {
                     border: "none",
                     borderRadius: theme.borderRadius.md,
                     cursor: "pointer",
-                    transition: "all 0.3s ease",
+                    transition: "all 0.1s ease",
                   }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red
