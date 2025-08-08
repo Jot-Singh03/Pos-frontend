@@ -126,7 +126,10 @@ const LoyaltyPoints: React.FC = () => {
             border: "none",
             borderRadius: theme.borderRadius.md,
             cursor: "pointer",
+
+
             transition: "all 0.1s ease",
+
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.background =
@@ -192,6 +195,7 @@ const LoyaltyPoints: React.FC = () => {
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
                   transition: "all 0.1s ease",
+
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background =
@@ -236,7 +240,11 @@ const LoyaltyPoints: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
+
+                  transition: "all 0.2s ease",
+
                   transition: "all 0.1s ease",
+
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = "#334155";
@@ -307,7 +315,10 @@ const LoyaltyPoints: React.FC = () => {
                     border: "none",
                     borderRadius: theme.borderRadius.md,
                     cursor: "pointer",
+
+             
                     transition: "all 0.1s ease",
+
                   }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.background =
@@ -335,7 +346,10 @@ const LoyaltyPoints: React.FC = () => {
                     border: "none",
                     borderRadius: theme.borderRadius.md,
                     cursor: "pointer",
+   
+
                     transition: "all 0.1s ease",
+
                   }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red
