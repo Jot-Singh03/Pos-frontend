@@ -175,6 +175,19 @@ const DropdownsManagement: React.FC = () => {
               }}
             />
             {/* Optional imageUrl input field */}
+            <input
+              type="text"
+              value={formImageUrl}
+              onChange={(e) => setFormImageUrl(e.target.value)}
+              placeholder="Image URL (optional)"
+              style={{
+                padding: theme.spacing.sm,
+                borderRadius: theme.borderRadius.md,
+                border: `1px solid ${theme.colors.gray[300]}`,
+                width: "100%",
+                fontSize: theme.fontSizes.base,
+              }}
+            />
             {editingCategory && (
               <input
                 type="text"

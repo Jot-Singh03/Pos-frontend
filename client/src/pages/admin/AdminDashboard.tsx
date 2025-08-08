@@ -38,7 +38,7 @@ const AdminDashboard: React.FC = () => {
        (a, b) =>
          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
      ) 
-     .slice(0, 5); 
+     .slice(0, 25); 
   return (
     <div>
       <h1 style={{ marginBottom: theme.spacing.xl }}>Dashboard</h1>

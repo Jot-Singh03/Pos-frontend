@@ -15,30 +15,35 @@ export const getCategories = async (req: Request, res: Response) => {
   }
 };
 
-// Create Category
 export const createCategory = async (req: Request, res: Response) => {
   try {
-    const { name, imageUrl } = req.body;
+    let { name, imageUrl } = req.body;
 
     // Validate required fields
-    if (!name) {
+    if (!name || typeof name !== "string") {
       return res
         .status(400)
         .json({ success: false, error: "Name is required" });
     }
 
-    // Check if the category already exists
-    const existingCategory = await Category.findOne({ name });
+    // Trim and normalize name
+    name = name.trim();
+
+    // Check if category exists (case-insensitive)
+    const existingCategory = await Category.findOne({
+      name: { $regex: new RegExp(`^${name}$`, "i") },
+    });
+
     if (existingCategory) {
       return res
         .status(400)
         .json({ success: false, error: "Category already exists" });
     }
 
-    // Create a new category (imageUrl is optional, so we don't enforce it as a requirement)
+    // Create and save category
     const category = new Category({
       name,
-      imageUrl: imageUrl || "", // If imageUrl is not provided, it will default to an empty string
+      imageUrl: imageUrl?.trim() || "",
     });
 
     await category.save();
