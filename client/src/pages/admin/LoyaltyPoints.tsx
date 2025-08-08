@@ -6,7 +6,9 @@ interface LoyaltyCustomer {
   _id: string;
   phoneNumber: string; // Updated to string for phone number
   points: number;
+  createdAt: string;
 }
+
 
 const LoyaltyPoints: React.FC = () => {
   const [customers, setCustomers] = useState<LoyaltyCustomer[]>([]);
@@ -15,6 +17,7 @@ const LoyaltyPoints: React.FC = () => {
   const [points, setPoints] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchCustomers();
@@ -103,6 +106,27 @@ const LoyaltyPoints: React.FC = () => {
       setError("Failed to delete customer. Please try again.");
     }
   };
+const handleSearch = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!searchQuery.trim()) return;
+
+  try {
+    setLoading(true);
+    const response = await api.get<ApiResponse<LoyaltyCustomer[]>>(
+      `/loyalty/record/${searchQuery.trim()}`
+    );
+
+    if (response.data.success) {
+      setCustomers(response.data.data);
+    } else {
+      setError("No records found for this phone number.");
+    }
+  } catch (error) {
+    setError("Failed to load loyalty records. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div>
@@ -127,9 +151,7 @@ const LoyaltyPoints: React.FC = () => {
             borderRadius: theme.borderRadius.md,
             cursor: "pointer",
 
-
             transition: "all 0.1s ease",
-
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.background =
@@ -195,7 +217,6 @@ const LoyaltyPoints: React.FC = () => {
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
                   transition: "all 0.1s ease",
-
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background =
@@ -241,7 +262,6 @@ const LoyaltyPoints: React.FC = () => {
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
                   transition: "all 0.1s ease",
-
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = "#334155";
@@ -268,6 +288,54 @@ const LoyaltyPoints: React.FC = () => {
         </div>
       )}
 
+      <div style={{ marginBottom: theme.spacing.md }}>
+        <label style={{ display: "block", marginBottom: theme.spacing.xs }}>
+          Search
+        </label>
+        <form onSubmit={handleSearch}>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by phone number"
+            style={{
+              width: "100%",
+              padding: theme.spacing.sm,
+              borderRadius: theme.borderRadius.md,
+              border: `1px solid ${theme.colors.gray[300]}`,
+            }}
+          />
+
+          <button
+            type="submit"
+            onClick={handleSearch}
+            style={{
+              marginTop: theme.spacing.sm,
+              padding: theme.spacing.sm,
+              backgroundColor: theme.colors.primary,
+              color: theme.colors.white,
+              border: "none",
+              borderRadius: theme.borderRadius.md,
+              cursor: "pointer",
+              transition: "all 0.1s ease",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background =
+                theme.colors.primaryDark || "#0055aa";
+              e.currentTarget.style.boxShadow = "0 0 12px rgba(0,123,255,0.3)";
+              e.currentTarget.style.transform = "scale(1.05)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = theme.colors.primary;
+              e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+          >
+            Search
+          </button>
+        </form>
+      </div>
+
       {/* Customers List */}
       <div
         style={{
@@ -278,93 +346,96 @@ const LoyaltyPoints: React.FC = () => {
       >
         <h4>Loyalty Customers</h4>
         <div style={{ display: "grid", gap: theme.spacing.md }}>
-          {customers.map((customer) => (
-            <div
-              key={customer._id}
-              style={{
-                border: `1px solid ${theme.colors.gray[200]}`,
-                borderRadius: theme.borderRadius.md,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: theme.spacing.lg,
-              }}
-            >
-              <div>
-                <h5 style={{ marginBottom: theme.spacing.xs }}>
-                  {customer.phoneNumber}
-                </h5>
-                <p style={{ color: theme.colors.gray[600] }}>
-                  Points: {customer.points.toFixed(2)}
-                </p>
+          {customers
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            )
+            .map((customer) => (
+              <div
+                key={customer._id}
+                style={{
+                  border: `1px solid ${theme.colors.gray[200]}`,
+                  borderRadius: theme.borderRadius.md,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: theme.spacing.lg,
+                }}
+              >
+                <div>
+                  <h5 style={{ marginBottom: theme.spacing.xs }}>
+                    {customer.phoneNumber}
+                  </h5>
+                  <p style={{ color: theme.colors.gray[600] }}>
+                    Points: {customer.points.toFixed(2)}
+                  </p>
+                </div>
+
+                <div style={{ display: "flex", gap: theme.spacing.sm }}>
+                  <button
+                    onClick={() => {
+                      setEditingCustomer(customer);
+                      setPoints(" ");
+                    }}
+                    style={{
+                      padding: theme.spacing.sm,
+                      backgroundColor: theme.colors.primary,
+                      color: theme.colors.white,
+                      border: "none",
+                      borderRadius: theme.borderRadius.md,
+                      cursor: "pointer",
+
+                      transition: "all 0.1s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background =
+                        theme.colors.primaryDark || "#0055aa";
+                      e.currentTarget.style.boxShadow =
+                        "0 0 12px rgba(0,123,255,0.3)";
+                      e.currentTarget.style.transform = "scale(1.05)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = theme.colors.primary;
+                      e.currentTarget.style.boxShadow =
+                        "0 2px 6px rgba(0,0,0,0.1)";
+                      e.currentTarget.style.transform = "scale(1)";
+                    }}
+                  >
+                    Update Points
+                  </button>
+
+                  <button
+                    onClick={() => handleDeleteCustomer(customer.phoneNumber)}
+                    style={{
+                      padding: theme.spacing.sm,
+                      backgroundColor: theme.colors.danger,
+                      color: theme.colors.white,
+                      border: "none",
+                      borderRadius: theme.borderRadius.md,
+                      cursor: "pointer",
+
+                      transition: "all 0.1s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red
+                      e.currentTarget.style.transform = "scale(1.03)";
+                      e.currentTarget.style.boxShadow =
+                        "0 4px 10px rgba(0,0,0,0.1)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        theme.colors.danger;
+                      e.currentTarget.style.transform = "scale(1)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-
-              <div style={{ display: "flex", gap: theme.spacing.sm }}>
-                <button
-                  onClick={() => {
-                    setEditingCustomer(customer);
-                    setPoints(" ");
-                  }}
-                  style={{
-                    padding: theme.spacing.sm,
-                    backgroundColor: theme.colors.primary,
-                    color: theme.colors.white,
-                    border: "none",
-                    borderRadius: theme.borderRadius.md,
-                    cursor: "pointer",
-
-             
-                    transition: "all 0.1s ease",
-
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.background =
-                      theme.colors.primaryDark || "#0055aa";
-                    e.currentTarget.style.boxShadow =
-                      "0 0 12px rgba(0,123,255,0.3)";
-                    e.currentTarget.style.transform = "scale(1.05)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.background = theme.colors.primary;
-                    e.currentTarget.style.boxShadow =
-                      "0 2px 6px rgba(0,0,0,0.1)";
-                    e.currentTarget.style.transform = "scale(1)";
-                  }}
-                >
-                  Update Points
-                </button>
-
-                <button
-                  onClick={() => handleDeleteCustomer(customer.phoneNumber)}
-                  style={{
-                    padding: theme.spacing.sm,
-                    backgroundColor: theme.colors.danger,
-                    color: theme.colors.white,
-                    border: "none",
-                    borderRadius: theme.borderRadius.md,
-                    cursor: "pointer",
-   
-
-                    transition: "all 0.1s ease",
-
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red
-                    e.currentTarget.style.transform = "scale(1.03)";
-                    e.currentTarget.style.boxShadow =
-                      "0 4px 10px rgba(0,0,0,0.1)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.backgroundColor = theme.colors.danger;
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>

@@ -163,3 +163,27 @@ export const deleteLoyalty = async (
     next(error);
   }
 };
+// Get loyalty points for a customer
+export const getLoyalties = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const loyalty = await Loyalty.find({
+      phoneNumber: req.params.phoneNumber,
+    });
+    if (!loyalty) {
+      return res.status(404).json({
+        success: false,
+        error: "Loyalty record not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: loyalty,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
