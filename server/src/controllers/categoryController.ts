@@ -1,5 +1,6 @@
 import Category, { ICategory } from "../models/Category";
 import { Request, Response } from "express";
+import MenuItem from "../models/MenuItem";
 
 // Get Categories
 export const getCategories = async (req: Request, res: Response) => {
@@ -50,32 +51,43 @@ export const createCategory = async (req: Request, res: Response) => {
   }
 };
 
-// Update Category
 export const updateCategory = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { name, imageUrl } = req.body;
 
-    // Ensure name and imageUrl are provided (if updating)
     if (!name) {
       return res
         .status(400)
-        .json({ success: false, error: "Name and Image URL are required" });
+        .json({ success: false, error: "Name is required" });
     }
 
-    const category = await Category.findByIdAndUpdate(
-      id,
-      { name, imageUrl },
-      { new: true }
-    );
-
-    if (!category) {
+    // 1. Get the current category to compare names
+    const oldCategory = await Category.findById(id);
+    if (!oldCategory) {
       return res
         .status(404)
         .json({ success: false, error: "Category not found" });
     }
 
-    res.json({ success: true, data: category });
+    const oldName = oldCategory.name;
+
+    // 2. Update the category itself
+    const updatedCategory = await Category.findByIdAndUpdate(
+      id,
+      { name, imageUrl },
+      { new: true }
+    );
+
+    // 3. If the category name changed, update all menuitems
+    if (oldName !== name) {
+      await MenuItem.updateMany(
+        { category: oldName }, // <-- FIXED field name
+        { $set: { category: name } }
+      );
+    }
+
+    res.json({ success: true, data: updatedCategory });
   } catch (err) {
     console.error("Error updating category:", err);
     res
@@ -83,7 +95,6 @@ export const updateCategory = async (req: Request, res: Response) => {
       .json({ success: false, error: "Failed to update category" });
   }
 };
-
 // Delete Category
 export const deleteCategory = async (req: Request, res: Response) => {
   try {
