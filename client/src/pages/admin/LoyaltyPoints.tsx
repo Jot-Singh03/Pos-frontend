@@ -240,9 +240,6 @@ const LoyaltyPoints: React.FC = () => {
                   border: "none",
                   borderRadius: theme.borderRadius.md,
                   cursor: "pointer",
-
-                  transition: "all 0.2s ease",
-
                   transition: "all 0.1s ease",
 
                 }}
