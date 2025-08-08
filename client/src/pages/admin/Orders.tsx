@@ -124,7 +124,7 @@ const Orders: React.FC = () => {
             border: "none",
             borderRadius: theme.borderRadius.md,
             cursor: "pointer",
-            transition: "all 0.3s ease",
+            transition: "all 0.1s ease",
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.background =
@@ -168,7 +168,8 @@ const Orders: React.FC = () => {
               border: "none",
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
-              transition: "all 0.3s ease",
+      transition: "all 0.1s ease",
+
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.background =
