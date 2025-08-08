@@ -168,53 +168,53 @@ const POS: React.FC = () => {
       setDiscount(0);
     }
   };
-const postpoints = async () => {
-  // Calculate points as 10% of total amount
-  const totalAmount = getTotal();
+  const postpoints = async () => {
+    // Calculate points as 10% of total amount
+    const totalAmount = getTotal();
 
-  // Validate total amount
-  if (isNaN(totalAmount) || totalAmount <= 0) {
-    console.error("Total amount is invalid or too small.");
-    setError("Invalid total amount.");
-    return;
-  }
-
-  // Calculate points (10% of total amount) and ensure 2 decimal places
-  let points = totalAmount * 0.1;
-  points = parseFloat(points.toFixed(2));
-
-  // Validate phone number - Check if it's blank
-  if (!phoneNumber || phoneNumber.trim() === "") {
-    setError("Please provide a valid phone number.");
-    return; // Prevent POST request if phone number is blank
-  }
-
-  console.log("Posting points:", { phoneNumber, points });
-
-  try {
-    // Make the POST request
-    const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
-      "/loyalty/add",
-      {
-        phoneNumber,
-        points,
-      }
-    );
-
-    // Handle success
-    console.log("Loyalty points added successfully:", data);
-    setError(""); // Clear any previous error message
-  } catch (error: any) {
-    // Handle API error
-    if (error.response) {
-      console.error("Error response:", error.response);
-      console.error("Error message:", error.response.data);
-    } else {
-      console.error("Error:", error.message);
+    // Validate total amount
+    if (isNaN(totalAmount) || totalAmount <= 0) {
+      console.error("Total amount is invalid or too small.");
+      setError("Invalid total amount.");
+      return;
     }
-    setError(error?.message || "An unexpected error occurred");
-  }
-};
+
+    // Calculate points (10% of total amount) and ensure 2 decimal places
+    let points = totalAmount * 0.1;
+    points = parseFloat(points.toFixed(2));
+
+    // Validate phone number - Check if it's blank
+    if (!phoneNumber || phoneNumber.trim() === "") {
+      setError("Please provide a valid phone number.");
+      return; // Prevent POST request if phone number is blank
+    }
+
+    console.log("Posting points:", { phoneNumber, points });
+
+    try {
+      // Make the POST request
+      const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
+        "/loyalty/add",
+        {
+          phoneNumber,
+          points,
+        }
+      );
+
+      // Handle success
+      console.log("Loyalty points added successfully:", data);
+      setError(""); // Clear any previous error message
+    } catch (error: any) {
+      // Handle API error
+      if (error.response) {
+        console.error("Error response:", error.response);
+        console.error("Error message:", error.response.data);
+      } else {
+        console.error("Error:", error.message);
+      }
+      setError(error?.message || "An unexpected error occurred");
+    }
+  };
 
   const handleCheckout = async () => {
     if (cart.length === 0) {
@@ -317,7 +317,7 @@ const postpoints = async () => {
             cursor: "pointer",
             display: "flex",
             boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            transition: "all 0.25s ease",
+            transition: "all 0.1s ease",
             gap: "8px",
           }}
           onMouseOver={(e) => {
@@ -383,7 +383,7 @@ const postpoints = async () => {
                 padding: "6px 10px",
                 borderRadius: "8px",
                 fontWeight: 500,
-                transition: "all 0.3s ease",
+                transition: "all 0.1s ease",
                 backgroundColor:
                   selectedCategory === category.name
                     ? theme.colors.gray[300]
@@ -495,7 +495,7 @@ const postpoints = async () => {
                   justifyContent: "space-between",
                   height: "100%",
                   border: `1px solid ${theme.colors.gray[300]}`,
-                  transition: "all 0.3s ease",
+                  transition: "all 0.1s ease",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.transform =
@@ -576,7 +576,7 @@ const postpoints = async () => {
                       fontSize: "0.9rem",
                       cursor: "pointer",
                       boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                      transition: "all 0.25s ease",
+                      transition: "all 0.1s ease",
                     }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.background =
@@ -917,8 +917,21 @@ const postpoints = async () => {
                   borderRadius: theme.borderRadius.md,
                   fontSize: theme.fontSizes.lg,
                   cursor: "pointer",
+                  transition: "all 0.1s ease",
                 }}
                 disabled={loading}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background =
+                    theme.colors.primaryDark || "#0055aa";
+                  e.currentTarget.style.boxShadow =
+                    "0 0 12px rgba(0,123,255,0.3)";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = theme.colors.primary;
+                  e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
               >
                 {loading ? "Processing..." : "Checkout"}
               </button>

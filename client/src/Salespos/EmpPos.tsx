@@ -326,20 +326,18 @@ const EmpPos: React.FC = () => {
       >
         {/* Top: Employee & Categories */}
         <div>
-          <h3 style={{ marginBottom: theme.spacing.md }}>
+          <h5 style={{ marginBottom: theme.spacing.md }}>
             {employeeName ? employeeName : "Employee"}
             <span
               style={{
                 fontSize: "0.9rem",
-                marginLeft: "0.5rem",
+                marginLeft: "3rem",
                 verticalAlign: "middle",
-                transform: "scale(0.5)",
               }}
             >
               🟢
             </span>
-          </h3>
-
+          </h5>
           <h2 style={{ marginBottom: theme.spacing.xl }}>Categories</h2>
           <ul style={{ listStyle: "none", padding: 0 }}>
             {categories.map((category) => (

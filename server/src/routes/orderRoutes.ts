@@ -15,7 +15,7 @@ router.post("/", createOrder);
 
 // Protected routes
 router.get("/", protect, getOrders);
-router.get("fetch/:phoneNumber", fetchOrder);
+router.get("/fetch/:phoneNumber", fetchOrder);
 router.get("/:id", getOrder);
 router.get("/customer/:customerId", protect, getCustomerOrders);
 

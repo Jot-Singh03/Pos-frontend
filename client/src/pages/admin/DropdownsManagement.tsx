@@ -40,31 +40,35 @@ const DropdownsManagement: React.FC = () => {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormLoading(true);
-    setError(null);
-    try {
-      const categoryData = {
-        name: formName,
-        imageUrl: formImageUrl || "", // If no imageUrl is provided, set it to an empty string
-      };
+     e.preventDefault();
+     setFormLoading(true);
+     setError(null);
 
-      if (editingCategory) {
-        await updateCategory(editingCategory._id, categoryData);
-      } else {
-        await createCategory(categoryData);
-      }
+     try {
+       const categoryData = {
+         name: formName,
+         imageUrl: formImageUrl || "",
+       };
 
-      // Reset form state
-      setFormName("");
-      setFormImageUrl("");
-      setEditingCategory(null);
-      fetchCategories();
-    } catch (err) {
-      setError("Failed to save category.");
-    } finally {
-      setFormLoading(false);
-    }
+       if (editingCategory) {
+         await updateCategory(editingCategory._id, categoryData);
+       } else {
+         await createCategory(categoryData);
+       }
+
+       // Reset form state
+       setFormName("");
+       setFormImageUrl("");
+       setEditingCategory(null);
+
+       // Refetch the categories and products
+       fetchCategories();
+       // Optionally, fetch or update product data here if needed
+     } catch (err) {
+       setError("Failed to save category.");
+     } finally {
+       setFormLoading(false);
+     }
   };
 
   const handleEdit = (cat: Category) => {
@@ -165,6 +169,7 @@ const DropdownsManagement: React.FC = () => {
                 padding: theme.spacing.sm,
                 borderRadius: theme.borderRadius.md,
                 border: `1px solid ${theme.colors.gray[300]}`,
+                width: "100%",
                 flex: 1,
                 fontSize: theme.fontSizes.base,
               }}
@@ -180,6 +185,7 @@ const DropdownsManagement: React.FC = () => {
                   padding: theme.spacing.sm,
                   borderRadius: theme.borderRadius.md,
                   border: `1px solid ${theme.colors.gray[300]}`,
+                  width: "100%",
                   fontSize: theme.fontSizes.base,
                 }}
               />

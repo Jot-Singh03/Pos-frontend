@@ -14,7 +14,6 @@ export const getCategories = async (req: Request, res: Response) => {
   }
 };
 
-
 // Create Category
 export const createCategory = async (req: Request, res: Response) => {
   try {
@@ -58,7 +57,7 @@ export const updateCategory = async (req: Request, res: Response) => {
     const { name, imageUrl } = req.body;
 
     // Ensure name and imageUrl are provided (if updating)
-    if (!name ) {
+    if (!name) {
       return res
         .status(400)
         .json({ success: false, error: "Name and Image URL are required" });
