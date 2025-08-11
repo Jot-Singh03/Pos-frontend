@@ -296,7 +296,6 @@ const POS: React.FC = () => {
       <div
         className="pos-sidebar"
         style={{
-          padding: theme.spacing.lg,
           borderRight: "1px solid  #F5F5F5",
         }}
       >
@@ -312,7 +311,7 @@ const POS: React.FC = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: "20px",
+            gap: "25px",
           }}
         >
           {categories.map((category) => (
@@ -493,197 +492,97 @@ const POS: React.FC = () => {
         </Modal>
       )}
       {/* Cart Section */}
-      <div
-        style={{
-          flex: 0.5,
-          padding: theme.spacing.lg,
-          backgroundColor: theme.colors.white,
-          borderLeft: `1px solid ${theme.colors.gray[200]}`,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <h2 style={{ marginBottom: theme.spacing.lg }}>Cart</h2>
+      <div className="cart-section">
+        <div className="cart-title">
+          <span>Your Cart</span>
+          <button className="clear-all">Clear All</button>
+        </div>
 
         {cart.length === 0 ? (
-          <p style={{ color: theme.colors.gray[600] }}>Your cart is empty</p>
+          <p className="cart-empty">Your cart is empty</p>
         ) : (
           <>
-            <div style={{ flex: 1, overflowY: "auto" }}>
+            <div className="cart-list">
               {cart.map((cartItem) => (
-                <div
-                  key={cartItem.item._id}
-                  style={{
-                    padding: theme.spacing.md,
-                    borderBottom: `1px solid ${theme.colors.gray[200]}`,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>
-                    <h4 style={{ marginBottom: theme.spacing.xs }}>
-                      {cartItem.item.name}
-                    </h4>
-                    <div style={{ color: theme.colors.gray[600] }}>
-                      ${cartItem.item.price.toFixed(2)}
+                <div className="cart-row" key={cartItem.item._id}>
+                  {/* Left: Image + details */}
+                  <div className="cart-item-info">
+                    <img
+                      src={cartItem.item.imageUrl}
+                      alt={cartItem.item.name}
+                      className="cart-item-img"
+                    />
+                    <div className="cart-item-details">
+                      <h4 className="cart-item-title">{cartItem.item.name}</h4>
+                      <div className="cart-item-price">
+                        ₹{cartItem.item.price}
+                      </div>
                     </div>
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: theme.spacing.sm,
-                    }}
-                  >
-                    <button
-                      onClick={() =>
-                        updateQuantity(cartItem.item._id, cartItem.quantity - 1)
-                      }
-                      style={{
-                        padding: theme.spacing.xs,
-                        backgroundColor: theme.colors.gray[200],
-                        border: "none",
-                        borderRadius: theme.borderRadius.sm,
-                        cursor: "pointer",
-                      }}
-                    >
-                      -
-                    </button>
-                    <span>{cartItem.quantity}</span>
+
+                  {/* Right: Controls */}
+                  <div className="cart-qty-controls">
                     <button
                       onClick={() =>
                         updateQuantity(cartItem.item._id, cartItem.quantity + 1)
                       }
-                      style={{
-                        padding: theme.spacing.xs,
-                        backgroundColor: theme.colors.gray[200],
-                        border: "none",
-                        borderRadius: theme.borderRadius.sm,
-                        cursor: "pointer",
-                      }}
+                      className="qty-btn plus"
                     >
                       +
+                    </button>
+                    <span className="qty-count">
+                      {String(cartItem.quantity).padStart(2, "0")}
+                    </span>
+                    <button
+                      onClick={() =>
+                        updateQuantity(cartItem.item._id, cartItem.quantity - 1)
+                      }
+                      className="qty-btn minus"
+                    >
+                      -
                     </button>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div
-              style={{
-                padding: theme.spacing.lg,
-                borderTop: `1px solid ${theme.colors.gray[200]}`,
-                marginTop: theme.spacing.lg,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: theme.fontSizes.lg,
-                  fontWeight: "bold",
-                }}
-              >
+            <div className="cart-summary">
+              <div className="summary-line">
                 <span>Cart:</span>
                 <span>${getTotal().toFixed(2)}</span>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: theme.fontSizes.lg,
-                  fontWeight: "bold",
-                }}
-              >
+              <div className="summary-line">
                 <span>Discount Amount:</span>
                 <span>
                   ${((getTotal() * (discount ?? 0)) / 100).toFixed(2)}
                 </span>
-              </div>{" "}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: theme.fontSizes.lg,
-                  fontWeight: "bold",
-                }}
-              >
+              </div>
+              <div className="summary-line">
                 <span>Total:</span>
                 <span>
                   ${(getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2)}
                 </span>
               </div>
-              <div
-                style={{
-                  margin: "2rem 0",
-                  marginTop: "-0.4rem",
-                  padding: "1.5rem",
-                  background: "#fff",
-                  borderRadius: "12px",
-                  boxShadow: "0 2px 12px rgba(0,0,0,0.07)",
-                  maxWidth: 400,
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                  }}
-                >
-                  <label
-                    style={{
-                      fontWeight: 600,
-                      fontSize: "1rem",
-                    }}
-                    htmlFor="phoneNumber"
-                  >
-                    Phone Number
-                  </label>
+
+              <div className="checkout-form">
+                <div className="form-group">
+                  <label htmlFor="phoneNumber">Phone Number</label>
                   <input
                     id="phoneNumber"
                     type="tel"
                     value={phoneNumber}
                     onChange={handlePhoneNumberChange}
                     placeholder="Enter phone number"
-                    style={{
-                      padding: "0.75rem 1rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: 8,
-                      fontSize: "1rem",
-                      outline: "none",
-                      transition: "border 0.2s",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-                    }}
                   />
                 </div>
-                {/* Add Loyalty Progress Bar Below */}
+
                 <LoyaltyBar
                   points={points}
                   onDiscountChange={handleDiscountChange}
                 />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                  }}
-                >
-                  <label
-                    style={{
-                      fontWeight: 600,
-                      fontSize: "1rem",
-                    }}
-                    htmlFor="tableToken"
-                  >
-                    Table Token
-                  </label>
+
+                <div className="form-group">
+                  <label htmlFor="tableToken">Table Token</label>
                   <select
                     id="tableToken"
                     value={tableToken}
@@ -692,17 +591,9 @@ const POS: React.FC = () => {
                         e.target.value ? Number(e.target.value) : ""
                       )
                     }
-                    style={{
-                      padding: "0.75rem 1rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: 8,
-                      fontSize: "1rem",
-                      outline: "none",
-                      background: "#fafbfc",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-                    }}
                   >
                     <option value="">Select table</option>
+
                     {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
                       <option key={num} value={num}>
                         {num}
@@ -711,32 +602,11 @@ const POS: React.FC = () => {
                   </select>
                 </div>
               </div>
+
               <button
                 onClick={handleCheckout}
-                style={{
-                  width: "100%",
-                  padding: theme.spacing.md,
-                  backgroundColor: theme.colors.primary,
-                  color: theme.colors.white,
-                  border: "none",
-                  borderRadius: theme.borderRadius.md,
-                  fontSize: theme.fontSizes.lg,
-                  cursor: "pointer",
-                  transition: "all 0.1s ease",
-                }}
+                className="checkout-btn"
                 disabled={loading}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.background =
-                    theme.colors.primaryDark || "#0055aa";
-                  e.currentTarget.style.boxShadow =
-                    "0 0 12px rgba(0,123,255,0.3)";
-                  e.currentTarget.style.transform = "scale(1.05)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background = theme.colors.primary;
-                  e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
               >
                 {loading ? "Processing..." : "Checkout"}
               </button>
