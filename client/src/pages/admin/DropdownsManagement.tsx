@@ -40,35 +40,35 @@ const DropdownsManagement: React.FC = () => {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-     e.preventDefault();
-     setFormLoading(true);
-     setError(null);
+    e.preventDefault();
+    setFormLoading(true);
+    setError(null);
 
-     try {
-       const categoryData = {
-         name: formName,
-         imageUrl: formImageUrl || "",
-       };
+    try {
+      const categoryData = {
+        name: formName,
+        imageUrl: formImageUrl || "",
+      };
 
-       if (editingCategory) {
-         await updateCategory(editingCategory._id, categoryData);
-       } else {
-         await createCategory(categoryData);
-       }
+      if (editingCategory) {
+        await updateCategory(editingCategory._id, categoryData);
+      } else {
+        await createCategory(categoryData);
+      }
 
-       // Reset form state
-       setFormName("");
-       setFormImageUrl("");
-       setEditingCategory(null);
+      // Reset form state
+      setFormName("");
+      setFormImageUrl("");
+      setEditingCategory(null);
 
-       // Refetch the categories and products
-       fetchCategories();
-       // Optionally, fetch or update product data here if needed
-     } catch (err) {
-       setError("Failed to save category.");
-     } finally {
-       setFormLoading(false);
-     }
+      // Refetch the categories and products
+      fetchCategories();
+      // Optionally, fetch or update product data here if needed
+    } catch (err) {
+      setError("Failed to save category.");
+    } finally {
+      setFormLoading(false);
+    }
   };
 
   const handleEdit = (cat: Category) => {
@@ -175,19 +175,7 @@ const DropdownsManagement: React.FC = () => {
               }}
             />
             {/* Optional imageUrl input field */}
-            <input
-              type="text"
-              value={formImageUrl}
-              onChange={(e) => setFormImageUrl(e.target.value)}
-              placeholder="Image URL (optional)"
-              style={{
-                padding: theme.spacing.sm,
-                borderRadius: theme.borderRadius.md,
-                border: `1px solid ${theme.colors.gray[300]}`,
-                width: "100%",
-                fontSize: theme.fontSizes.base,
-              }}
-            />
+
             {editingCategory && (
               <input
                 type="text"
