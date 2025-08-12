@@ -44,11 +44,10 @@ const POS: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [points, setPoints] = useState<number>(0);
-
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
-
   const [discount, setDiscount] = useState<number | null>(null);
+  const [showVoucherModal, setShowVoucherModal] = useState(false);
 
   const handleDiscountChange = (newDiscount: number) => {
     setDiscount(newDiscount);
@@ -304,6 +303,92 @@ const POS: React.FC = () => {
           {" "}
           What's up?
         </span>
+        <button
+          className="voucher-button"
+          onClick={() => setShowVoucherModal(true)}
+        >
+          <svg
+            className="icon"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            strokeWidth="2"
+            stroke="#000"
+            width="20"
+            height="20"
+            viewBox="0 0 64 64"
+          >
+            <g data-name="33 discount ticket" id="_33_discount_ticket">
+              <path d="M57.46,27.91H59.5a1,1,0,0,0,1-1V18.76a2.027,2.027,0,0,0-2.02-2.02H5.52A2.027,2.027,0,0,0,3.5,18.76v8.15a1,1,0,0,0,1,1H6.54a4.09,4.09,0,1,1,0,8.18H4.5a1,1,0,0,0-1,1v8.15a2.027,2.027,0,0,0,2.02,2.02H58.48a2.027,2.027,0,0,0,2.02-2.02V37.09a1,1,0,0,0-1-1H57.46a4.09,4.09,0,1,1,0-8.18Zm0,10.18H58.5l-.02,7.17L5.5,45.24V38.09H6.54a6.09,6.09,0,0,0,0-12.18H5.5l.02-7.17,52.98.02v7.15H57.46a6.09,6.09,0,0,0,0,12.18Z" />
+
+              <path d="M32,20.814a1,1,0,0,0-1,1v2.038a1,1,0,1,0,2,0V21.814A1,1,0,0,0,32,20.814Z" />
+
+              <path d="M32,39.148a1,1,0,0,0-1,1v2.038a1,1,0,1,0,2,0V40.148A1,1,0,0,0,32,39.148Z" />
+
+              <path d="M32,33.037a1,1,0,0,0-1,1v2.037a1,1,0,0,0,2,0V34.037A1,1,0,0,0,32,33.037Z" />
+
+              <path d="M32,26.926a1,1,0,0,0-1,1v2.037a1,1,0,0,0,2,0V27.926A1,1,0,0,0,32,26.926Z" />
+
+              <path d="M16.722,26.889H20.8a1,1,0,0,0,0-2H16.722a1,1,0,0,0,0,2Z" />
+
+              <path d="M16.722,33h6.111a1,1,0,0,0,0-2H16.722a1,1,0,0,0,0,2Z" />
+
+              <path d="M24.871,37.111H16.722a1,1,0,0,0,0,2h8.149a1,1,0,1,0,0-2Z" />
+
+              <path d="M39.13,24.89a3.035,3.035,0,1,0,3.04,3.04A3.045,3.045,0,0,0,39.13,24.89Zm0,4.07a1.035,1.035,0,1,1,1.04-1.03A1.037,1.037,0,0,1,39.13,28.96Z" />
+
+              <path d="M47.28,33.04a3.035,3.035,0,1,0,3.03,3.03A3.037,3.037,0,0,0,47.28,33.04Zm0,4.07a1.035,1.035,0,1,1,0-2.07,1.035,1.035,0,0,1,0,2.07Z" />
+
+              <path d="M49,26.2a1,1,0,0,0-1.414,0L37.4,36.386A1,1,0,1,0,38.818,37.8L49,27.614A1,1,0,0,0,49,26.2Z" />
+            </g>
+          </svg>
+          Vouchers
+        </button>
+        <Modal
+          show={showVoucherModal}
+          onHide={() => setShowVoucherModal(false)}
+          dialogClassName="modal-dialog-centered"
+          contentClassName="item-modal"
+        >
+          <Modal.Header className="custom-modal-header" closeButton />
+
+          <Modal.Body>
+            <div className="form-group">
+              <label htmlFor="voucherPhoneNumber">Phone Number</label>
+              <input
+                id="voucherPhoneNumber"
+                type="tel"
+                value={phoneNumber}
+                onChange={handlePhoneNumberChange}
+                placeholder="Enter phone number"
+                style={{ width: "100%", padding: "8px", fontSize: "16px" }}
+              />
+            </div>
+          </Modal.Body>
+
+          <Modal.Footer style={{ padding: "10px 20px" }}>
+            <button
+              className="submit-btn"
+              onClick={() => {
+                // Your submit logic here
+                console.log("Voucher phone number submitted:", phoneNumber);
+                setShowVoucherModal(false); // Close modal after submit
+              }}
+              style={{
+                backgroundColor: "#ffcb3e",
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                fontWeight: "700",
+                cursor: "pointer",
+                width: "100%",
+              }}
+              disabled={!phoneNumber || phoneNumber.length < 10} // optional disable if invalid
+            >
+              Submit
+            </button>
+          </Modal.Footer>
+        </Modal>
+
         <ul
           style={{
             listStyle: "none",
@@ -326,7 +411,7 @@ const POS: React.FC = () => {
                 color:
                   selectedCategory === category.name ? "#FFFFFF" : "#000000",
 
-                transition: "transform 0.2s ease, background 0.2s ease",
+                transition: "transform 0.1s ease, background 0.1s ease",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -387,7 +472,7 @@ const POS: React.FC = () => {
                       : ""}
                   </p>
                   <div className="menu-bottom">
-                    <span className="menu-price">₹{item.price}</span>
+                    <span className="menu-price">${item.price}</span>
                     <button
                       className="menu-add-btn"
                       onClick={(e) => {
@@ -404,215 +489,202 @@ const POS: React.FC = () => {
           </div>
         )}
       </div>
+      {/* Modal Section */}
 
-      {/* Modal for Item Details */}
       {selectedItem && (
         <Modal
           show={showModal}
           onHide={handleCloseModal}
           dialogClassName="modal-dialog-centered"
+          contentClassName="item-modal" // Matches .modal-content.item-modal in CSS
         >
-          <Modal.Header closeButton>
-            <Modal.Title>{selectedItem.name}</Modal.Title>
-          </Modal.Header>
+          {/* We keep header only for the close button */}
+          <Modal.Header className="custom-modal-header" closeButton />
+
           <Modal.Body>
+            {/* Image */}
             <img
               src={selectedItem.imageUrl}
               alt={selectedItem.name}
-              style={{
-                width: "100%",
-                height: "auto",
-                maxHeight: "200px",
-                objectFit: "contain",
-                borderRadius: 10,
-                marginBottom: theme.spacing.md,
-              }}
+              className="modal-image"
             />
-            <p>{selectedItem.description}</p>
-            {/* Price + Add to Cart same line */}
-            {/* Tags Mapping */}
+
+            {/* Name */}
+            <h3
+              className="modal-title"
+              style={{ textAlign: "start", marginTop: "20px" }}
+            >
+              {selectedItem.name}
+            </h3>
+
+            {/* Description */}
+            <p
+              className="menu-description"
+              style={{ textAlign: "start", marginTop: "8px" }}
+            >
+              {selectedItem.description}
+            </p>
+
+            {/* Tags */}
             {selectedItem.tags && selectedItem.tags.length > 0 && (
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap", // Allow tags to wrap in case there are many
-                  gap: "10px", // Add spacing between tags
-                  marginBottom: theme.spacing.md, // Bottom margin for spacing
-                }}
-              >
+              <div className="modal-tags">
                 {selectedItem.tags.map((tag, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      height: 25,
-                      padding: "0 10px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderRadius: 50,
-                      border: `2px solid ${theme.colors.primary}`,
-                      color: theme.colors.primary,
-                      fontWeight: 700,
-                      fontSize: "0.85rem", // Adjust font size for tags
-                    }}
-                  >
+                  <div key={index} className="modal-tag">
                     {tag}
                   </div>
                 ))}
               </div>
             )}
+
+            {/* Price & Add Button */}
             <div
+              className="menu-bottom"
               style={{
+                marginTop: 20,
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginTop: theme.spacing.lg,
               }}
             >
-              <div
-                style={{
-                  color: theme.colors.primary,
-                  fontWeight: 700,
-                  fontSize: "1.1rem",
-                }}
+              <span
+                className="menu-price"
+                style={{ fontWeight: "bold", color: "#000" }}
               >
                 ${selectedItem.price.toFixed(2)}
-              </div>
-              <Button
-                variant="primary"
+              </span>
+              <button
+                className="menu-add-btn"
+                style={{
+                  backgroundColor: "#ffcb3e",
+                  border: "none",
+                  padding: "8px 14px",
+                  borderRadius: "8px",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                }}
                 onClick={() => {
                   addToCart(selectedItem);
                   handleCloseModal();
                 }}
               >
-                Add to Cart
-              </Button>
+                Add +
+              </button>
             </div>
           </Modal.Body>
         </Modal>
       )}
       {/* Cart Section */}
       <div className="cart-section">
-        <div className="cart-title">
-          <span>Your Cart</span>
-          <button className="clear-all">Clear All</button>
-        </div>
+        <div className="cart-content">
+          <div className="cart-title">
+            <span>Your Cart</span>
+            <button className="clear-all" onClick={() => setCart([])}>
+              Clear All
+            </button>
+          </div>
 
-        {cart.length === 0 ? (
-          <p className="cart-empty">Your cart is empty</p>
-        ) : (
-          <>
-            <div className="cart-list">
-              {cart.map((cartItem) => (
-                <div className="cart-row" key={cartItem.item._id}>
-                  {/* Left: Image + details */}
-                  <div className="cart-item-info">
-                    <img
-                      src={cartItem.item.imageUrl}
-                      alt={cartItem.item.name}
-                      className="cart-item-img"
-                    />
-                    <div className="cart-item-details">
-                      <h4 className="cart-item-title">{cartItem.item.name}</h4>
-                      <div className="cart-item-price">
-                        ₹{cartItem.item.price}
-                      </div>
+          <div className="cart-list">
+            {cart.map((cartItem) => (
+              <div className="cart-row" key={cartItem.item._id}>
+                <div className="cart-item-info">
+                  <img
+                    src={cartItem.item.imageUrl}
+                    alt={cartItem.item.name}
+                    className="cart-item-img"
+                  />
+                  <div className="cart-item-details">
+                    <h4 className="cart-item-title">{cartItem.item.name}</h4>
+                    <div className="cart-item-price">
+                      ${cartItem.item.price}
                     </div>
                   </div>
-
-                  {/* Right: Controls */}
-                  <div className="cart-qty-controls">
-                    <button
-                      onClick={() =>
-                        updateQuantity(cartItem.item._id, cartItem.quantity + 1)
-                      }
-                      className="qty-btn plus"
-                    >
-                      +
-                    </button>
-                    <span className="qty-count">
-                      {String(cartItem.quantity).padStart(2, "0")}
-                    </span>
-                    <button
-                      onClick={() =>
-                        updateQuantity(cartItem.item._id, cartItem.quantity - 1)
-                      }
-                      className="qty-btn minus"
-                    >
-                      -
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="cart-summary">
-              <div className="summary-line">
-                <span>Cart:</span>
-                <span>${getTotal().toFixed(2)}</span>
-              </div>
-              <div className="summary-line">
-                <span>Discount Amount:</span>
-                <span>
-                  ${((getTotal() * (discount ?? 0)) / 100).toFixed(2)}
-                </span>
-              </div>
-              <div className="summary-line">
-                <span>Total:</span>
-                <span>
-                  ${(getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2)}
-                </span>
-              </div>
-
-              <div className="checkout-form">
-                <div className="form-group">
-                  <label htmlFor="phoneNumber">Phone Number</label>
-                  <input
-                    id="phoneNumber"
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={handlePhoneNumberChange}
-                    placeholder="Enter phone number"
-                  />
                 </div>
 
-                <LoyaltyBar
-                  points={points}
-                  onDiscountChange={handleDiscountChange}
-                />
-
-                <div className="form-group">
-                  <label htmlFor="tableToken">Table Token</label>
-                  <select
-                    id="tableToken"
-                    value={tableToken}
-                    onChange={(e) =>
-                      setTableToken(
-                        e.target.value ? Number(e.target.value) : ""
-                      )
+                <div className="cart-qty-controls">
+                  <button
+                    onClick={() =>
+                      updateQuantity(cartItem.item._id, cartItem.quantity + 1)
                     }
+                    className="qty-btn plus"
                   >
-                    <option value="">Select table</option>
-
-                    {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-                      <option key={num} value={num}>
-                        {num}
-                      </option>
-                    ))}
-                  </select>
+                    +
+                  </button>
+                  <span className="qty-count">
+                    {String(cartItem.quantity).padStart(2, "0")}
+                  </span>
+                  <button
+                    onClick={() =>
+                      updateQuantity(cartItem.item._id, cartItem.quantity - 1)
+                    }
+                    className="qty-btn minus"
+                  >
+                    -
+                  </button>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
 
-              <button
-                onClick={handleCheckout}
-                className="checkout-btn"
-                disabled={loading}
-              >
-                {loading ? "Processing..." : "Checkout"}
-              </button>
+        <div className="cart-summary">
+          <div className="summary-line">
+            <span>Cart:</span>
+            <span>${getTotal().toFixed(2)}</span>
+          </div>
+          <div className="summary-line">
+            <span>Discount Amount:</span>
+            <span>${((getTotal() * (discount ?? 0)) / 100).toFixed(2)}</span>
+          </div>
+          <div className="summary-line">
+            <span>Total:</span>
+            <span>
+              ${(getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2)}
+            </span>
+          </div>
+
+          <div className="checkout-form">
+            <div className="form-group">
+              <label htmlFor="phoneNumber">Phone Number</label>
+              <input
+                id="phoneNumber"
+                type="tel"
+                value={phoneNumber}
+                onChange={handlePhoneNumberChange}
+                placeholder="Enter phone number"
+              />
             </div>
-          </>
-        )}
+
+            {/* <LoyaltyBar
+              points={points}
+              onDiscountChange={handleDiscountChange}
+            /> */}
+
+            <div className="form-group">
+              <label htmlFor="tableToken">Table Token</label>
+              <select
+                id="tableToken"
+                value={tableToken}
+                onChange={(e) =>
+                  setTableToken(e.target.value ? Number(e.target.value) : "")
+                }
+              >
+                <option value="">Select table</option>
+                {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button
+            onClick={handleCheckout}
+            className="checkout-btn"
+            disabled={loading}
+          >
+            {loading ? "Processing..." : "Checkout"}
+          </button>
+        </div>
       </div>
     </div>
   );

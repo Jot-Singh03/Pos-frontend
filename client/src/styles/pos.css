@@ -148,29 +148,37 @@
 }
 .cart-section {
   flex: 0.6;
-  background-color: #fff;
+  background-color: #fbfbf8;
   border-left: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  box-shadow: -2px 0px 6.5px 0px #0000001a;
 }
 
 .cart-title {
+  flex-shrink: 0;
+  padding: 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-weight: 700;
-  font-size: 16px;
   font-family: "Montserrat", sans-serif !important;
-  color: #000000;
-  padding: 1.5rem;
+  font-size: 16px;
+}
+
+.cart-content {
+  display: flex;
+  flex-direction: column;
+  height: 450px; /* FIXED HEIGHT for top section */
 }
 .cart-list {
+  flex: 1; /* fills remaining space */
   display: flex;
-  flex-direction: column; /* stack vertically */
+  flex-direction: column;
   gap: 17px;
-  padding: 20px 30px;
-  max-height: 300px; /* or any height you want */
-  overflow-y: auto; /* scroll vertically when overflow */
+  padding: 0 1.5rem;
+  overflow-y: auto;
 }
 .cart-list::-webkit-scrollbar {
   display: none;
@@ -256,7 +264,6 @@
   height: 20px;
   border-radius: 5px;
   cursor: pointer;
-
   display: flex; /* Make it a flex container */
   align-items: center; /* Center vertically */
   justify-content: center; /* Center horizontally */
@@ -271,76 +278,192 @@
 .cart-summary {
   padding: 1.5rem;
   border-top: 1px solid #ffcb3e;
-  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
-
 .summary-line {
   display: flex;
   justify-content: space-between;
-  font-size: 1.125rem;
-  font-weight: bold;
+  font-size: 16px;
+  font-family: "Montserrat", sans-serif !important;
+  font-weight: 700;
 }
 
 .checkout-form {
-  margin: 2rem 0;
-  margin-top: -0.4rem;
-  padding: 1.5rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-group {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem; /* reduced from 1rem */
+}
 .form-group label {
-  font-weight: 600;
-  font-size: 1rem;
+  font-size: 16px;
+  font-family: "Montserrat", sans-serif !important;
+  font-weight: 700;
 }
 
 .form-group input,
 .form-group select {
   padding: 0.75rem 1rem;
-  border: 1px solid #d1d5db;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 14px;
+  font-weight: 400;
   outline: none;
-  transition: border 0.2s;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-}
-
-.form-group select {
-  background: #fafbfc;
+  border: 1px solid #ccc;
+  font-family: "Montserrat", sans-serif !important;
 }
 
 .checkout-btn {
-  width: 100%;
-  padding: 1rem; /* theme.spacing.md */
-  background-color: #2563eb;
-  color: white;
+  background-color: #ffcb3e;
   border: none;
-  border-radius: 8px;
-  font-size: 1.125rem;
+  border-radius: 10px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.1s ease;
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 12px;
+  width: 100%;
+  padding: 1rem;
+}
+/* Main modal style */
+.modal-content.item-modal {
+  border: 2px solid #ffcb3e !important;
+  border-radius: 20px !important;
+  background-color: #fff !important;
+  font-family: "Montserrat", sans-serif !important;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+
+  max-width: 350px;
 }
 
-.checkout-btn:hover {
-  background-color: #1e4ed8;
-  box-shadow: 0 0 12px rgba(0, 123, 255, 0.3);
-  transform: scale(1.05);
+/* Remove header background & border */
+.modal-header {
+  background: transparent !important;
+  border-bottom: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
 }
 
-.checkout-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* Title styling */
+.modal-title {
+  font-weight: 700;
+  font-size: 18px;
+  font-family: "Montserrat", sans-serif !important;
+  color: #000;
+  margin-bottom: 10px; /* Space after name */
+}
+
+/* Close button color */
+.modal-header .btn-close {
+  background: none !important;
+  opacity: 0.7;
+}
+
+.modal-header .btn-close:hover {
+  opacity: 1;
+}
+
+/* Image style */
+.modal-image {
+  width: 100%;
+  max-height: 220px; /* Keeps it from being too tall */
+  object-fit: cover;
+  border-radius: 15px;
+  display: block;
+}
+
+/* Tags container */
+.modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 35px;
+}
+
+/* Tag style */
+.modal-tag {
+  height: 25px;
+  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  border: 2px solid #ffcb3e;
+  color: #000;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.custom-modal-header {
+  border-bottom: none;
+  padding: 0;
+  position: absolute;
+  top: 10px; /* inside the modal */
+  right: 10px;
+  z-index: 10;
+}
+
+.custom-modal-header .btn-close {
+  background-color: transparent !important; /* No background */
+  border-radius: 50%;
+  padding: 6px;
+  opacity: 1 !important;
+  background-image: none !important;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+.custom-modal-header .btn-close::before {
+  content: "×";
+  font-size: 2rem;
+  color: #000;
+  line-height: 1;
+  position: relative;
+  top: -1px;
+}
+.custom-modal-header .btn-close:hover,
+.custom-modal-header .btn-close:focus,
+.custom-modal-header .btn-close:active {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.voucher-button {
+  display: inline-flex;
+  align-items: center; /* vertical center */
+  justify-content: center; /* horizontal center */
+  padding: 0.5rem 1rem;
+  background-color: #ffcb3e; /* your yellow */
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  color: #000;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  font-family: "Montserrat", sans-serif !important;
+  gap: 0.1rem; /* add some space between icon and text */
+}
+
+.voucher-button .icon {
+  margin-right: 0.5rem;
+  font-size: 1.2rem; /* or adjust to your icon size */
+  display: flex;
+  align-items: center;
+}
+.item-modal .modal-footer {
+  border-top: none !important;
+  padding-top: 10px; /* keep some padding if you want */
+  padding-bottom: 20px; /* optional */
 }
