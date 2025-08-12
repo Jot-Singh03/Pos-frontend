@@ -99,7 +99,12 @@ const Confirmation: React.FC = () => {
 
   return (
     <div
-      style={{ maxWidth: "600px", margin: "0 auto", padding: theme.spacing.xl }}
+      style={{
+        maxWidth: "600px",
+        margin: "0 auto",
+        padding: theme.spacing.xl,
+        textAlign: "center",
+      }}
     >
       <h1 style={{ marginBottom: theme.spacing.xl }}>Order Confirmation</h1>
 

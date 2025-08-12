@@ -49,6 +49,8 @@ app.use("/api", DiscountRoutes);
 
 //Employee
 app.use("/api/new", RegistrationRoutes);
+
+
 // Error handling middleware
 app.use(errorHandler);
 

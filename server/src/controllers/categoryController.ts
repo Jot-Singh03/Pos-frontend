@@ -43,7 +43,7 @@ export const createCategory = async (req: Request, res: Response) => {
     // Create and save category
     const category = new Category({
       name,
-      imageUrl: imageUrl?.trim() || "",
+      imageUrl: imageUrl.trim(),
     });
 
     await category.save();
