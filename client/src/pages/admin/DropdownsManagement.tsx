@@ -40,35 +40,35 @@ const DropdownsManagement: React.FC = () => {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-     e.preventDefault();
-     setFormLoading(true);
-     setError(null);
+    e.preventDefault();
+    setFormLoading(true);
+    setError(null);
 
-     try {
-       const categoryData = {
-         name: formName,
-         imageUrl: formImageUrl || "",
-       };
+    try {
+      const categoryData = {
+        name: formName,
+        imageUrl: formImageUrl || "",
+      };
 
-       if (editingCategory) {
-         await updateCategory(editingCategory._id, categoryData);
-       } else {
-         await createCategory(categoryData);
-       }
+      if (editingCategory) {
+        await updateCategory(editingCategory._id, categoryData);
+      } else {
+        await createCategory(categoryData);
+      }
 
-       // Reset form state
-       setFormName("");
-       setFormImageUrl("");
-       setEditingCategory(null);
+      // Reset form state
+      setFormName("");
+      setFormImageUrl("");
+      setEditingCategory(null);
 
-       // Refetch the categories and products
-       fetchCategories();
-       // Optionally, fetch or update product data here if needed
-     } catch (err) {
-       setError("Failed to save category.");
-     } finally {
-       setFormLoading(false);
-     }
+      // Refetch the categories and products
+      fetchCategories();
+      // Optionally, fetch or update product data here if needed
+    } catch (err) {
+      setError("Failed to save category.");
+    } finally {
+      setFormLoading(false);
+    }
   };
 
   const handleEdit = (cat: Category) => {
@@ -174,13 +174,11 @@ const DropdownsManagement: React.FC = () => {
                 fontSize: theme.fontSizes.base,
               }}
             />
-            {/* Optional imageUrl input field */}
-            {editingCategory && (
-              <input
+             <input
                 type="text"
                 value={formImageUrl}
                 onChange={(e) => setFormImageUrl(e.target.value)}
-                placeholder="Image URL (optional)"
+                placeholder="Image URL "
                 style={{
                   padding: theme.spacing.sm,
                   borderRadius: theme.borderRadius.md,
@@ -189,7 +187,7 @@ const DropdownsManagement: React.FC = () => {
                   fontSize: theme.fontSizes.base,
                 }}
               />
-            )}
+           
             <button
               type="submit"
               disabled={formLoading}

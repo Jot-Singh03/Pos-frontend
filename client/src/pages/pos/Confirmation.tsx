@@ -82,17 +82,16 @@ const Confirmation: React.FC = () => {
   }
 
   return (
-    <div className="confirmation-page">
-      <div className="confirmation-card">
-        {/* Title always visible at top */}
-        <div className="confirmation-title">Order Confirmation</div>
+    <div
+      style={{
+        maxWidth: "600px",
+        margin: "0 auto",
+        padding: theme.spacing.xl,
+        textAlign: "center",
+      }}
+    >
+      <h1 style={{ marginBottom: theme.spacing.xl }}>Order Confirmation</h1>
 
-        {/* Scrollable middle */}
-        <div className="confirmation-content">
-          <div className="confirmation-header">
-            <h2>Order #{order.orderNumber}</h2>
-            <p>{new Date(order.createdAt).toLocaleString()}</p>
-          </div>
 
           <h3 className="confirmation-info-title">Thanks For Ordering!</h3>
           <h3 className="confirmation-info-title">Customer Information</h3>

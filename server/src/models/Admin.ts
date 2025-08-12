@@ -5,6 +5,8 @@ export interface IAdmin extends Document {
   email: string;
   password: string;
   role: string;
+  otp?: number;
+  otpExpiry?: number;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

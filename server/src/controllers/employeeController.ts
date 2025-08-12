@@ -139,3 +139,70 @@ export const deleteEmployee = async (
     next(error);
   }
 };
+
+
+// Update employee email and/or password
+export const updateEmployee = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { email, password, role } = req.body;
+
+    // If nothing to update
+    if (!email && !password && !role) {
+      return res.status(400).json({
+        success: false,
+        error:
+          "Please provide at least one field to update (email or password)",
+      });
+    }
+
+    // Find the employee
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: "Employee not found",
+      });
+    }
+
+    // Update email if provided
+    if (email) {
+      if (!email.includes("@")) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid email format",
+        });
+      }
+      employee.email = email;
+    }
+
+    // Update password if provided
+    if (password) {
+      if (password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          error: "Password must be at least 6 characters long",
+        });
+      }
+      employee.password = password; // Will be hashed by pre-save hook
+    }
+
+    await employee.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Employee updated successfully",
+      data: {
+        id: employee._id,
+        email: employee.email,
+        role: employee.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

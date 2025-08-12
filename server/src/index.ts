@@ -13,7 +13,6 @@ import categoryRoutes from "./routes/categoryRoutes";
 import RegistrationRoutes from "./routes/RegistrationRoutes";
 import { migrateOrderNumbers } from "./utils/migrateOrderNumbers";
 import DiscountRoutes from "./routes/DiscountRoutes";
-
 // Load env vars
 dotenv.config();
 
@@ -49,6 +48,7 @@ app.use("/api", DiscountRoutes);
 
 //Employee
 app.use("/api/new", RegistrationRoutes);
+
 // Error handling middleware
 app.use(errorHandler);
 

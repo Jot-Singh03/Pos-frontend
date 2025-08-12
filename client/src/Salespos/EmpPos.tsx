@@ -45,15 +45,26 @@ const EmpPos: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [points, setPoints] = useState<number>(0);
+  const [showModal, setShowModal] = useState(false);
   const [employeeName, setEmployeeName] = useState<string | null>(null);
 
   const [discount, setDiscount] = useState<number | null>(null);
 
   const handleDiscountChange = (newDiscount: number) => {
     setDiscount(newDiscount);
+  };
+  // Show modal when an item is clicked
+  const handleItemClick = (item: MenuItem) => {
+    setSelectedItem(item);
+    setShowModal(true);
+  };
+
+  // Handle closing the modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedItem(null); // Reset selected item
   };
 
   const handleLogout = () => {
@@ -291,18 +302,6 @@ const EmpPos: React.FC = () => {
     ? menuItems.filter((item) => item.category === selectedCategory)
     : menuItems;
 
-  // Show modal when an item is clicked
-  const handleItemClick = (item: MenuItem) => {
-    setSelectedItem(item);
-    setShowModal(true);
-  };
-
-  // Handle closing the modal
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedItem(null); // Reset selected item
-  };
-
   if (loading) {
     return (
       <div style={{ padding: theme.spacing.xl, textAlign: "center" }}>
@@ -330,8 +329,8 @@ const EmpPos: React.FC = () => {
             {employeeName ? employeeName : "Employee"}
             <span
               style={{
-                fontSize: "0.9rem",
-                marginLeft: "3rem",
+                fontSize: "0.7rem",
+                marginLeft: "1px",
                 verticalAlign: "middle",
               }}
             >
@@ -376,20 +375,27 @@ const EmpPos: React.FC = () => {
                   e.currentTarget.style.transform = "scale(1)";
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
                   {category.imageUrl && (
                     <img
                       src={category.imageUrl}
                       alt={category.name}
                       style={{
-                        width: "35px",
-                        height: "35px",
-                        borderRadius: "50%",
+                        width: "100px",
+                        height: "100px",
+                        padding: "8px",
+                        borderRadius: "20%",
                         marginRight: "10px",
                       }}
                     />
                   )}
-                  {category.name}
+                  <div>{category.name}</div>
                 </div>
               </li>
             ))}
@@ -537,7 +543,8 @@ const EmpPos: React.FC = () => {
                   e.currentTarget.style.boxShadow =
                     "0 2px 8px rgba(0,0,0,0.05)";
                 }}
-                onClick={() => handleItemClick(item)}
+                  onClick={() => handleItemClick(item)}
+
               >
                 <img
                   src={item.imageUrl}
@@ -653,7 +660,7 @@ const EmpPos: React.FC = () => {
               }}
             />
             <p>{selectedItem.description}</p>
-
+            {/* Price + Add to Cart same line */}
             {/* Tags Mapping */}
             {selectedItem.tags && selectedItem.tags.length > 0 && (
               <div
@@ -685,7 +692,6 @@ const EmpPos: React.FC = () => {
                 ))}
               </div>
             )}
-
             <div
               style={{
                 display: "flex",
@@ -716,7 +722,6 @@ const EmpPos: React.FC = () => {
           </Modal.Body>
         </Modal>
       )}
-
       {/* Cart Section */}
       <div
         style={{
@@ -766,7 +771,7 @@ const EmpPos: React.FC = () => {
                         updateQuantity(cartItem.item._id, cartItem.quantity - 1)
                       }
                       style={{
-                        padding: theme.spacing.xs,
+                        padding: "14px",
                         backgroundColor: theme.colors.gray[200],
                         border: "none",
                         borderRadius: theme.borderRadius.sm,
@@ -781,7 +786,7 @@ const EmpPos: React.FC = () => {
                         updateQuantity(cartItem.item._id, cartItem.quantity + 1)
                       }
                       style={{
-                        padding: theme.spacing.xs,
+                        padding: "13px",
                         backgroundColor: theme.colors.gray[200],
                         border: "none",
                         borderRadius: theme.borderRadius.sm,
@@ -852,7 +857,7 @@ const EmpPos: React.FC = () => {
                   marginRight: "auto",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "1.5rem",
+                  gap: "0.5rem",
                 }}
               >
                 <div
