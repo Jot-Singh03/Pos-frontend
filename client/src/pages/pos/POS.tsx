@@ -362,6 +362,10 @@ const POS: React.FC = () => {
                 placeholder="Enter phone number"
                 style={{ width: "100%", padding: "8px", fontSize: "16px" }}
               />
+              <LoyaltyBar
+                points={points}
+                onDiscountChange={handleDiscountChange}
+              />
             </div>
           </Modal.Body>
 
@@ -653,11 +657,6 @@ const POS: React.FC = () => {
                 placeholder="Enter phone number"
               />
             </div>
-
-            {/* <LoyaltyBar
-              points={points}
-              onDiscountChange={handleDiscountChange}
-            /> */}
 
             <div className="form-group">
               <label htmlFor="tableToken">Table Token</label>
