@@ -19,6 +19,9 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otp, setOtp] = useState("");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -173,6 +176,82 @@ const Login: React.FC = () => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+        <div
+          style={{
+            marginTop: "18px",
+            color: "#0055aa",
+            cursor: "pointer",
+            textDecoration: "underline",
+          }}
+          onClick={() => setShowOtpModal(true)}
+        >
+          {showOtpModal && (
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                background: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 999,
+              }}
+              onClick={() => setShowOtpModal(false)} // close when clicking outside
+            >
+              <div
+                style={{
+                  background: "#fff",
+                  padding: "20px",
+                  borderRadius: "8px",
+                  width: "300px",
+                  textAlign: "center",
+                  position: "relative",
+                }}
+                onClick={(e) => e.stopPropagation()} // prevent overlay click
+              >
+                <h3>Enter OTP</h3>
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    marginTop: "10px",
+                    marginBottom: "15px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    fontSize: "16px",
+                    textAlign: "center",
+                  }}
+                />
+                <button
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    background: "#0055aa",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    fontSize: "16px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    toast.success(`OTP entered: ${otp}`);
+                    setShowOtpModal(false);
+                  }}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          )}
+
+          <span>Forgot Password</span>
+        </div>
       </div>
     </div>
   );
