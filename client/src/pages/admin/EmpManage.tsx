@@ -216,16 +216,33 @@ const EmpManage: React.FC = () => {
                       }}
                     />
                   </div>
-                  <div style={{ display: "flex", gap: theme.spacing.sm }}>
+                  <div style={{ display: "flex", gap: theme.spacing.md }}>
                     <button
                       type="submit"
+                      onClick={() => handleEditClick(employee)}
                       style={{
+                        padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
                         backgroundColor: theme.colors.primary,
-                        color: "#fff",
-                        padding: "6px 12px",
+                        color: theme.colors.white,
                         border: "none",
-                        borderRadius: theme.borderRadius.sm,
+                        borderRadius: theme.borderRadius.md,
                         cursor: "pointer",
+                        fontWeight: 600,
+                        fontSize: theme.fontSizes.base,
+                        transition: "all 0.1s ease",
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.background =
+                          theme.colors.primaryDark || "#0055aa";
+                        e.currentTarget.style.boxShadow =
+                          "0 0 12px rgba(0,123,255,0.3)";
+                        e.currentTarget.style.transform = "scale(1.05)";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.background = theme.colors.primary;
+                        e.currentTarget.style.boxShadow =
+                          "0 2px 6px rgba(0,0,0,0.1)";
+                        e.currentTarget.style.transform = "scale(1)";
                       }}
                     >
                       Save
@@ -234,12 +251,30 @@ const EmpManage: React.FC = () => {
                       type="button"
                       onClick={() => setEditEmployeeId(null)}
                       style={{
-                        backgroundColor: theme.colors.gray[400],
-                        color: "#fff",
-                        padding: "6px 12px",
+                        padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
+                        backgroundColor: theme.colors.gray[300],
+                        color: theme.colors.gray[700],
                         border: "none",
-                        borderRadius: theme.borderRadius.sm,
+                        borderRadius: theme.borderRadius.md,
                         cursor: "pointer",
+                        transition: "all 0.1s ease",
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.background = "#334155";
+
+                        e.currentTarget.style.boxShadow =
+                          "0 0 12px rgba(51, 65, 85, 0.4)";
+
+                        e.currentTarget.style.transform = "scale(1.05)";
+                        e.currentTarget.style.color = "#ffffff";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          theme.colors.gray[300];
+                        e.currentTarget.style.boxShadow =
+                          "0 2px 6px rgba(0, 0, 0, 0.1)";
+                        e.currentTarget.style.transform = "scale(1)";
+                        e.currentTarget.style.color = theme.colors.gray[700];
                       }}
                     >
                       Cancel

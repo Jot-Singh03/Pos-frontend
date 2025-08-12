@@ -47,12 +47,24 @@ const EmpPos: React.FC = () => {
   const navigate = useNavigate();
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [points, setPoints] = useState<number>(0);
+  const [showModal, setShowModal] = useState(false);
   const [employeeName, setEmployeeName] = useState<string | null>(null);
 
   const [discount, setDiscount] = useState<number | null>(null);
 
   const handleDiscountChange = (newDiscount: number) => {
     setDiscount(newDiscount);
+  };
+  // Show modal when an item is clicked
+  const handleItemClick = (item: MenuItem) => {
+    setSelectedItem(item);
+    setShowModal(true);
+  };
+
+  // Handle closing the modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedItem(null); // Reset selected item
   };
 
   const handleLogout = () => {
@@ -531,7 +543,8 @@ const EmpPos: React.FC = () => {
                   e.currentTarget.style.boxShadow =
                     "0 2px 8px rgba(0,0,0,0.05)";
                 }}
-                onClick={() => addToCart(item)}
+                  onClick={() => handleItemClick(item)}
+
               >
                 <img
                   src={item.imageUrl}
@@ -623,7 +636,92 @@ const EmpPos: React.FC = () => {
           </div>
         )}
       </div>
-
+      {/* Modal for Item Details */}
+      {selectedItem && (
+        <Modal
+          show={showModal}
+          onHide={handleCloseModal}
+          dialogClassName="modal-dialog-centered"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>{selectedItem.name}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <img
+              src={selectedItem.imageUrl}
+              alt={selectedItem.name}
+              style={{
+                width: "100%",
+                height: "auto",
+                maxHeight: "200px",
+                objectFit: "contain",
+                borderRadius: 10,
+                marginBottom: theme.spacing.md,
+              }}
+            />
+            <p>{selectedItem.description}</p>
+            {/* Price + Add to Cart same line */}
+            {/* Tags Mapping */}
+            {selectedItem.tags && selectedItem.tags.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap", // Allow tags to wrap in case there are many
+                  gap: "10px", // Add spacing between tags
+                  marginBottom: theme.spacing.md, // Bottom margin for spacing
+                }}
+              >
+                {selectedItem.tags.map((tag, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      height: 25,
+                      padding: "0 10px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 50,
+                      border: `2px solid ${theme.colors.primary}`,
+                      color: theme.colors.primary,
+                      fontWeight: 700,
+                      fontSize: "0.85rem", // Adjust font size for tags
+                    }}
+                  >
+                    {tag}
+                  </div>
+                ))}
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: theme.spacing.lg,
+              }}
+            >
+              <div
+                style={{
+                  color: theme.colors.primary,
+                  fontWeight: 700,
+                  fontSize: "1.1rem",
+                }}
+              >
+                ${selectedItem.price.toFixed(2)}
+              </div>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  addToCart(selectedItem);
+                  handleCloseModal();
+                }}
+              >
+                Add to Cart
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
+      )}
       {/* Cart Section */}
       <div
         style={{
@@ -759,7 +857,7 @@ const EmpPos: React.FC = () => {
                   marginRight: "auto",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "0.3rem",
+                  gap: "0.5rem",
                 }}
               >
                 <div
