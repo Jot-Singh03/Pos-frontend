@@ -6,6 +6,7 @@ import theme from "../../styles/theme";
 import api, { ApiResponse } from "../../services/api";
 import { getCategories } from "../../services/api";
 import LoyaltyBar from "../../components/Loyaltybar";
+import "../../styles/pos.css";
 
 interface MenuItem {
   _id: string;
@@ -43,11 +44,10 @@ const POS: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [points, setPoints] = useState<number>(0);
-
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
-
   const [discount, setDiscount] = useState<number | null>(null);
+  const [showVoucherModal, setShowVoucherModal] = useState(false);
 
   const handleDiscountChange = (newDiscount: number) => {
     setDiscount(newDiscount);
@@ -291,52 +291,28 @@ const POS: React.FC = () => {
   }
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div className="pos-container">
       <div
+        className="pos-sidebar"
         style={{
-          width: "200px",
-          backgroundColor: theme.colors.gray[200],
-          padding: theme.spacing.lg,
-          borderRight: `1px solid ${theme.colors.gray[300]}`,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center", // This will center the button horizontally
+          borderRight: "1px solid  #F5F5F5",
         }}
       >
-        <h2 style={{ marginBottom: theme.spacing.xl }}>Categories</h2>
+        <h2 className="pos-h2">Hey</h2>
+        <span className="pos-span" style={{ marginBottom: theme.spacing.lg }}>
+          {" "}
+          What's up?
+        </span>
         <button
-          style={{
-            marginBottom: theme.spacing.md,
-            background: theme.colors.primary,
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            padding: "0.5rem 1.2rem",
-            fontWeight: 600,
-            fontSize: "0.9rem",
-            cursor: "pointer",
-            display: "flex",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            transition: "all 0.1s ease",
-            gap: "8px",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.background =
-              theme.colors.primaryDark || "#0055aa";
-            e.currentTarget.style.boxShadow = "0 0 12px rgba(0,123,255,0.3)";
-            e.currentTarget.style.transform = "scale(1.05)";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.background = theme.colors.primary;
-            e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
-            e.currentTarget.style.transform = "scale(1)";
-          }}
+          className="voucher-button"
+          onClick={() => setShowVoucherModal(true)}
         >
           <svg
+            className="icon"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             strokeWidth="2"
-            stroke="#fff"
+            stroke="#000"
             width="20"
             height="20"
             viewBox="0 0 64 64"
@@ -367,577 +343,347 @@ const POS: React.FC = () => {
           </svg>
           Vouchers
         </button>
+        <Modal
+          show={showVoucherModal}
+          onHide={() => setShowVoucherModal(false)}
+          dialogClassName="modal-dialog-centered"
+          contentClassName="item-modal"
+        >
+          <Modal.Header className="custom-modal-header" closeButton />
 
-        <ul style={{ listStyle: "none", padding: 0 }}>
+          <Modal.Body>
+            <div className="form-group">
+              <label htmlFor="voucherPhoneNumber">Phone Number</label>
+              <input
+                id="voucherPhoneNumber"
+                type="tel"
+                value={phoneNumber}
+                onChange={handlePhoneNumberChange}
+                placeholder="Enter phone number"
+                style={{ width: "100%", padding: "8px", fontSize: "16px" }}
+              />
+              <LoyaltyBar
+                points={points}
+                onDiscountChange={handleDiscountChange}
+              />
+            </div>
+          </Modal.Body>
+
+          <Modal.Footer style={{ padding: "10px 20px" }}>
+            <button
+              className="submit-btn"
+              onClick={() => {
+                // Your submit logic here
+                console.log("Voucher phone number submitted:", phoneNumber);
+                setShowVoucherModal(false); // Close modal after submit
+              }}
+              style={{
+                backgroundColor: "#ffcb3e",
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                fontWeight: "700",
+                cursor: "pointer",
+                width: "100%",
+              }}
+              disabled={!phoneNumber || phoneNumber.length < 10} // optional disable if invalid
+            >
+              Submit
+            </button>
+          </Modal.Footer>
+        </Modal>
+
+        <ul
+          style={{
+            listStyle: "none",
+            padding: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "25px",
+          }}
+        >
           {categories.map((category) => (
             <li
+              className="pos-category"
               key={category.name}
               onClick={() => setSelectedCategory(category.name)}
               style={{
-                cursor: "pointer",
-                color:
-                  selectedCategory === category.name
-                    ? theme.colors.primary
-                    : theme.colors.gray[700],
-                marginBottom: theme.spacing.xs,
-                padding: "6px 10px",
-                borderRadius: "8px",
-                fontWeight: 500,
-                transition: "all 0.1s ease",
                 backgroundColor:
-                  selectedCategory === category.name
-                    ? theme.colors.gray[300]
-                    : "transparent",
-                boxShadow:
-                  selectedCategory === category.name
-                    ? "0 2px 10px rgba(0,0,0,0.08)"
-                    : "none",
+                  selectedCategory === category.name ? "#DB0007" : "#F5F5F5", // red for selected, light gray otherwise
+                textAlign: "center",
+                color:
+                  selectedCategory === category.name ? "#FFFFFF" : "#000000",
+
+                transition: "transform 0.1s ease, background 0.1s ease",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
               }}
               onMouseOver={(e) => {
-                e.currentTarget.style.background = theme.colors.gray[200];
                 e.currentTarget.style.transform = "scale(1.05)";
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.background =
-                  selectedCategory === category.name
-                    ? theme.colors.gray[300]
-                    : "transparent";
                 e.currentTarget.style.transform = "scale(1)";
               }}
             >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {category.imageUrl && (
-                  <img
-                    src={category.imageUrl}
-                    alt={category.name}
-                    style={{
-                      width: "35px",
-                      height: "35px",
-                      borderRadius: "50%",
-                      marginRight: "10px",
-                    }}
-                  />
-                )}
+              {category.imageUrl && (
+                <img
+                  src={category.imageUrl}
+                  alt={category.name}
+                  style={{
+                    width: "120px",
+                    height: "84px",
+                    objectFit: "cover",
+                    marginBottom: "10px",
+                    borderRadius: "10px",
+                  }}
+                />
+              )}
+              <div style={{ fontSize: "14px", lineHeight: "1.2" }}>
                 {category.name}
               </div>
             </li>
           ))}
         </ul>
       </div>
-
       {/* Menu Section */}
-      <div
-        style={{
-          flex: 2,
-          padding: theme.spacing.lg,
-          overflowY: "auto",
-          backgroundColor: theme.colors.gray[100],
-        }}
-      >
-        <h1 style={{ marginBottom: theme.spacing.xl }}>Menu</h1>
-
-        {error && (
-          <div
-            style={{
-              backgroundColor: theme.colors.danger,
-              color: theme.colors.white,
-              padding: theme.spacing.md,
-              borderRadius: theme.borderRadius.md,
-              marginBottom: theme.spacing.lg,
-            }}
-          >
-            {error}
-          </div>
-        )}
-        {selectedCategory && (
-          <h2
-            style={{
-              color: theme.colors.primary,
-              marginBottom: theme.spacing.md,
-              borderBottom: `2px solid ${theme.colors.primary}`,
-              paddingBottom: theme.spacing.xs,
-            }}
-          >
-            {selectedCategory}
-          </h2>
-        )}
+      <div className="menu-section">
+        {error && <div className="menu-error">{error}</div>}
 
         {filteredMenu.length === 0 ? (
-          <p
-            style={{
-              color: theme.colors.gray[600],
-              fontSize: "1rem",
-              marginTop: theme.spacing.lg,
-            }}
-          >
-            Currently no items in this category.
-          </p>
+          <p className="menu-empty">Currently no items in this category.</p>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: theme.spacing.lg,
-            }}
-          >
+          <div className="menu-grid">
             {filteredMenu.map((item) => (
               <div
                 key={item._id}
-                style={{
-                  background: "#fff",
-                  borderRadius: 12,
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                  padding: theme.spacing.md,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: theme.spacing.md,
-                  justifyContent: "space-between",
-                  height: "100%",
-                  border: `1px solid ${theme.colors.gray[300]}`,
-                  transition: "all 0.1s ease",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform =
-                    "translateY(-5px) scale(1.03)";
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 20px rgba(0,0,0,0.12)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                  e.currentTarget.style.boxShadow =
-                    "0 2px 8px rgba(0,0,0,0.05)";
-                }}
+                className="menu-card"
                 onClick={() => handleItemClick(item)}
               >
                 <img
                   src={item.imageUrl}
                   alt={item.name}
-                  style={{
-                    width: 120,
-                    height: 120,
-                    objectFit: "cover",
-                    borderRadius: 10,
-                    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-                    marginBottom: theme.spacing.sm,
-                  }}
+                  className="menu-image"
                 />
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: "1.1rem",
-                    marginBottom: 4,
-                  }}
-                >
-                  {item.name}
-                </div>
-                <div
-                  style={{
-                    color: theme.colors.gray[700],
-                    fontSize: "0.95rem",
-                    marginBottom: 4,
-                  }}
-                >
-                  {item.description
-                    ? item.description.split(" ").slice(0, 10).join(" ") +
-                      (item.description.split(" ").length > 10 ? "..." : "")
-                    : ""}
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    width: "100%",
-                    marginTop: "auto", // pushes them to bottom if the card grows
-                  }}
-                >
-                  <div
-                    style={{
-                      color: theme.colors.primary,
-                      fontWeight: 700,
-                      fontSize: "1rem",
-                    }}
-                  >
-                    ${item.price.toFixed(2)}
+                <div className="menu-content">
+                  <h3 className="menu-name">{item.name}</h3>
+                  <p className="menu-description">
+                    {item.description
+                      ? item.description.split(" ").slice(0, 10).join(" ") +
+                        (item.description.split(" ").length > 10 ? "..." : "")
+                      : ""}
+                  </p>
+                  <div className="menu-bottom">
+                    <span className="menu-price">${item.price}</span>
+                    <button
+                      className="menu-add-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(item);
+                      }}
+                    >
+                      Add +
+                    </button>
                   </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addToCart(item);
-                    }}
-                    style={{
-                      background: theme.colors.primary,
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 8,
-                      padding: "0.5rem 1.2rem",
-                      fontWeight: 600,
-                      fontSize: "0.9rem",
-                      cursor: "pointer",
-                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                      transition: "all 0.1s ease",
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.background =
-                        theme.colors.primaryDark || "#0055aa";
-                      e.currentTarget.style.boxShadow =
-                        "0 0 12px rgba(0,123,255,0.3)";
-                      e.currentTarget.style.transform = "scale(1.05)";
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.background = theme.colors.primary;
-                      e.currentTarget.style.boxShadow =
-                        "0 2px 6px rgba(0,0,0,0.1)";
-                      e.currentTarget.style.transform = "scale(1)";
-                    }}
-                  >
-                    Add to Cart
-                  </button>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
-      {/* Modal for Item Details */}
+      {/* Modal Section */}
+
       {selectedItem && (
         <Modal
           show={showModal}
           onHide={handleCloseModal}
           dialogClassName="modal-dialog-centered"
+          contentClassName="item-modal" // Matches .modal-content.item-modal in CSS
         >
-          <Modal.Header closeButton>
-            <Modal.Title>{selectedItem.name}</Modal.Title>
-          </Modal.Header>
+          {/* We keep header only for the close button */}
+          <Modal.Header className="custom-modal-header" closeButton />
+
           <Modal.Body>
+            {/* Image */}
             <img
               src={selectedItem.imageUrl}
               alt={selectedItem.name}
-              style={{
-                width: "100%",
-                height: "auto",
-                maxHeight: "200px",
-                objectFit: "contain",
-                borderRadius: 10,
-                marginBottom: theme.spacing.md,
-              }}
+              className="modal-image"
             />
-            <p>{selectedItem.description}</p>
-            {/* Price + Add to Cart same line */}
-            {/* Tags Mapping */}
+
+            {/* Name */}
+            <h3
+              className="modal-title"
+              style={{ textAlign: "start", marginTop: "20px" }}
+            >
+              {selectedItem.name}
+            </h3>
+
+            {/* Description */}
+            <p
+              className="menu-description"
+              style={{ textAlign: "start", marginTop: "8px" }}
+            >
+              {selectedItem.description}
+            </p>
+
+            {/* Tags */}
             {selectedItem.tags && selectedItem.tags.length > 0 && (
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap", // Allow tags to wrap in case there are many
-                  gap: "10px", // Add spacing between tags
-                  marginBottom: theme.spacing.md, // Bottom margin for spacing
-                }}
-              >
+              <div className="modal-tags">
                 {selectedItem.tags.map((tag, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      height: 25,
-                      padding: "0 10px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderRadius: 50,
-                      border: `2px solid ${theme.colors.primary}`,
-                      color: theme.colors.primary,
-                      fontWeight: 700,
-                      fontSize: "0.85rem", // Adjust font size for tags
-                    }}
-                  >
+                  <div key={index} className="modal-tag">
                     {tag}
                   </div>
                 ))}
               </div>
             )}
+
+            {/* Price & Add Button */}
             <div
+              className="menu-bottom"
               style={{
+                marginTop: 20,
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginTop: theme.spacing.lg,
               }}
             >
-              <div
-                style={{
-                  color: theme.colors.primary,
-                  fontWeight: 700,
-                  fontSize: "1.1rem",
-                }}
+              <span
+                className="menu-price"
+                style={{ fontWeight: "bold", color: "#000" }}
               >
                 ${selectedItem.price.toFixed(2)}
-              </div>
-              <Button
-                variant="primary"
+              </span>
+              <button
+                className="menu-add-btn"
+                style={{
+                  backgroundColor: "#ffcb3e",
+                  border: "none",
+                  padding: "8px 14px",
+                  borderRadius: "8px",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                }}
                 onClick={() => {
                   addToCart(selectedItem);
                   handleCloseModal();
                 }}
               >
-                Add to Cart
-              </Button>
+                Add +
+              </button>
             </div>
           </Modal.Body>
         </Modal>
       )}
-
       {/* Cart Section */}
-      <div
-        style={{
-          flex: 0.5,
-          padding: theme.spacing.lg,
-          backgroundColor: theme.colors.white,
-          borderLeft: `1px solid ${theme.colors.gray[200]}`,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <h2 style={{ marginBottom: theme.spacing.lg }}>Cart</h2>
+      <div className="cart-section">
+        <div className="cart-content">
+          <div className="cart-title">
+            <span>Your Cart</span>
+            <button className="clear-all" onClick={() => setCart([])}>
+              Clear All
+            </button>
+          </div>
 
-        {cart.length === 0 ? (
-          <p style={{ color: theme.colors.gray[600] }}>Your cart is empty</p>
-        ) : (
-          <>
-            <div style={{ flex: 1, overflowY: "auto" }}>
-              {cart.map((cartItem) => (
-                <div
-                  key={cartItem.item._id}
-                  style={{
-                    padding: theme.spacing.md,
-                    borderBottom: `1px solid ${theme.colors.gray[200]}`,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>
-                    <h4 style={{ marginBottom: theme.spacing.xs }}>
-                      {cartItem.item.name}
-                    </h4>
-                    <div style={{ color: theme.colors.gray[600] }}>
-                      ${cartItem.item.price.toFixed(2)}
+          <div className="cart-list">
+            {cart.map((cartItem) => (
+              <div className="cart-row" key={cartItem.item._id}>
+                <div className="cart-item-info">
+                  <img
+                    src={cartItem.item.imageUrl}
+                    alt={cartItem.item.name}
+                    className="cart-item-img"
+                  />
+                  <div className="cart-item-details">
+                    <h4 className="cart-item-title">{cartItem.item.name}</h4>
+                    <div className="cart-item-price">
+                      ${cartItem.item.price}
                     </div>
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: theme.spacing.sm,
-                    }}
-                  >
-                    <button
-                      onClick={() =>
-                        updateQuantity(cartItem.item._id, cartItem.quantity - 1)
-                      }
-                      style={{
-                        padding: theme.spacing.xs,
-                        backgroundColor: theme.colors.gray[200],
-                        border: "none",
-                        borderRadius: theme.borderRadius.sm,
-                        cursor: "pointer",
-                      }}
-                    >
-                      -
-                    </button>
-                    <span>{cartItem.quantity}</span>
-                    <button
-                      onClick={() =>
-                        updateQuantity(cartItem.item._id, cartItem.quantity + 1)
-                      }
-                      style={{
-                        padding: theme.spacing.xs,
-                        backgroundColor: theme.colors.gray[200],
-                        border: "none",
-                        borderRadius: theme.borderRadius.sm,
-                        cursor: "pointer",
-                      }}
-                    >
-                      +
-                    </button>
-                  </div>
                 </div>
-              ))}
+
+                <div className="cart-qty-controls">
+                  <button
+                    onClick={() =>
+                      updateQuantity(cartItem.item._id, cartItem.quantity + 1)
+                    }
+                    className="qty-btn plus"
+                  >
+                    +
+                  </button>
+                  <span className="qty-count">
+                    {String(cartItem.quantity).padStart(2, "0")}
+                  </span>
+                  <button
+                    onClick={() =>
+                      updateQuantity(cartItem.item._id, cartItem.quantity - 1)
+                    }
+                    className="qty-btn minus"
+                  >
+                    -
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="cart-summary">
+          <div className="summary-line">
+            <span>Cart:</span>
+            <span>${getTotal().toFixed(2)}</span>
+          </div>
+          <div className="summary-line">
+            <span>Discount Amount:</span>
+            <span>${((getTotal() * (discount ?? 0)) / 100).toFixed(2)}</span>
+          </div>
+          <div className="summary-line">
+            <span>Total:</span>
+            <span>
+              ${(getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2)}
+            </span>
+          </div>
+
+          <div className="checkout-form">
+            <div className="form-group">
+              <label htmlFor="phoneNumber">Phone Number</label>
+              <input
+                id="phoneNumber"
+                type="tel"
+                value={phoneNumber}
+                onChange={handlePhoneNumberChange}
+                placeholder="Enter phone number"
+              />
             </div>
 
-            <div
-              style={{
-                padding: theme.spacing.lg,
-                borderTop: `1px solid ${theme.colors.gray[200]}`,
-                marginTop: theme.spacing.lg,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: theme.fontSizes.lg,
-                  fontWeight: "bold",
-                }}
+            <div className="form-group">
+              <label htmlFor="tableToken">Table Token</label>
+              <select
+                id="tableToken"
+                value={tableToken}
+                onChange={(e) =>
+                  setTableToken(e.target.value ? Number(e.target.value) : "")
+                }
               >
-                <span>Cart:</span>
-                <span>${getTotal().toFixed(2)}</span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: theme.fontSizes.lg,
-                  fontWeight: "bold",
-                }}
-              >
-                <span>Discount Amount:</span>
-                <span>
-                  ${((getTotal() * (discount ?? 0)) / 100).toFixed(2)}
-                </span>
-              </div>{" "}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: theme.fontSizes.lg,
-                  fontWeight: "bold",
-                }}
-              >
-                <span>Total:</span>
-                <span>
-                  ${(getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2)}
-                </span>
-              </div>
-              <div
-                style={{
-                  margin: "2rem 0",
-                  marginTop: "-0.4rem",
-                  padding: "1.5rem",
-                  background: "#fff",
-                  borderRadius: "12px",
-                  boxShadow: "0 2px 12px rgba(0,0,0,0.07)",
-                  maxWidth: 400,
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                  }}
-                >
-                  <label
-                    style={{
-                      fontWeight: 600,
-                      fontSize: "1rem",
-                    }}
-                    htmlFor="phoneNumber"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    id="phoneNumber"
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={handlePhoneNumberChange}
-                    placeholder="Enter phone number"
-                    style={{
-                      padding: "0.75rem 1rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: 8,
-                      fontSize: "1rem",
-                      outline: "none",
-                      transition: "border 0.2s",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-                    }}
-                  />
-                </div>
-                {/* Add Loyalty Progress Bar Below */}
-                <LoyaltyBar
-                  points={points}
-                  onDiscountChange={handleDiscountChange}
-                />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                  }}
-                >
-                  <label
-                    style={{
-                      fontWeight: 600,
-                      fontSize: "1rem",
-                    }}
-                    htmlFor="tableToken"
-                  >
-                    Table Token
-                  </label>
-                  <select
-                    id="tableToken"
-                    value={tableToken}
-                    onChange={(e) =>
-                      setTableToken(
-                        e.target.value ? Number(e.target.value) : ""
-                      )
-                    }
-                    style={{
-                      padding: "0.75rem 1rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: 8,
-                      fontSize: "1rem",
-                      outline: "none",
-                      background: "#fafbfc",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-                    }}
-                  >
-                    <option value="">Select table</option>
-                    {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-                      <option key={num} value={num}>
-                        {num}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <button
-                onClick={handleCheckout}
-                style={{
-                  width: "100%",
-                  padding: theme.spacing.md,
-                  backgroundColor: theme.colors.primary,
-                  color: theme.colors.white,
-                  border: "none",
-                  borderRadius: theme.borderRadius.md,
-                  fontSize: theme.fontSizes.lg,
-                  cursor: "pointer",
-                  transition: "all 0.1s ease",
-                }}
-                disabled={loading}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.background =
-                    theme.colors.primaryDark || "#0055aa";
-                  e.currentTarget.style.boxShadow =
-                    "0 0 12px rgba(0,123,255,0.3)";
-                  e.currentTarget.style.transform = "scale(1.05)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background = theme.colors.primary;
-                  e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
-              >
-                {loading ? "Processing..." : "Checkout"}
-              </button>
+                <option value="">Select table</option>
+                {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </select>
             </div>
-          </>
-        )}
+          </div>
+          <button
+            onClick={handleCheckout}
+            className="checkout-btn"
+            disabled={loading}
+          >
+            {loading ? "Processing..." : "Checkout"}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,125 @@
+/* Main page container */
+
+.body {
+  font-family: "Montserrat", sans-serif !important;
+}
+.confirmation-page {
+  background-color: #fbfbf8;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Card layout */
+.confirmation-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 600px;
+  height: 90vh; /* Fill most of screen */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header fixed at top */
+.confirmation-title {
+  padding: 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: 700;
+  background-color: white;
+  border-bottom: 1px solid #ffcb3e;
+}
+
+/* Scrollable middle section */
+.confirmation-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+.confirmation-content::-webkit-scrollbar {
+  display: none;
+}
+/* Order header box */
+.confirmation-header {
+  background-color: #ffcb3e;
+  color: #000;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.confirmation-header h2 {
+  margin: 0;
+}
+
+.confirmation-header p {
+  margin: 0.5rem 0 0;
+  opacity: 0.9;
+}
+
+/* Info section */
+.confirmation-info-title {
+  margin-bottom: 0.5rem;
+  color: #ffcb3e;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.confirmation-info-box {
+  padding: 0.5rem;
+  background-color: #f7f7f7;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.confirmation-warning {
+  padding: 0.5rem;
+  background-color: #f0ad4e;
+  color: white;
+  border-radius: 6px;
+}
+
+/* Items */
+.confirmation-items {
+  margin-bottom: 1rem;
+}
+
+.confirmation-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-top: 1px solid #ddd;
+}
+
+/* Total */
+.confirmation-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* Button fixed at bottom */
+.confirmation-footer {
+  padding: 1rem;
+  background-color: white;
+  border-top: 1px solid #eee;
+}
+
+.confirmation-btn {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #ffcb3e;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
