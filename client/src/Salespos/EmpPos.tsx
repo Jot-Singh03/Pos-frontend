@@ -759,7 +759,7 @@ const EmpPos: React.FC = () => {
                   marginRight: "auto",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "1.5rem",
+                  gap: "0.3rem",
                 }}
               >
                 <div
