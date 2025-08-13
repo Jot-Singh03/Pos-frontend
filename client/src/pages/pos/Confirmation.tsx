@@ -65,10 +65,12 @@ const Confirmation: React.FC = () => {
     fetchOrder();
   }, [fetchOrder]);
   useEffect(() => {
-    document.body.style.backgroundColor = "#f9f9f9";
+    document.body.style.backgroundColor = "#fbfbf8";
+    document.body.style.fontFamily = "Montserrat, sans-serif";
 
     return () => {
-      document.body.style.backgroundColor = "#f9f9f9";
+      document.body.style.backgroundColor = "#fbfbf8";
+      document.body.style.fontFamily = "Montserrat, sans-serif";
     };
   }, []);
 
@@ -125,8 +127,10 @@ const Confirmation: React.FC = () => {
       >
         <div
           style={{
-            backgroundColor: " #ffcb3e",
-            color: "black",
+            backgroundColor:
+              order.orderBy === "employee" ? theme.colors.primary : "#ffcb3e",
+            color: order.orderBy === "employee" ? theme.colors.white : "black",
+
             padding: theme.spacing.lg,
             borderRadius: theme.borderRadius.md,
             marginBottom: theme.spacing.lg,
@@ -145,7 +149,8 @@ const Confirmation: React.FC = () => {
           <h3
             style={{
               marginBottom: theme.spacing.md,
-              color: " #ffcb3e",
+
+              color: order.orderBy === "employee" ? "black" : "#ffcb3e",
               textAlign: "center",
             }}
           >
@@ -154,10 +159,10 @@ const Confirmation: React.FC = () => {
           <h3
             style={{
               marginBottom: theme.spacing.md,
-              color: " #ffcb3e",
+              color: order.orderBy === "employee" ? "black" : "#ffcb3e",
             }}
           >
-            Customer Information
+            Information
           </h3>
           <div
             style={{
@@ -264,8 +269,9 @@ const Confirmation: React.FC = () => {
           style={{
             width: "100%",
             padding: theme.spacing.md,
-            backgroundColor: "#ffcb3e",
-            color: "black",
+            backgroundColor:
+              order.orderBy === "employee" ? theme.colors.primary : "#ffcb3e",
+            color: order.orderBy === "employee" ? theme.colors.white : "black",
             border: "none",
             borderRadius: theme.borderRadius.md,
             cursor: "pointer",

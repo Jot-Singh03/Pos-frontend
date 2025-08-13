@@ -320,13 +320,12 @@ const EmpPos: React.FC = () => {
           borderRight: `1px solid ${theme.colors.gray[300]}`,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
         }}
       >
-        {/* Top: Employee & Categories */}
-        <div>
+        {/* Top: Employee */}
+        <div style={{ flexShrink: 0 }}>
           <h5 style={{ marginBottom: theme.spacing.md }}>
-            {employeeName ? employeeName : "Employee"}
+            {employeeName || "Employee"}
             <span
               style={{
                 fontSize: "0.7rem",
@@ -338,7 +337,27 @@ const EmpPos: React.FC = () => {
             </span>
           </h5>
           <h2 style={{ marginBottom: theme.spacing.xl }}>Categories</h2>
-          <ul style={{ listStyle: "none", padding: 0 }}>
+        </div>
+
+        {/* Middle: Scrollable Categories */}
+
+        <style>
+          {`
+          .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+        `}
+        </style>
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            marginBottom: theme.spacing.md,
+            scrollbarWidth: "none", // Firefox
+            msOverflowStyle: "none", // IE & Edge
+          }}
+        >
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {categories.map((category) => (
               <li
                 key={category.name}
@@ -402,8 +421,8 @@ const EmpPos: React.FC = () => {
           </ul>
         </div>
 
-        {/* Bottom: Buttons */}
-        <div>
+        {/* Bottom: Fixed Buttons */}
+        <div style={{ flexShrink: 0 }}>
           <button
             onClick={handleClearAuth}
             style={{
@@ -416,16 +435,6 @@ const EmpPos: React.FC = () => {
               cursor: "pointer",
               fontSize: "12px",
               transition: "all 0.1s ease",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = "#d97706"; // Darker warning color
-              e.currentTarget.style.transform = "scale(1.03)";
-              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = theme.colors.warning;
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none";
             }}
           >
             Clear Token
@@ -443,16 +452,6 @@ const EmpPos: React.FC = () => {
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
               transition: "all 0.1s ease",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = "#b91c1c"; // Darker red
-              e.currentTarget.style.transform = "scale(1.03)";
-              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = theme.colors.danger;
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none";
             }}
           >
             Logout
@@ -543,8 +542,7 @@ const EmpPos: React.FC = () => {
                   e.currentTarget.style.boxShadow =
                     "0 2px 8px rgba(0,0,0,0.05)";
                 }}
-                  onClick={() => handleItemClick(item)}
-
+                onClick={() => handleItemClick(item)}
               >
                 <img
                   src={item.imageUrl}
@@ -644,7 +642,9 @@ const EmpPos: React.FC = () => {
           dialogClassName="modal-dialog-centered"
         >
           <Modal.Header closeButton>
-            <Modal.Title>{selectedItem.name}</Modal.Title>
+            <Modal.Title style={{ marginLeft: theme.spacing.md }}>
+              {selectedItem.name}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <img
