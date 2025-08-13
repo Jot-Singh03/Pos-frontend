@@ -586,47 +586,60 @@ const POS: React.FC = () => {
               Clear All
             </button>
           </div>
+          <div className="cart-items">
+            {cart.length === 0 ? (
+              <div className="cart-empty">Your cart is empty</div>
+            ) : (
+              <div className="cart-list">
+                {cart.map((cartItem) => (
+                  <div className="cart-row" key={cartItem.item._id}>
+                    <div className="cart-item-info">
+                      <img
+                        src={cartItem.item.imageUrl}
+                        alt={cartItem.item.name}
+                        className="cart-item-img"
+                      />
+                      <div className="cart-item-details">
+                        <h4 className="cart-item-title">
+                          {cartItem.item.name}
+                        </h4>
+                        <div className="cart-item-price">
+                          ${cartItem.item.price}
+                        </div>
+                      </div>
+                    </div>
 
-          <div className="cart-list">
-            {cart.map((cartItem) => (
-              <div className="cart-row" key={cartItem.item._id}>
-                <div className="cart-item-info">
-                  <img
-                    src={cartItem.item.imageUrl}
-                    alt={cartItem.item.name}
-                    className="cart-item-img"
-                  />
-                  <div className="cart-item-details">
-                    <h4 className="cart-item-title">{cartItem.item.name}</h4>
-                    <div className="cart-item-price">
-                      ${cartItem.item.price}
+                    <div className="cart-qty-controls">
+                      <button
+                        onClick={() =>
+                          updateQuantity(
+                            cartItem.item._id,
+                            cartItem.quantity + 1
+                          )
+                        }
+                        className="qty-btn plus"
+                      >
+                        +
+                      </button>
+                      <span className="qty-count">
+                        {String(cartItem.quantity).padStart(2, "0")}
+                      </span>
+                      <button
+                        onClick={() =>
+                          updateQuantity(
+                            cartItem.item._id,
+                            cartItem.quantity - 1
+                          )
+                        }
+                        className="qty-btn minus"
+                      >
+                        -
+                      </button>
                     </div>
                   </div>
-                </div>
-
-                <div className="cart-qty-controls">
-                  <button
-                    onClick={() =>
-                      updateQuantity(cartItem.item._id, cartItem.quantity + 1)
-                    }
-                    className="qty-btn plus"
-                  >
-                    +
-                  </button>
-                  <span className="qty-count">
-                    {String(cartItem.quantity).padStart(2, "0")}
-                  </span>
-                  <button
-                    onClick={() =>
-                      updateQuantity(cartItem.item._id, cartItem.quantity - 1)
-                    }
-                    className="qty-btn minus"
-                  >
-                    -
-                  </button>
-                </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         </div>
 
