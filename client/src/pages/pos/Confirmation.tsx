@@ -38,7 +38,7 @@ const Confirmation: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleClick = () => {
-    navigate(-1); // Goes back to the previous page
+    navigate("/");
   };
 
   const fetchOrder = useCallback(async () => {
