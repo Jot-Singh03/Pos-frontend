@@ -34,6 +34,9 @@ const MenuManagement: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [catLoading, setCatLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const formSectionRef = React.useRef<HTMLDivElement>(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -126,6 +129,10 @@ const MenuManagement: React.FC = () => {
       imageUrl: item.imageUrl,
       tags: item.tags ? item.tags.join(", ") : "",
     });
+    // Smooth scroll to the input fields
+    if (formSectionRef.current) {
+      formSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const resetForm = () => {
@@ -151,6 +158,7 @@ const MenuManagement: React.FC = () => {
   return (
     <div>
       <div
+        ref={formSectionRef}
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -407,27 +415,57 @@ const MenuManagement: React.FC = () => {
         }}
       >
         <h2 style={{ marginBottom: theme.spacing.lg }}>Menu Items</h2>
+
+        <input
+          type="text"
+          placeholder="Search menu items..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            padding: theme.spacing.sm,
+            borderRadius: theme.borderRadius.md,
+            border: `1px solid ${theme.colors.gray[300]}`,
+            marginBottom: theme.spacing.md,
+            width: "100%",
+          }}
+        />
         {menuItems.length === 0 ? (
           <p style={{ color: theme.colors.gray[600] }}>No menu items found.</p>
         ) : (
-          <div style={{ display: "grid", gap: theme.spacing.md }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: "10px",
+            }}
+          >
             {menuItems
+              .filter(
+                (item) =>
+                  item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  item.category.toLowerCase().includes(searchTerm.toLowerCase())
+              )
               .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by item name
               .map((item) => (
                 <div
                   key={item._id}
                   style={{
+                    display: "grid",
+                    gap: "15px",
                     padding: theme.spacing.md,
                     border: `1px solid ${theme.colors.gray[200]}`,
                     borderRadius: theme.borderRadius.md,
-                    display: "flex",
-                    justifyContent: "space-between",
                     alignItems: "center",
+                    height: "auto",
+                    width: "100%",
+                    textAlign: "center",
+                    marginBottom: "15px",
+                    justifyContent: "center",
                   }}
                 >
                   <div>
                     <h5 style={{ marginBottom: theme.spacing.xs }}>
-                      {item.name}
+                      {item.name.split("").slice(0, 15)}
                     </h5>
                     <p style={{ color: theme.colors.gray[600] }}>
                       ${item.price.toFixed(2)} - {item.category}
