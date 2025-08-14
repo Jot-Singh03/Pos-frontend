@@ -433,7 +433,11 @@ const MenuManagement: React.FC = () => {
           <p style={{ color: theme.colors.gray[600] }}>No menu items found.</p>
         ) : (
           <div
-            style={{ display: "flex", flexWrap: "wrap", gap: theme.spacing.md }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: "10px",
+            }}
           >
             {menuItems
               .filter(
@@ -446,14 +450,16 @@ const MenuManagement: React.FC = () => {
                 <div
                   key={item._id}
                   style={{
-                    display:"grid",
+                    display: "grid",
+                    gap: "15px",
                     padding: theme.spacing.md,
                     border: `1px solid ${theme.colors.gray[200]}`,
                     borderRadius: theme.borderRadius.md,
                     alignItems: "center",
-                    height: "142px",
-                    width: "195px",
+                    height: "auto",
+                    width: "100%",
                     textAlign: "center",
+                    marginBottom: "15px",
                     justifyContent: "center",
                   }}
                 >
