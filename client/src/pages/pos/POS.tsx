@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
+import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import { toast } from "react-toastify";
 import theme from "../../styles/theme";
@@ -48,6 +49,7 @@ const POS: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [discount, setDiscount] = useState<number | null>(null);
   const [showVoucherModal, setShowVoucherModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleDiscountChange = (newDiscount: number) => {
     setDiscount(newDiscount);
@@ -185,7 +187,7 @@ const POS: React.FC = () => {
 
     // Validate phone number - Check if it's blank
     if (!phoneNumber || phoneNumber.trim() === "") {
-      setError("Please provide a valid phone number.");
+      // setError("Please provide a valid phone number.");
       return; // Prevent POST request if phone number is blank
     }
 
@@ -255,7 +257,7 @@ const POS: React.FC = () => {
         toast.success("Order placed successfully!");
         // Clear cart and redirect to confirmation
         setCart([]);
-        window.location.href = `/pos/confirmation/${data.data._id}`;
+        navigate(`/pos/confirmation/${data.data._id}`);
       } else {
         toast.error(data.error || "Failed to place order");
       }

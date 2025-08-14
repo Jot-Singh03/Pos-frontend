@@ -166,12 +166,16 @@
   font-weight: 700;
   font-family: "Montserrat", sans-serif !important;
   font-size: 16px;
+  background-color: #fbfbf8;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .cart-content {
   display: flex;
   flex-direction: column;
-  height: 60%; /* FIXED HEIGHT for top section */
+  height: 80%; /* FIXED HEIGHT for top section */
   overflow: auto;
 }
 .cart-list {
@@ -338,7 +342,6 @@
   font-family: "Montserrat", sans-serif !important;
   padding: 20px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-
   max-width: 350px;
 }
 
