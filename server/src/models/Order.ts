@@ -16,6 +16,9 @@ export interface IOrder extends Document {
   phoneNumber?: string;
   tableToken?: number;
   orderBy: "employee" | "customer";
+  employeeName?: string;
+  choice?: string; // NEW
+  payChoice?: string; // NEW
 }
 
 const OrderSchema: Schema = new Schema(
@@ -73,12 +76,14 @@ const OrderSchema: Schema = new Schema(
     orderBy: {
       type: String,
       enum: ["employee", "customer"],
-      default: "customer", // default is 'customer'
+      default: "customer",
     },
     employeeName: {
       type: String,
       required: false,
     },
+    choice: { type: String, enum: ["Dining In", "Takeaway"] }, // <-- add this
+    payChoice: { type: String, enum: ["Pay Here", "Pay at Counter"] }, // <-- add this
   },
   {
     timestamps: true,

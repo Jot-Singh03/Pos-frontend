@@ -228,7 +228,7 @@ const EmpPos: React.FC = () => {
       );
 
       // Handle success
-      console.log("Loyalty points added successfully:", data);
+      // console.log("Loyalty points added successfully:", data);
       setError(""); // Clear any previous error message
     } catch (error: any) {
       // Handle API error

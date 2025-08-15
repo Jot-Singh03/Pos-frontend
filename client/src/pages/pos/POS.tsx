@@ -8,6 +8,8 @@ import api, { ApiResponse } from "../../services/api";
 import { getCategories } from "../../services/api";
 import LoyaltyBar from "../../components/Loyaltybar";
 import "../../styles/pos.css";
+import arrow from "../../assests/arrow.svg";
+import { useOrder } from "./OrderContext";
 
 interface MenuItem {
   _id: string;
@@ -51,6 +53,8 @@ const POS: React.FC = () => {
   const [showVoucherModal, setShowVoucherModal] = useState(false);
   const navigate = useNavigate();
 
+  const { setOrderData } = useOrder();
+
   const handleDiscountChange = (newDiscount: number) => {
     setDiscount(newDiscount);
   };
@@ -58,7 +62,7 @@ const POS: React.FC = () => {
   useEffect(() => {
     fetchMenuItems();
     fetchCategories();
-  }, []);
+  }, []); 
 
   const fetchMenuItems = async () => {
     try {
@@ -170,53 +174,53 @@ const POS: React.FC = () => {
       setDiscount(0);
     }
   };
-  const postpoints = async () => {
-    // Calculate points as 10% of total amount
-    const totalAmount = getTotal();
+  // const postpoints = async () => {
+  //   // Calculate points as 10% of total amount
+  //   const totalAmount = getTotal();
 
-    // Validate total amount
-    if (isNaN(totalAmount) || totalAmount <= 0) {
-      console.error("Total amount is invalid or too small.");
-      setError("Invalid total amount.");
-      return;
-    }
+  //   // Validate total amount
+  //   if (isNaN(totalAmount) || totalAmount <= 0) {
+  //     console.error("Total amount is invalid or too small.");
+  //     setError("Invalid total amount.");
+  //     return;
+  //   }
 
-    // Calculate points (10% of total amount) and ensure 2 decimal places
-    let points = totalAmount * 0.1;
-    points = parseFloat(points.toFixed(2));
+  //   // Calculate points (10% of total amount) and ensure 2 decimal places
+  //   // let points = totalAmount * 0.1;
+  //   // points = parseFloat(points.toFixed(2));
 
-    // Validate phone number - Check if it's blank
-    if (!phoneNumber || phoneNumber.trim() === "") {
-      // setError("Please provide a valid phone number.");
-      return; // Prevent POST request if phone number is blank
-    }
+  //   // Validate phone number - Check if it's blank
+  //   if (!phoneNumber || phoneNumber.trim() === "") {
+  //     // setError("Please provide a valid phone number.");
+  //     return; // Prevent POST request if phone number is blank
+  //   }
 
-    console.log("Posting points:", { phoneNumber, points });
+  //   // console.log("Posting points:", { phoneNumber, points });
 
-    try {
-      // Make the POST request
-      const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
-        "/loyalty/add",
-        {
-          phoneNumber,
-          points,
-        }
-      );
+  //   try {
+  //     // Make the POST request
+  //     const { data } = await api.post<ApiResponse<LoyaltyCustomer>>(
+  //       "/loyalty/add",
+  //       {
+  //         phoneNumber,
+  //         points,
+  //       }
+  //     );
 
-      // Handle success
-      console.log("Loyalty points added successfully:", data);
-      setError(""); // Clear any previous error message
-    } catch (error: any) {
-      // Handle API error
-      if (error.response) {
-        console.error("Error response:", error.response);
-        console.error("Error message:", error.response.data);
-      } else {
-        console.error("Error:", error.message);
-      }
-      setError(error?.message || "An unexpected error occurred");
-    }
-  };
+  //     // Handle success
+  //     // console.log("Loyalty points added successfully:", data);
+  //     setError(""); // Clear any previous error message
+  //   } catch (error: any) {
+  //     // Handle API error
+  //     if (error.response) {
+  //       console.error("Error response:", error.response);
+  //       console.error("Error message:", error.response.data);
+  //     } else {
+  //       console.error("Error:", error.message);
+  //     }
+  //     setError(error?.message || "An unexpected error occurred");
+  //   }
+  // };
 
   const handleCheckout = async () => {
     if (cart.length === 0) {
@@ -238,7 +242,7 @@ const POS: React.FC = () => {
     }
     setLoading(true);
     try {
-      await postpoints();
+      // await postpoints();
 
       const orderData = {
         items: cart.map(({ item, quantity }) => ({
@@ -252,15 +256,29 @@ const POS: React.FC = () => {
         ...(tableToken ? { tableToken } : {}),
       };
 
-      const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
-      if (data.success) {
-        toast.success("Order placed successfully!");
-        // Clear cart and redirect to confirmation
-        setCart([]);
-        navigate(`/pos/confirmation/${data.data._id}`);
-      } else {
-        toast.error(data.error || "Failed to place order");
-      }
+      
+setOrderData((prev) => ({
+  ...prev,
+  items: cart.map(({ item, quantity }) => ({
+    itemId: item._id,
+    name: item.name,
+    price: item.price,
+    quantity,
+  })),
+  totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
+  ...(phoneNumber ? { phoneNumber } : {}),
+  ...(tableToken ? { tableToken } : {}),
+}));
+
+      // const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
+      // if (data.success) {
+      //   // toast.success("Order placed successfully!"); 
+      //   // setCart([]);
+      //   // navigate(`/pos/confirmation/${data.data._id}`);
+        navigate(`/pay`);
+      // } else {
+      //   toast.error(data.error || "Failed to place order");
+      // }
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Failed to place order");
     } finally {
@@ -300,6 +318,15 @@ const POS: React.FC = () => {
           borderRight: "1px solid  #F5F5F5",
         }}
       >
+        <div className="Bbutton">
+          <img
+            src={arrow}
+            alt="arrow"
+            className="arr"
+            onClick={() => navigate(-1)}
+          />
+        </div>
+
         <h2 className="pos-h2">Hey</h2>
         <span className="pos-span" style={{ marginBottom: theme.spacing.lg }}>
           {" "}
@@ -376,7 +403,7 @@ const POS: React.FC = () => {
               className="submit-btn"
               onClick={() => {
                 // Your submit logic here
-                console.log("Voucher phone number submitted:", phoneNumber);
+                // console.log("Voucher phone number submitted:", phoneNumber);
                 setShowVoucherModal(false); // Close modal after submit
               }}
               style={{

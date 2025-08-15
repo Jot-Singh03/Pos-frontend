@@ -20,6 +20,8 @@ interface Order {
   tableToken?: number;
   orderBy: string;
   employeeName?: string;
+  choice?: string;
+  payChoice?: string;
 }
 
 const Orders: React.FC = () => {
@@ -168,8 +170,7 @@ const Orders: React.FC = () => {
               border: "none",
               borderRadius: theme.borderRadius.md,
               cursor: "pointer",
-      transition: "all 0.1s ease",
-
+              transition: "all 0.1s ease",
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.background =
@@ -246,17 +247,29 @@ const Orders: React.FC = () => {
                   >
                     Date: {new Date(order.createdAt).toLocaleString()}
                   </p>
+
+                  {order.payChoice && (
+                    <p
+                      style={{
+                        color: theme.colors.gray[600],
+                        marginBottom: theme.spacing.xs,
+                      }}
+                    >
+                      Payment mode: {order.payChoice}
+                    </p>
+                  )}
                   <p
                     style={{
                       color: theme.colors.gray[600],
                       marginBottom: theme.spacing.xs,
                     }}
                   >
-                    Order By:{" "}
+                    Order By:
                     {order.orderBy === "employee"
                       ? order.employeeName || "Unknown Employee"
                       : "Customer"}
                   </p>
+
                   {order.phoneNumber && (
                     <p
                       style={{
@@ -267,6 +280,17 @@ const Orders: React.FC = () => {
                       Phone: {order.phoneNumber}
                     </p>
                   )}
+                  {order.choice && (
+                    <p
+                      style={{
+                        color: theme.colors.gray[600],
+                        marginBottom: theme.spacing.xs,
+                      }}
+                    >
+                      Choice: {order.choice}
+                    </p>
+                  )}
+
                   {order.tableToken && (
                     <p
                       style={{

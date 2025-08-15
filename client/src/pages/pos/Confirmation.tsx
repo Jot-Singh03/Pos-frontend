@@ -28,6 +28,7 @@ interface Order {
   tableToken?: number;
   orderBy: string;
   employeeName?: string;
+  payChoice?: string;
 }
 
 const Confirmation: React.FC = () => {
@@ -38,7 +39,11 @@ const Confirmation: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleClick = () => {
-    navigate("/");
+     if (order?.orderBy === "customer") {
+       navigate("/");
+     } else {
+       navigate("/sales");
+     }
   };
 
   const fetchOrder = useCallback(async () => {
@@ -148,17 +153,14 @@ const Confirmation: React.FC = () => {
         <div style={{ marginBottom: theme.spacing.lg }}>
           <h3
             style={{
-              marginBottom: theme.spacing.md,
-
               color: order.orderBy === "employee" ? "black" : "#ffcb3e",
               textAlign: "center",
             }}
           >
             Thanks For Ordering!
-          </h3>{" "}
+          </h3>
           <h3
             style={{
-              marginBottom: theme.spacing.md,
               color: order.orderBy === "employee" ? "black" : "#ffcb3e",
             }}
           >
@@ -195,7 +197,6 @@ const Confirmation: React.FC = () => {
                 <strong>Table Token:</strong> {order.tableToken}
                 <p
                   style={{
-                    marginTop: theme.spacing.sm,
                     textAlign: "left",
                   }}
                 >
@@ -203,9 +204,17 @@ const Confirmation: React.FC = () => {
                   {order.orderBy === "employee"
                     ? order.employeeName || "Unknown Employee"
                     : "Customer"}
+                 
+                  {order.payChoice && (
+                    <>
+                      <br />
+                      <strong>Payment mode: </strong> {order.payChoice}
+                    </>
+                  )}
                 </p>
               </div>
             )}
+
             {!order.phoneNumber && !order.tableToken && (
               <div
                 style={{
