@@ -62,7 +62,7 @@ const POS: React.FC = () => {
   useEffect(() => {
     fetchMenuItems();
     fetchCategories();
-  }, []); 
+  }, []);
 
   const fetchMenuItems = async () => {
     try {
@@ -256,26 +256,25 @@ const POS: React.FC = () => {
         ...(tableToken ? { tableToken } : {}),
       };
 
-      
-setOrderData((prev) => ({
-  ...prev,
-  items: cart.map(({ item, quantity }) => ({
-    itemId: item._id,
-    name: item.name,
-    price: item.price,
-    quantity,
-  })),
-  totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
-  ...(phoneNumber ? { phoneNumber } : {}),
-  ...(tableToken ? { tableToken } : {}),
-}));
+      setOrderData((prev) => ({
+        ...prev,
+        items: cart.map(({ item, quantity }) => ({
+          itemId: item._id,
+          name: item.name,
+          price: item.price,
+          quantity,
+        })),
+        totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
+        ...(phoneNumber ? { phoneNumber } : {}),
+        ...(tableToken ? { tableToken } : {}),
+      }));
 
       // const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
       // if (data.success) {
-      //   // toast.success("Order placed successfully!"); 
+      //   // toast.success("Order placed successfully!");
       //   // setCart([]);
       //   // navigate(`/pos/confirmation/${data.data._id}`);
-        navigate(`/pay`);
+      navigate(`/pay`);
       // } else {
       //   toast.error(data.error || "Failed to place order");
       // }
@@ -318,18 +317,12 @@ setOrderData((prev) => ({
           borderRight: "1px solid  #F5F5F5",
         }}
       >
-        <div className="Bbutton">
-          <img
-            src={arrow}
-            alt="arrow"
-            className="arr"
-            onClick={() => navigate(-1)}
-          />
+        <div className="Bbutton" onClick={() => navigate(-1)}>
+          <img src={arrow} alt="arrow" className="arr" />
         </div>
 
         <h2 className="pos-h2">Hey</h2>
         <span className="pos-span" style={{ marginBottom: theme.spacing.lg }}>
-          {" "}
           What's up?
         </span>
         <button
