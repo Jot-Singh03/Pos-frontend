@@ -318,13 +318,8 @@ setOrderData((prev) => ({
           borderRight: "1px solid  #F5F5F5",
         }}
       >
-        <div className="Bbutton">
-          <img
-            src={arrow}
-            alt="arrow"
-            className="arr"
-            onClick={() => navigate(-1)}
-          />
+        <div className="Bbutton" onClick={() => navigate(-1)}>
+          <img src={arrow} alt="arrow" className="arr" />
         </div>
 
         <h2 className="pos-h2">Hey</h2>
