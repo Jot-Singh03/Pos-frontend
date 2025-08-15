@@ -4,16 +4,15 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ChoiceProvider } from "./pages/pos/ChoiceContext";
-
+import { OrderProvider } from "./pages/pos/OrderContext";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <ChoiceProvider>
+    <OrderProvider>
       <App />
-    </ChoiceProvider>
+    </OrderProvider>
   </React.StrictMode>
 );
 

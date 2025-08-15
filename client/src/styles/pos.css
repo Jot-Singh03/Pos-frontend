@@ -1,3 +1,15 @@
+.Bbutton {
+  height: 40px;
+  width: 70px;
+  background-color: #ffcb3e;
+  border-radius: 20%;
+    display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.arr {
+  height: 20px;
+}
 .pos-container {
   display: flex;
   height: 100vh;
@@ -39,7 +51,7 @@
   padding: 25px;
   background-color: #fff;
   overflow-y: auto;
-  margin-top: 15px;
+  margin-top: 30px;
 }
 .menu-section::-webkit-scrollbar {
   display: none;

@@ -80,7 +80,7 @@ const App: React.FC = () => {
         {/* Default Route */}
         <Route path="/pos" element={<POS />} />
         <Route path="/" element={<Choice />} />
-        <Route path="/pos/pay" element={<PayChoice />} />
+        <Route path="/pay" element={<PayChoice />} />
       </Routes>
     </Router>
   );
