@@ -254,6 +254,7 @@ const POS: React.FC = () => {
     try {
       // await postpoints();
 
+
      const orderData = {
        items: cart.map(({ itemId, name, price, quantity }) => ({
          itemId,
@@ -279,6 +280,7 @@ const POS: React.FC = () => {
        phoneNumber: phoneNumber || prev?.phoneNumber || "",
        tableToken: tableToken || prev?.tableToken || "",
      }));
+
 
       // const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
       // if (data.success) {
@@ -334,7 +336,6 @@ const POS: React.FC = () => {
 
         <h2 className="pos-h2">Hey</h2>
         <span className="pos-span" style={{ marginBottom: theme.spacing.lg }}>
-          {" "}
           What's up?
         </span>
         <button
