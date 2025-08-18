@@ -24,65 +24,68 @@ import EmpManage from "./pages/admin/EmpManage";
 import Discount from "./pages/admin/Discount";
 import Choice from "./pages/pos/Choice";
 import PayChoice from "./pages/pos/PayChoice";
+import { OrderProvider } from "./pages/pos/OrderContext";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <Routes>
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={<Login />} />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <AdminLayout>
-                <Outlet />
-              </AdminLayout>
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminDashboard />} />
-          <Route path="menu" element={<MenuManagement />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="loyalty" element={<LoyaltyPoints />} />
-          <Route path="dropdowns" element={<DropdownsManagement />} />
-          <Route path="register" element={<EmpRegister />} />
-          <Route path="manage" element={<EmpManage />} />
-          <Route path="discount" element={<Discount />} />
-        </Route>
-
-        {/* POS Routes */}
-        <Route path="/pos" element={<POS />} />
-        <Route path="/pos/confirmation/:orderId" element={<Confirmation />} />
-        {/* Salespos Routes */}
-        <Route path="/login" element={<Emplogin />} />
-        {/* Protecting /Sales route with EmpProtectedRoute */}
-        <Route
-          path="/Sales"
-          element={
-            <EmpProtectedRoute>
-              <EmpPos />
-            </EmpProtectedRoute>
-          }
+    <OrderProvider>
+      <Router>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
         />
+        <Routes>
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<Login />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <Outlet />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="menu" element={<MenuManagement />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="loyalty" element={<LoyaltyPoints />} />
+            <Route path="dropdowns" element={<DropdownsManagement />} />
+            <Route path="register" element={<EmpRegister />} />
+            <Route path="manage" element={<EmpManage />} />
+            <Route path="discount" element={<Discount />} />
+          </Route>
 
-        {/* Default Route */}
-        <Route path="/pos" element={<POS />} />
-        <Route path="/" element={<Choice />} />
-        <Route path="/pay" element={<PayChoice />} />
-      </Routes>
-    </Router>
+          {/* POS Routes */}
+          <Route path="/pos" element={<POS />} />
+          <Route path="/pos/confirmation/:orderId" element={<Confirmation />} />
+          {/* Salespos Routes */}
+          <Route path="/login" element={<Emplogin />} />
+          {/* Protecting /Sales route with EmpProtectedRoute */}
+          <Route
+            path="/Sales"
+            element={
+              <EmpProtectedRoute>
+                <EmpPos />
+              </EmpProtectedRoute>
+            }
+          />
+
+          {/* Default Route */}
+          <Route path="/pos" element={<POS />} />
+          <Route path="/" element={<Choice />} />
+          <Route path="/pay" element={<PayChoice />} />
+        </Routes>
+      </Router>
+    </OrderProvider>
   );
 };
 

@@ -66,13 +66,8 @@ const PayChoice: React.FC = () => {
         </div>
       </div>
 
-      <div className="choice-footer">
-        <img
-          src={arrow}
-          alt="arrow"
-          className="choice-image3"
-          onClick={() => navigate(-1)}
-        />
+      <div className="choice-footer" onClick={() => navigate(-1)}>
+        <img src={arrow} alt="arrow" className="choice-image3" />
       </div>
     </div>
   );
