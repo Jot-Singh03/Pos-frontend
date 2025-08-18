@@ -9,7 +9,8 @@ import { getCategories } from "../../services/api";
 import LoyaltyBar from "../../components/Loyaltybar";
 import "../../styles/pos.css";
 import arrow from "../../assests/arrow.svg";
-import { useOrder } from "./OrderContext";
+import { useOrder, OrderItem } from "./OrderContext";
+
 
 interface MenuItem {
   _id: string;
@@ -39,7 +40,6 @@ interface LoyaltyCustomer {
 
 const POS: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -53,7 +53,8 @@ const POS: React.FC = () => {
   const [showVoucherModal, setShowVoucherModal] = useState(false);
   const navigate = useNavigate();
 
-  const { setOrderData } = useOrder();
+  const { orderData, setOrderData } = useOrder();
+  const cart = orderData?.items || [];
 
   const handleDiscountChange = (newDiscount: number) => {
     setDiscount(newDiscount);
@@ -81,26 +82,36 @@ const POS: React.FC = () => {
     }
   };
 
+  // Add to cart
   const addToCart = (item: MenuItem) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find(
-        (cartItem) => cartItem.item._id === item._id
+    const existingItem = cart.find((c) => c.itemId === item._id);
+  let newCart: OrderItem[];
+
+
+    if (existingItem) {
+      newCart = cart.map((c) =>
+        c.itemId === item._id ? { ...c, quantity: c.quantity + 1 } : c
       );
-      if (existingItem) {
-        return prevCart.map((cartItem) =>
-          cartItem.item._id === item._id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        );
-      }
-      return [...prevCart, { item, quantity: 1 }];
-    });
-    // toast.success(`${item.name} added to cart`);
+    } else {
+      newCart = [
+        ...cart,
+        {
+          itemId: item._id,
+          name: item.name,
+          price: item.price,
+          quantity: 1,
+          imageUrl: item.imageUrl,
+        },
+      ];
+    }
+
+    setOrderData((prev) => ({ ...prev, items: newCart }));
   };
+
+  // Remove from cart
   const removeFromCart = (itemId: string) => {
-    setCart((prevCart) =>
-      prevCart.filter((cartItem) => cartItem.item._id !== itemId)
-    );
+    const newCart = cart.filter((cartItem) => cartItem.itemId !== itemId);
+    setOrderData((prev) => ({ ...prev, items: newCart }));
   };
 
   const fetchCategories = async () => {
@@ -123,25 +134,24 @@ const POS: React.FC = () => {
     }
   };
 
+  // Update quantity
   const updateQuantity = (itemId: string, quantity: number) => {
     if (quantity < 1) {
-      const item = cart.find((cartItem) => cartItem.item._id === itemId);
-      if (item) {
-        // toast.error(`${item.item.name} removed from cart`);
-      }
       removeFromCart(itemId);
       return;
     }
-    setCart((prevCart) =>
-      prevCart.map((cartItem) =>
-        cartItem.item._id === itemId ? { ...cartItem, quantity } : cartItem
-      )
+
+    const newCart = cart.map((cartItem) =>
+      cartItem.itemId === itemId ? { ...cartItem, quantity } : cartItem
     );
+
+    setOrderData((prev) => ({ ...prev, items: newCart }));
   };
 
+  // Calculate total
   const getTotal = () => {
     return cart.reduce(
-      (total, cartItem) => total + cartItem.item.price * cartItem.quantity,
+      (total, cartItem) => total + cartItem.price * cartItem.quantity,
       0
     );
   };
@@ -244,30 +254,33 @@ const POS: React.FC = () => {
     try {
       // await postpoints();
 
-      const orderData = {
-        items: cart.map(({ item, quantity }) => ({
-          itemId: item._id,
-          name: item.name,
-          price: item.price,
-          quantity,
-        })),
-        totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
-        ...(phoneNumber ? { phoneNumber } : {}),
-        ...(tableToken ? { tableToken } : {}),
-      };
 
-      setOrderData((prev) => ({
-        ...prev,
-        items: cart.map(({ item, quantity }) => ({
-          itemId: item._id,
-          name: item.name,
-          price: item.price,
-          quantity,
-        })),
-        totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
-        ...(phoneNumber ? { phoneNumber } : {}),
-        ...(tableToken ? { tableToken } : {}),
-      }));
+     const orderData = {
+       items: cart.map(({ itemId, name, price, quantity }) => ({
+         itemId,
+         name,
+         price,
+         quantity,
+       })),
+       totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2),
+       ...(phoneNumber ? { phoneNumber } : {}),
+       ...(tableToken ? { tableToken } : {}),
+     };
+
+     setOrderData((prev) => ({
+       ...prev,
+       items: cart.map(({ itemId, name, price, quantity, imageUrl }) => ({
+         itemId,
+         name,
+         price,
+         quantity,
+         imageUrl, // ✅ if you added imageUrl in OrderItem
+       })),
+       totalAmount: (getTotal() * (1 - (discount ?? 0) / 100)).toFixed(2), // always string
+       phoneNumber: phoneNumber || prev?.phoneNumber || "",
+       tableToken: tableToken || prev?.tableToken || "",
+     }));
+
 
       // const { data } = await api.post<ApiResponse<any>>("/orders", orderData);
       // if (data.success) {
@@ -604,7 +617,10 @@ const POS: React.FC = () => {
         <div className="cart-content">
           <div className="cart-title">
             <span>Your Cart</span>
-            <button className="clear-all" onClick={() => setCart([])}>
+            <button
+              className="clear-all"
+              onClick={() => setOrderData((prev) => ({ ...prev, items: [] }))}
+            >
               Clear All
             </button>
           </div>
@@ -614,20 +630,16 @@ const POS: React.FC = () => {
             ) : (
               <div className="cart-list">
                 {cart.map((cartItem) => (
-                  <div className="cart-row" key={cartItem.item._id}>
+                  <div className="cart-row" key={cartItem.itemId}>
                     <div className="cart-item-info">
                       <img
-                        src={cartItem.item.imageUrl}
-                        alt={cartItem.item.name}
+                        src={cartItem.imageUrl} // ✅ no more .item
+                        alt={cartItem.name}
                         className="cart-item-img"
                       />
                       <div className="cart-item-details">
-                        <h4 className="cart-item-title">
-                          {cartItem.item.name}
-                        </h4>
-                        <div className="cart-item-price">
-                          ${cartItem.item.price}
-                        </div>
+                        <h4 className="cart-item-title">{cartItem.name}</h4>
+                        <div className="cart-item-price">${cartItem.price}</div>
                       </div>
                     </div>
 
@@ -635,7 +647,7 @@ const POS: React.FC = () => {
                       <button
                         onClick={() =>
                           updateQuantity(
-                            cartItem.item._id,
+                            cartItem.itemId,
                             cartItem.quantity + 1
                           )
                         }
@@ -649,7 +661,7 @@ const POS: React.FC = () => {
                       <button
                         onClick={() =>
                           updateQuantity(
-                            cartItem.item._id,
+                            cartItem.itemId,
                             cartItem.quantity - 1
                           )
                         }

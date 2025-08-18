@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import theme from "../../styles/theme";
 import api from "../../services/api";
+import { useOrder } from "./OrderContext";
+
+
 
 interface ApiResponse<T> {
   success: boolean;
@@ -78,6 +81,15 @@ const Confirmation: React.FC = () => {
       document.body.style.fontFamily = "Montserrat, sans-serif";
     };
   }, []);
+
+
+  const { clearOrder } = useOrder();
+
+  useEffect(() => {
+    if (order) {
+      clearOrder(); // ✅ clears cart and order data
+    }
+  }, [order, clearOrder]);
 
   if (loading) {
     return (
