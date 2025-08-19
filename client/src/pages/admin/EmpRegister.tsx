@@ -36,6 +36,8 @@ const EmpRegister: React.FC = () => {
       );
       if (data.success) {
         toast.success("Registration successful!");
+        setPassword("");
+        setEmail("");
         // Optionally, navigate to the login page or dashboard
         // navigate("/login");
       } else {
