@@ -250,7 +250,7 @@ const Login: React.FC = () => {
             </div>
           )}
 
-          <span>Forgot Password</span>
+{/*           <span>Forgot Password</span> */}
         </div>
       </div>
     </div>
